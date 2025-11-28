@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh">
+        <head>
+                        <meta charset="utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <meta name="generator" content="Pelican" />
+                        <title>Redis介绍</title>
+                        <link rel="stylesheet" href="/theme/css/main.css" />
+    <meta name="description" content="一、Redis是什么？ Redis （Remote Dictionary Server） 是指远程字典服务器，它是一个基于内存的（K/V）存储系统。 字典服务器：这里的“字典”指的是数据的组织方式 …" />
+        </head>
+
+        <body id="index" class="home">
+                <header id="banner" class="body">
+                        <h1><a href="/">My Tech Blog</a></h1>
+                        <nav><ul>
+                                                <li class="active"><a href="/category/ru-men.html">入门</a></li>
+                        </ul></nav>
+                </header><!-- /#banner -->
+  <section id="content" class="body">
+    <article>
+      <header>
+        <h1 class="entry-title">
+          <a href="/redisjie-shao.html" rel="bookmark"
+             title="Permalink to Redis介绍">Redis介绍</a></h1>
+      </header>
+
+      <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2025-11-28T16:00:00+08:00">
+                Published: Fri 28 November 2025
+        </abbr>
+
+                <address class="vcard author">
+                        By                                 <a class="url fn" href="/author/samuelchen.html">samuel.chen</a>
+                </address>
+        <p>In <a href="/category/ru-men.html">入门</a>.</p>
+<p>tags: <a href="/tag/redis.html">Redis</a> <a href="/tag/python.html">Python</a> </p>        
+</footer><!-- /.post-info -->        <h3>一、Redis是什么？</h3>
+<p><strong>Redis （Remote Dictionary Server）</strong> 是指远程字典服务器，它是一个基于内存的（K/V）存储系统。</p>
+<ul>
+<li><strong>字典服务器</strong>：这里的“字典”指的是数据的组织方式，类似于字典中的键值对结构。服务器则是指提供数据存储和检索服务的程序。</li>
+<li><strong>远程</strong>：表示这个服务器可以被远程访问，即客户端可以通过网络连接到服务器，进行数据的读写操作。</li>
+<li><strong>基于内存</strong>：Redis将数据存储在内存中，这意味着它能够提供非常快的读写速度，但同时也意味着数据在服务器重启后会丢失，除非进行持久化操作。</li>
+<li><strong>键值（K/V）存储系统</strong>：Redis存储数据的基本单位是键值对，其中键是唯一的标识符，值可以是字符串、哈希、列表、集合等数据结构。</li>
+</ul>
+<p><strong>经典应用场景：</strong></p>
+<ul>
+<li><strong>缓存热点数据</strong>（减轻 MySQL 压力，响应速度从毫秒级→微秒级）</li>
+<li><strong>实现分布式锁</strong>（解决多服务并发问题）</li>
+<li><strong>存储实时信息</strong>（网页访问量、API访问量）</li>
+<li><strong>处理消息队列</strong>（简单场景替代 RabbitMQ）</li>
+</ul>
+<h3>二、Redis基础操作</h3>
+<h4>1. 核心通用命令</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">命令</th>
+<th style="text-align: left;">作用</th>
+<th style="text-align: left;">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>set key value</code></td>
+<td style="text-align: left;">设置一个 String 类型的键值对</td>
+<td style="text-align: left;"><code>set name zhangsan</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>get key</code></td>
+<td style="text-align: left;">获取指定 key 的值</td>
+<td style="text-align: left;"><code>get name</code> → 返回 "zhangsan"</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>del key [key ...]</code></td>
+<td style="text-align: left;">删除一个或多个键</td>
+<td style="text-align: left;"><code>del name age</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>exists key [key ...]</code></td>
+<td style="text-align: left;">判断一个或多个键是否存在</td>
+<td style="text-align: left;"><code>exists name</code> → 返回 1 (存在) 或 0 (不存在)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>expire key seconds</code></td>
+<td style="text-align: left;">为键设置秒级过期时间</td>
+<td style="text-align: left;"><code>expire name 30</code> (30 秒后失效)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ttl key</code></td>
+<td style="text-align: left;">查看键的剩余过期时间（秒）</td>
+<td style="text-align: left;"><code>ttl name</code> → 返回剩余秒数, -1 (永不过期), -2 (已过期)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>type key</code></td>
+<td style="text-align: left;">查看键存储的值的类型</td>
+<td style="text-align: left;"><code>type name</code> → 返回 "string", "list", "hash" 等</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>keys pattern</code></td>
+<td style="text-align: left;"><strong>查找所有</strong>符合模式的键（<strong>慎用</strong>）</td>
+<td style="text-align: left;"><code>keys user:*</code> (会阻塞服务器, 生产环境禁用)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>scan cursor [MATCH pattern]</code></td>
+<td style="text-align: left;">迭代数据库中的键（<strong>生产推荐</strong>）</td>
+<td style="text-align: left;"><code>scan 0 MATCH user:* COUNT 100</code> (安全遍历)</td>
+</tr>
+</tbody>
+</table>
+<h4>2. 五种核心数据结构</h4>
+<p><strong>（1）String（字符串）</strong></p>
+<ul>
+<li><strong>简介</strong>：最基础的数据类型，可以存储任何形式的字符串，包括文本、序列化的 JSON、甚至是二进制数据（如图片）。单个 value 最大可达 512MB。除了基本的存取，它还支持原子性的计数操作，非常适合用于实现计数器功能。</li>
+<li><strong>用途</strong>：API 请求次数统计、缓存用户信息（JSON 字符串）</li>
+<li><strong>示例</strong>：</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 缓存用户信息（JSON字符串），并设置1小时过期</span>
+setex<span class="w"> </span>user:1001<span class="w"> </span><span class="m">3600</span><span class="w"> </span><span class="s1">&#39;{&quot;name&quot;: &quot;zhangsan&quot;, &quot;age&quot;: 25}&#39;</span>
+
+<span class="c1"># 获取用户信息</span>
+get<span class="w"> </span>user:1001
+
+<span class="c1"># 记录API访问次数</span>
+incr<span class="w"> </span>api:requests
+</code></pre></div>
+
+<p><strong>（2）Hash（哈希）</strong></p>
+<ul>
+<li><strong>简介</strong>：一个键值对集合，本身也是一个 key。非常适合用于存储一个对象的多个字段，例如用户信息、任务详情等。相比将整个对象序列化为 JSON 字符串存入 String，Hash 可以让你只更新对象的单个字段，效率更高。</li>
+<li><strong>用途</strong>：缓存用户或任务的详细信息</li>
+<li><strong>示例</strong>：</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 缓存任务T001的详情</span>
+hset<span class="w"> </span>task:T001<span class="w"> </span>title<span class="w"> </span><span class="s2">&quot;ProcessInFX&quot;</span><span class="w"> </span>status<span class="w"> </span><span class="s2">&quot;In Progress&quot;</span><span class="w"> </span>priority<span class="w"> </span><span class="s2">&quot;High&quot;</span>
+
+<span class="c1"># 获取任务T001的状态</span>
+hget<span class="w"> </span>task:T001<span class="w"> </span>status
+
+<span class="c1"># 更新任务T001的状态</span>
+hset<span class="w"> </span>task:T001<span class="w"> </span>status<span class="w"> </span><span class="s2">&quot;Done&quot;</span>
+
+<span class="c1"># 获取任务T001的所有详情</span>
+hgetall<span class="w"> </span>task:T001
+</code></pre></div>
+
+<p><strong>（3）List（列表）</strong></p>
+<ul>
+<li><strong>简介</strong>：一个字符串元素的有序集合，按照插入顺序排序。非常适合用作消息队列、存储最新的 N 个项目（如最新动态）。</li>
+<li><strong>用途</strong>：简单消息队列（FIFO），如异步邮件通知队列</li>
+<li><strong>示例</strong>：</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. 生产者：向邮件通知队列中加入3个任务</span>
+<span class="c1"># 执行后，列表为 [&quot;task3&quot;, &quot;task2&quot;, &quot;task1&quot;]</span>
+lpush<span class="w"> </span>email:queue<span class="w"> </span><span class="s2">&quot;task1&quot;</span><span class="w"> </span><span class="s2">&quot;task2&quot;</span><span class="w"> </span><span class="s2">&quot;task3&quot;</span>
+
+<span class="c1"># 2. 消费者：从队列右侧取出一个任务处理（先进先出）</span>
+<span class="c1"># 返回 &quot;task1&quot;，列表变为 [&quot;task3&quot;, &quot;task2&quot;]</span>
+rpop<span class="w"> </span>email:queue
+
+<span class="c1"># 3. 查看队列中剩余的任务</span>
+lrange<span class="w"> </span>email:queue<span class="w"> </span><span class="m">0</span><span class="w"> </span>-1
+<span class="c1"># → 1) &quot;task3&quot;</span>
+<span class="c1"># → 2) &quot;task2&quot;</span>
+</code></pre></div>
+
+<p><strong>（4）Set（集合）</strong></p>
+<ul>
+<li><strong>简介</strong>：一个无序且唯一的字符串集合。非常适合用于去重、存储标签、跟踪独立访客等。支持交集、并集、差集等操作。</li>
+<li><strong>用途</strong>：计算两个用户的共同好友、存储文章标签、统计每日独立访客 IP</li>
+<li><strong>说明</strong>：以“计算共同好友”为例，我们可以将每个用户的好友列表存储在一个 Set 中。由于 Set 自动去重，可以保证好友列表的唯一性。然后，通过 <code>sinter</code> 命令，可以瞬间计算出两个用户共同关注的人，无需在数据库层面进行复杂的 <code>JOIN</code> 查询。</li>
+<li><strong>示例</strong>：</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. 为用户 u01 和 u02 添加好友</span>
+sadd<span class="w"> </span>user:u01:friends<span class="w"> </span><span class="s2">&quot;A&quot;</span><span class="w"> </span><span class="s2">&quot;B&quot;</span><span class="w"> </span><span class="s2">&quot;C&quot;</span><span class="w"> </span><span class="s2">&quot;D&quot;</span>
+sadd<span class="w"> </span>user:u02:friends<span class="w"> </span><span class="s2">&quot;C&quot;</span><span class="w"> </span><span class="s2">&quot;D&quot;</span><span class="w"> </span><span class="s2">&quot;E&quot;</span><span class="w"> </span><span class="s2">&quot;F&quot;</span>
+
+<span class="c1"># 2. 查看 u01 的所有好友</span>
+smembers<span class="w"> </span>user:u01:friends
+
+<span class="c1"># 3. 查看 u01 和 u02 的共同好友</span>
+sinter<span class="w"> </span>user:u01:friends<span class="w"> </span>user:u02:friends
+<span class="c1"># → 1) &quot;C&quot;</span>
+<span class="c1"># → 2) &quot;D&quot;</span>
+</code></pre></div>
+
+<p><strong>（5）Sorted Set（有序集合）</strong></p>
+<ul>
+<li><strong>简介</strong>：类似于 Set，但每个成员都关联一个分数（score），并根据这个分数进行排序。非常适合用于排行榜、优先级队列、带权重的任务调度。</li>
+<li><strong>用途</strong>：实现任务执行耗时排行榜</li>
+<li><strong>说明</strong>：当一个后台任务完成时，我们可以记录其执行耗时，并将其作为分数，任务 ID 作为成员，存入一个 Sorted Set。这样就可以随时获取执行最慢的 Top 10 任务，用于性能分析和优化。</li>
+<li><strong>示例</strong>：</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1.新增/更新任务耗时</span>
+zadd<span class="w"> </span>task:duration<span class="w"> </span><span class="m">800</span><span class="w"> </span>task001<span class="w"> </span><span class="m">1200</span><span class="w"> </span>task002
+<span class="c1"># 2.查询Top10最耗时任务</span>
+zrevrange<span class="w"> </span>task:duration<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">9</span><span class="w"> </span>WITHSCORES
+<span class="c1"># 3.查询某任务的具体耗时</span>
+zscore<span class="w"> </span>task:duration<span class="w"> </span>task001
+</code></pre></div>
+
+<h3>三、Redis 的持久化</h3>
+<p>Redis 是内存数据库，但它提供了两种主要方式将数据持久化到硬盘，以防止服务器重启后数据丢失。</p>
+<ul>
+<li>
+<p><strong>RDB (Redis Database)</strong>：在指定的时间间隔内，将内存中的数据集快照写入一个二进制文件中。</p>
+</li>
+<li>
+<p><strong>优点</strong>：恢复速度快，文件紧凑，适合做冷备份。</p>
+</li>
+<li><strong>缺点</strong>：如果 Redis 意外宕机，会丢失最后一次快照之后的所有修改。</li>
+<li>
+<p><strong>AOF (Append Only File)</strong>：以日志的形式记录<strong>每一个写操作</strong>。Redis 重启时会重新执行 AOF 文件中的命令来恢复数据。</p>
+</li>
+<li>
+<p><strong>优点</strong>：数据安全性更高，丢失数据的风险极小。</p>
+</li>
+<li><strong>缺点</strong>：文件体积通常比 RDB 大，恢复速度相对较慢。</li>
+</ul>
+<blockquote>
+<p><strong>混合持久化</strong>：Redis 4.0 之后支持混合使用 RDB 和 AOF，结合了两者的优点，兼顾了快速恢复和数据安全，是目前推荐的方式。</p>
+</blockquote>
+<h3>四、Redis 键命名规范</h3>
+<p>良好的命名规范是高效使用和维护 Redis 的基石。一个清晰的命名约定可以极大地提高代码的可读性，并方便问题排查。</p>
+<ul>
+<li>
+<p><strong>推荐格式</strong>：<code>项目名:业务名:唯一标识</code></p>
+</li>
+<li>
+<p>使用冒号 <code>:</code> 进行分层，这在很多 Redis 可视化工具中会被识别为文件夹结构，方便浏览。</p>
+</li>
+<li>键名应简短且具有描述性。</li>
+<li>
+<p><strong>示例</strong>：</p>
+</li>
+<li>
+<p>缓存用户信息：<code>fxap2.0:user:1001</code></p>
+</li>
+<li>API 调用计数器：<code>fxwebapi:api_calls:fxusage:post</code></li>
+<li>分布式锁：<code>lock:run_query:query_id</code></li>
+</ul>
+<h3>五、Redis 可视化工具推荐</h3>
+<p>选择一款好的可视化工具可以极大地提升开发和运维效率。以下是几款主流的 Redis GUI 工具：</p>
+<ol>
+<li>
+<p><strong>RedisInsight</strong></p>
+</li>
+<li>
+<p><strong>简介</strong>：Redis 官方出品的免费可视化管理工具，界面现代化，功能强大。</p>
+</li>
+<li><strong>特点</strong>：支持核心数据结构、流、图、JSON 等高级数据类型的可视化；内置 CLI 和性能分析工具。</li>
+<li><strong>平台</strong>：Windows, macOS, Linux</li>
+<li><strong>官网</strong>：<a href="https://redis.com/redis-enterprise/redis-insight/">https://redis.com/redis-enterprise/redis-insight/</a></li>
+</ol>
+<p><img alt="image.png" src="images/Redis可视化01.png"></p>
+<ol>
+<li>
+<p><strong>Another Redis Desktop Manager</strong></p>
+</li>
+<li>
+<p><strong>简介</strong>：一款快速、稳定、跨平台的开源 Redis 桌面管理工具，广受开发者欢迎。</p>
+</li>
+<li><strong>特点</strong>：界面简洁直观，支持 SSH 隧道连接，支持暗黑模式，响应速度快。</li>
+<li><strong>平台</strong>：Windows, macOS, Linux</li>
+<li><strong>官网</strong>：<a href="https://github.com/qishibo/AnotherRedisDesktopManager">https://github.com/qishibo/AnotherRedisDesktopManager</a></li>
+</ol>
+<p><img alt="image.png" src="images/redis可视化02.png"></p>
+<h3>六、学习资源推荐🚀️</h3>
+<p>Redis 下载：<a href="https://redis.io/downloads/">Redis官网</a></p>
+<p>Reids 官方可视化工具：<a href="https://redis.io/insight/">Redis Insight</a></p>
+<p>Redis 官方命令手册：<a href="https://redis.io/docs/latest/commands/">https://redis.io/docs/latest/commands/</a></p>
+      </div><!-- /.entry-content -->
+
+    </article>
+  </section>
+                <section id="extras" class="body">
+                                <div class="blogroll">
+                                        <h2>links</h2>
+                                        <ul>
+                                                        <li><a href="https://getpelican.com/">Pelican</a></li>
+                                                        <li><a href="https://www.python.org/">Python.org</a></li>
+                                                        <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                                                        <li><a href="#">You can modify those links in your config file</a></li>
+                                        </ul>
+                                </div><!-- /.blogroll -->
+                                <div class="social">
+                                        <h2>social</h2>
+                                        <ul>
+
+                                                        <li><a href="#">You can add links in your config file</a></li>
+                                                        <li><a href="#">Another social link</a></li>
+                                        </ul>
+                                </div><!-- /.social -->
+                </section><!-- /#extras -->
+
+                <footer id="contentinfo" class="body">
+                        <address id="about" class="vcard body">
+                                Proudly powered by <a rel="nofollow" href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="https://www.python.org/">Python</a>.
+                        </address><!-- /#about -->
+
+                        <p>The theme is by <a rel="nofollow" href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+                </footer><!-- /#contentinfo -->
+
+        </body>
+</html>

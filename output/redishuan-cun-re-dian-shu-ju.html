@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh">
+        <head>
+                        <meta charset="utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <meta name="generator" content="Pelican" />
+                        <title>Redis缓存热点数据</title>
+                        <link rel="stylesheet" href="/theme/css/main.css" />
+    <meta name="description" content="一、场景说明 高频访问数据直接查数据库会导致响应慢，用Redis缓存可将响应时间从毫秒级降至微秒级，减轻数据库压力。 二、实现思路 Cache-Aside 策略 Cache-Aside意为旁路缓存模式，是应用最为广泛的一 …" />
+        </head>
+
+        <body id="index" class="home">
+                <header id="banner" class="body">
+                        <h1><a href="/">My Tech Blog</a></h1>
+                        <nav><ul>
+                                                <li class="active"><a href="/category/ru-men.html">入门</a></li>
+                        </ul></nav>
+                </header><!-- /#banner -->
+  <section id="content" class="body">
+    <article>
+      <header>
+        <h1 class="entry-title">
+          <a href="/redishuan-cun-re-dian-shu-ju.html" rel="bookmark"
+             title="Permalink to Redis缓存热点数据">Redis缓存热点数据</a></h1>
+      </header>
+
+      <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2025-11-28T16:00:00+08:00">
+                Published: Fri 28 November 2025
+        </abbr>
+
+                <address class="vcard author">
+                        By                                 <a class="url fn" href="/author/samuelchen.html">samuel.chen</a>
+                </address>
+        <p>In <a href="/category/ru-men.html">入门</a>.</p>
+<p>tags: <a href="/tag/redis.html">Redis</a> <a href="/tag/python.html">Python</a> </p>        
+</footer><!-- /.post-info -->        <h4>一、场景说明</h4>
+<p>高频访问数据直接查数据库会导致响应慢，用Redis缓存可将响应时间从毫秒级降至微秒级，减轻数据库压力。</p>
+<h4>二、实现思路</h4>
+<p><strong>Cache-Aside 策略</strong></p>
+<p>Cache-Aside意为旁路缓存模式，是应用最为广泛的一种缓存策略。</p>
+<p>在<strong>读请求</strong>中，首先请求缓存，若缓存命中（cache hit），则直接返回缓存中的数据；若缓存未命中（cache miss），则查询数据库并将查询结果更新至缓存，然后返回查询出的数据（demand-filled look-aside）。</p>
+<p>在<strong>写请求</strong>中，先更新数据库，再删除缓存（write-invalidate）。</p>
+<p>下图展示了它的读写流程：</p>
+<p><img alt="image.png" src="images/Cache-Aside.png"></p>
+<h4>三、代码实现</h4>
+<p>下面 Python 代码演示了使用 Redis 缓存 ChargeMappings 数据。</p>
+<h5>3.1 环境安装</h5>
+<div class="highlight"><pre><span></span><code><span class="c1"># 安装 Redis 的 Python 客户端</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">redis</span>
+</code></pre></div>
+
+<h5>3.2 项目代码</h5>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">configparser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
+<span class="kn">import</span> <span class="nn">redis</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span><span class="p">,</span> <span class="n">text</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">Session</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
+<span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;db_config.ini&quot;</span><span class="p">))</span>
+
+<span class="n">mysql</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;mysql_local&#39;</span><span class="p">]</span>
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;mysql+pymysql://</span><span class="si">{</span><span class="n">mysql</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">mysql</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">mysql</span><span class="p">[</span><span class="s2">&quot;server&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">mysql</span><span class="p">[</span><span class="s2">&quot;database&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                       <span class="n">echo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">future</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_overflow</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pool_pre_ping</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">redis_local</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;redis_local&#39;</span><span class="p">]</span>
+<span class="c1"># 初始化连接池</span>
+<span class="n">redis_pool</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">ConnectionPool</span><span class="p">(</span>
+    <span class="n">host</span><span class="o">=</span><span class="n">redis_local</span><span class="p">[</span><span class="s1">&#39;host&#39;</span><span class="p">],</span>  <span class="c1"># Redis服务地址</span>
+    <span class="n">port</span><span class="o">=</span><span class="n">redis_local</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">],</span>  <span class="c1"># Redis服务端口</span>
+    <span class="n">db</span><span class="o">=</span><span class="n">redis_local</span><span class="p">[</span><span class="s1">&#39;db&#39;</span><span class="p">],</span>  <span class="c1"># 使用的数据库编号</span>
+    <span class="n">password</span><span class="o">=</span><span class="n">redis_local</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">],</span>  <span class="c1"># Redis密码</span>
+    <span class="n">decode_responses</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># 自动解码响应内容为字符串（避免b&#39;&#39;格式）</span>
+<span class="p">)</span>
+
+<span class="c1"># 获取客户端（每次操作从连接池里拿连接）</span>
+<span class="n">redis_client</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">(</span><span class="n">connection_pool</span><span class="o">=</span><span class="n">redis_pool</span><span class="p">)</span>
+
+<span class="c1"># 从数据库查询</span>
+<span class="k">def</span> <span class="nf">query_all_from_db</span><span class="p">(</span><span class="n">query_string</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">Session</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">_mapping</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span>
+
+<span class="c1"># 日期类型数据的序列化</span>
+<span class="k">def</span> <span class="nf">default_serializer</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s2"> not serializable&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">ChargeMappingsService</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">redis_client</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span> <span class="o">=</span> <span class="n">redis_client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_prefix</span> <span class="o">=</span> <span class="s1">&#39;cache:fxapi_charge_mapping:&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_expire</span> <span class="o">=</span> <span class="mi">3600</span>  <span class="c1"># 缓存过期时间，单位秒</span>
+
+    <span class="k">def</span> <span class="nf">get_charge_mapping_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        演示读请求</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c1"># 在缓存中获取所有charge mappings</span>
+        <span class="n">all_mappings_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_prefix</span><span class="si">}</span><span class="s1">all&#39;</span>
+        <span class="n">cached_data_all</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">all_mappings_key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cached_data_all</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cache hit for all mappings&quot;</span><span class="p">)</span>
+            <span class="n">charge_mappings</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cached_data_all</span><span class="p">)</span>
+            <span class="n">cache_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time taken to fetch from cache: </span><span class="si">{</span><span class="n">cache_time</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">charge_mappings</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cache miss for all mappings, querying DB...&quot;</span><span class="p">)</span>
+        <span class="c1"># 缓存未命中，查询数据库</span>
+        <span class="n">db_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">db_data_all</span> <span class="o">=</span> <span class="n">query_all_from_db</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM fxapi_charge_mapping&quot;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">db_data_all</span><span class="p">:</span>
+            <span class="c1"># 将查询到的数据写入 Redis 缓存</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">setex</span><span class="p">(</span>
+                <span class="n">all_mappings_key</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cache_expire</span><span class="p">,</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">db_data_all</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default_serializer</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">db_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">db_start_time</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Time taken to fetch from database: </span><span class="si">{</span><span class="n">db_time</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">db_data_all</span>
+
+    <span class="k">def</span> <span class="nf">update_charge_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">new_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        演示写请求：更新数据库中的一条记录，然后删除缓存。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--&gt; [Write Request] Updating mapping ID: </span><span class="si">{</span><span class="n">mapping_id</span><span class="si">}</span><span class="s2"> in DB...&quot;</span><span class="p">)</span>
+        <span class="c1"># 1. 先更新数据库</span>
+        <span class="k">with</span> <span class="n">Session</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+            <span class="n">stmt</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span><span class="s2">&quot;UPDATE fxapi_charge_mapping SET ChargeName = :charge_name WHERE id = :id&quot;</span><span class="p">)</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;charge_name&quot;</span><span class="p">:</span> <span class="n">new_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;charge_name&quot;</span><span class="p">),</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">mapping_id</span><span class="p">})</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DB updated successfully.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># 2. 再删除缓存</span>
+        <span class="n">all_mappings_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_prefix</span><span class="si">}</span><span class="s1">all&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalidating cache key: </span><span class="si">{</span><span class="n">all_mappings_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">deleted_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">redis_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">all_mappings_key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">deleted_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cache invalidated successfully.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cache key not found, no need to invalidate.&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># 模拟一个读请求：</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">ChargeMappingsService</span><span class="p">(</span><span class="n">redis_client</span><span class="p">)</span>
+    <span class="n">all_mapping</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_charge_mapping_all</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Mappings Retrieved: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_mapping</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 模拟一个写请求：更新ID为1的数据</span>
+    <span class="k">if</span> <span class="n">all_mapping</span><span class="p">:</span>
+        <span class="n">first_mapping_id</span> <span class="o">=</span> <span class="n">all_mapping</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+        <span class="n">service</span><span class="o">.</span><span class="n">update_charge_mapping</span><span class="p">(</span><span class="n">first_mapping_id</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;charge_name&quot;</span><span class="p">:</span> <span class="s2">&quot;NEW_NAME_FOR_TEST&quot;</span><span class="p">})</span>
+
+    <span class="n">all_mapping_after_update</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_charge_mapping_all</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Mappings Retrieved after update: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_mapping_after_update</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">all_mapping_final</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_charge_mapping_all</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total Mappings Retrieved from cache again: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_mapping_final</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h5>3.3 性能对比</h5>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">读请求</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="c"># 从数据库查询数据用时：</span>
+<span class="n">Cache</span> <span class="n">miss</span> <span class="k">for</span> <span class="n">all</span> <span class="n">mappings</span><span class="p">,</span> <span class="n">querying</span> <span class="n">DB</span><span class="p">...</span>
+<span class="n">Time</span> <span class="n">taken</span> <span class="n">to</span> <span class="n">fetch</span> <span class="n">from</span> <span class="n">database</span><span class="p">:</span> <span class="n">0</span><span class="p">.</span><span class="n">620804</span> <span class="n">seconds</span>
+<span class="n">Total</span> <span class="n">Mappings</span> <span class="n">Retrieved</span><span class="p">:</span> <span class="n">11004</span>
+
+<span class="c"># 从Redis缓存中查询数据用时：</span>
+<span class="n">Cache</span> <span class="n">hit</span> <span class="k">for</span> <span class="n">all</span> <span class="n">mappings</span>
+<span class="n">Time</span> <span class="n">taken</span> <span class="n">to</span> <span class="n">fetch</span> <span class="n">from</span> <span class="n">cache</span><span class="p">:</span> <span class="n">0</span><span class="p">.</span><span class="n">087084</span> <span class="n">seconds</span>
+<span class="n">Total</span> <span class="n">Mappings</span> <span class="n">Retrieved</span><span class="p">:</span> <span class="n">11004</span>
+
+<span class="c"># 性能提升85.97%</span>
+</code></pre></div>
+      </div><!-- /.entry-content -->
+
+    </article>
+  </section>
+                <section id="extras" class="body">
+                                <div class="blogroll">
+                                        <h2>links</h2>
+                                        <ul>
+                                                        <li><a href="https://getpelican.com/">Pelican</a></li>
+                                                        <li><a href="https://www.python.org/">Python.org</a></li>
+                                                        <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                                                        <li><a href="#">You can modify those links in your config file</a></li>
+                                        </ul>
+                                </div><!-- /.blogroll -->
+                                <div class="social">
+                                        <h2>social</h2>
+                                        <ul>
+
+                                                        <li><a href="#">You can add links in your config file</a></li>
+                                                        <li><a href="#">Another social link</a></li>
+                                        </ul>
+                                </div><!-- /.social -->
+                </section><!-- /#extras -->
+
+                <footer id="contentinfo" class="body">
+                        <address id="about" class="vcard body">
+                                Proudly powered by <a rel="nofollow" href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="https://www.python.org/">Python</a>.
+                        </address><!-- /#about -->
+
+                        <p>The theme is by <a rel="nofollow" href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+                </footer><!-- /#contentinfo -->
+
+        </body>
+</html>
