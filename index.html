@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>失落翡翠之眼 - 古堡探险英语闯关</title>
+<style>
+/* ============================================================
+   CSS Reset & 全局变量
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#1a0a2e;
+  --bg-secondary:#0d0518;
+  --bg-card:rgba(26,10,46,0.85);
+  --gold:#c9a84c;
+  --gold-light:#e0c878;
+  --gold-dark:#9a7a2e;
+  --red:#8b0000;
+  --red-light:#c0392b;
+  --green:#2ecc71;
+  --green-dark:#1a7a3a;
+  --text-primary:#e8dcc8;
+  --text-secondary:#a09080;
+  --text-muted:#6a5a4a;
+  --border-color:rgba(201,168,76,0.3);
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 4px 20px rgba(0,0,0,0.5);
+  --transition:0.3s ease;
+}
+html,body{width:100%;min-height:100vh;overflow-x:hidden}
+body{
+  font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 50%,#120420 100%);
+  color:var(--text-primary);
+  line-height:1.6;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+/* 背景粒子 */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+/* 页面容器 */
+.page{display:none;position:relative;z-index:1;min-height:100vh;padding:20px 16px 40px}
+.page.active{display:flex;flex-direction:column;align-items:center}
+
+/* 按钮通用 */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 32px;border:none;border-radius:var(--radius);
+  font-size:1.05rem;font-weight:700;cursor:pointer;
+  transition:all var(--transition);position:relative;overflow:hidden;
+  letter-spacing:1px;
+}
+.btn:active{transform:scale(0.96)}
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  color:var(--bg-primary);box-shadow:0 4px 15px rgba(201,168,76,0.4);
+}
+.btn-primary:hover{box-shadow:0 6px 25px rgba(201,168,76,0.6)}
+.btn-secondary{
+  background:transparent;color:var(--gold);
+  border:2px solid var(--gold);box-shadow:0 0 10px rgba(201,168,76,0.15);
+}
+.btn-secondary:hover{background:rgba(201,168,76,0.1)}
+.btn-danger{background:linear-gradient(135deg,var(--red),var(--red-light));color:#fff}
+.btn-sm{padding:10px 20px;font-size:0.9rem}
+.btn-block{width:100%}
+
+/* ============================================================
+   HOME PAGE
+   ============================================================ */
+.home-header{text-align:center;margin:30px 0 20px}
+.home-title{
+  font-size:2.2rem;font-weight:900;
+  background:linear-gradient(180deg,var(--gold-light),var(--gold),var(--gold-dark));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;text-shadow:none;margin-bottom:8px;
+  animation:titleGlow 2s ease-in-out infinite alternate;
+}
+@keyframes titleGlow{from{filter:brightness(1)}to{filter:brightness(1.3)}}
+.home-subtitle{font-size:1rem;color:var(--text-secondary);letter-spacing:3px}
+
+.story-card{
+  background:var(--bg-card);border:1px solid var(--border-color);
+  border-radius:var(--radius);padding:20px;margin:20px 0;
+  max-width:400px;width:100%;box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);
+}
+.story-card h3{color:var(--gold);margin-bottom:12px;font-size:1.1rem;text-align:center}
+.story-card p{font-size:0.9rem;color:var(--text-secondary);text-align:center;line-height:1.8}
+
+.nickname-input{
+  width:100%;max-width:400px;padding:12px 16px;
+  border:1px solid var(--border-color);border-radius:var(--radius);
+  background:rgba(255,255,255,0.05);color:var(--text-primary);
+  font-size:1rem;text-align:center;margin:12px 0;
+  outline:none;transition:border-color var(--transition);
+}
+.nickname-input:focus{border-color:var(--gold)}
+.nickname-input::placeholder{color:var(--text-muted)}
+
+.home-actions{display:flex;flex-direction:column;gap:12px;max-width:400px;width:100%;margin-top:16px}
+.home-footer{text-align:center;margin-top:24px;color:var(--text-muted);font-size:0.8rem}
+
+/* ============================================================
+   GAME PAGE
+   ============================================================ */
+.game-topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  width:100%;max-width:500px;padding:12px 16px;
+  background:var(--bg-card);border:1px solid var(--border-color);
+  border-radius:var(--radius);margin-bottom:16px;
+  backdrop-filter:blur(10px);
+}
+.game-level-info{display:flex;flex-direction:column}
+.game-level-title{color:var(--gold);font-weight:700;font-size:1rem}
+.game-level-num{color:var(--text-muted);font-size:0.8rem}
+.game-stats{display:flex;gap:16px;align-items:center}
+.stat-item{display:flex;align-items:center;gap:4px;font-size:0.9rem}
+.stat-item .icon{font-size:1.1rem}
+.stat-keys{color:var(--gold)}
+.stat-errors{color:var(--red-light)}
+
+.progress-bar{
+  width:100%;max-width:500px;height:6px;
+  background:rgba(255,255,255,0.1);border-radius:3px;
+  margin-bottom:16px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));
+  border-radius:3px;transition:width 0.5s ease;
+}
+
+.story-box{
+  width:100%;max-width:500px;background:var(--bg-card);
+  border:1px solid var(--border-color);border-radius:var(--radius);
+  padding:20px;margin-bottom:16px;box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);text-align:center;
+}
+.story-text{font-size:0.95rem;color:var(--text-secondary);line-height:1.8;margin-bottom:16px}
+.question-text{font-size:1.1rem;color:var(--text-primary);font-weight:600;margin-bottom:20px}
+
+.options-grid{display:flex;flex-direction:column;gap:10px;width:100%}
+.option-btn{
+  width:100%;padding:14px 16px;text-align:left;
+  border:2px solid var(--border-color);border-radius:var(--radius);
+  background:rgba(255,255,255,0.03);color:var(--text-primary);
+  font-size:1rem;cursor:pointer;transition:all var(--transition);
+  position:relative;
+}
+.option-btn:hover{background:rgba(201,168,76,0.1);border-color:var(--gold)}
+.option-btn.selected{background:rgba(201,168,76,0.15);border-color:var(--gold);box-shadow:0 0 15px rgba(201,168,76,0.2)}
+.option-btn.correct{background:rgba(46,204,113,0.2);border-color:var(--green)}
+.option-btn.wrong{background:rgba(139,0,0,0.2);border-color:var(--red);animation:shake 0.5s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+.submit-area{width:100%;max-width:500px;margin-top:12px}
+
+/* 反馈弹窗 */
+.modal-overlay{
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.7);z-index:100;justify-content:center;align-items:center;
+  padding:20px;
+}
+.modal-overlay.active{display:flex}
+.modal-box{
+  background:var(--bg-card);border:1px solid var(--gold);
+  border-radius:var(--radius);padding:24px;max-width:420px;width:100%;
+  text-align:center;box-shadow:0 0 40px rgba(201,168,76,0.15);
+  backdrop-filter:blur(20px);animation:modalIn 0.3s ease;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(0.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-icon{font-size:3rem;margin-bottom:12px}
+.modal-title{font-size:1.2rem;font-weight:700;color:var(--gold);margin-bottom:8px}
+.modal-text{font-size:0.95rem;color:var(--text-secondary);margin-bottom:16px;line-height:1.8}
+.modal-explanation{font-size:0.9rem;color:var(--text-primary);background:rgba(255,255,255,0.05);padding:12px;border-radius:var(--radius-sm);margin-bottom:16px;text-align:left}
+.modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* 跟进题 */
+.followup-section{margin-top:16px;text-align:left}
+.followup-label{color:var(--gold);font-size:0.9rem;font-weight:600;margin-bottom:8px}
+.followup-options{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.followup-option{
+  width:100%;padding:12px;text-align:left;
+  border:2px solid var(--border-color);border-radius:var(--radius-sm);
+  background:rgba(255,255,255,0.03);color:var(--text-primary);
+  font-size:0.9rem;cursor:pointer;transition:all var(--transition);
+}
+.followup-option:hover{background:rgba(201,168,76,0.1);border-color:var(--gold)}
+.followup-option.selected{background:rgba(201,168,76,0.15);border-color:var(--gold)}
+.followup-option.correct{background:rgba(46,204,113,0.2);border-color:var(--green)}
+.followup-option.wrong{background:rgba(139,0,0,0.2);border-color:var(--red)}
+.followup-feedback{font-size:0.9rem;margin-top:8px;padding:8px;border-radius:var(--radius-sm);display:none}
+
+/* 钥匙掉落动画 */
+@keyframes keyDrop{
+  0%{opacity:0;transform:translateY(-60px) rotate(0deg)}
+  50%{opacity:1;transform:translateY(0) rotate(180deg)}
+  100%{opacity:1;transform:translateY(0) rotate(360deg)}
+}
+.key-animation{animation:keyDrop 0.8s ease-out;font-size:2.5rem;display:inline-block}
+
+/* ============================================================
+   RESULT PAGE
+   ============================================================ */
+.result-container{max-width:450px;width:100%;text-align:center}
+.result-header{font-size:2rem;margin:20px 0;animation:bounceIn 0.8s ease}
+@keyframes bounceIn{0%{opacity:0;transform:scale(0.3)}50%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
+
+.certificate{
+  background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(26,10,46,0.9));
+  border:3px solid var(--gold);border-radius:var(--radius);
+  padding:30px 20px;position:relative;box-shadow:0 0 30px rgba(201,168,76,0.15);
+  margin:20px 0;
+}
+.certificate::before{
+  content:'';position:absolute;top:6px;left:6px;right:6px;bottom:6px;
+  border:1px solid var(--border-color);border-radius:calc(var(--radius) - 4px);
+  pointer-events:none;
+}
+.cert-icon{font-size:3rem;margin-bottom:12px;animation:bounceIn 1s ease 0.3s both}
+.cert-title{font-size:1.5rem;color:var(--gold);font-weight:900;margin-bottom:8px}
+.cert-name{font-size:1.2rem;color:var(--text-primary);margin-bottom:4px}
+.cert-date{font-size:0.85rem;color:var(--text-muted);margin-bottom:8px}
+.cert-stats{font-size:0.9rem;color:var(--text-secondary);margin-bottom:16px}
+.cert-stats span{color:var(--gold);font-weight:700}
+
+.cert-watermark{
+  font-size:0.8rem;color:var(--text-muted);opacity:0.6;
+  margin-top:16px;padding-top:12px;border-top:1px dashed var(--border-color);
+}
+
+.result-actions{display:flex;flex-direction:column;gap:12px;max-width:400px;width:100%;margin-top:16px}
+
+/* 微信弹窗 */
+.wechat-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:200;justify-content:center;align-items:center;padding:20px}
+.wechat-modal.active{display:flex}
+.wechat-content{background:var(--bg-card);border:2px solid var(--gold);border-radius:var(--radius);padding:24px;max-width:360px;width:100%;text-align:center;animation:modalIn 0.3s ease}
+.wechat-id{background:rgba(255,255,255,0.05);padding:14px;border-radius:var(--radius-sm);font-size:1.1rem;font-weight:700;color:var(--gold);margin:16px 0;letter-spacing:1px;word-break:break-all}
+.copy-success{color:var(--green);font-size:0.85rem;margin-top:8px;display:none}
+
+/* 彩带 */
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;overflow:hidden}
+.confetti-piece{
+  position:absolute;top:-10px;width:10px;height:10px;
+  animation:confettiFall linear forwards;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+</style>
+</head>
+<body>
+
+<!-- 背景粒子 -->
+<canvas id="particles"></canvas>
+
+<!-- 彩带容器 -->
+<div class="confetti-container" id="confetti"></div>
+
+<!-- ============================================================
+     HOME PAGE
+     ============================================================ -->
+<div class="page active" id="page-home">
+  <div class="home-header">
+    <h1 class="home-title">失落翡翠之眼</h1>
+    <p class="home-subtitle">古堡探险 · 英语闯关</p>
+  </div>
+  <div class="story-card">
+    <h3>传说</h3>
+    <p>在古老的迷雾森林深处，有一座被诅咒的古堡。传说中，失落翡翠之眼蕴藏着无尽的力量，但只有掌握英语语法奥秘的人，才能集齐10把钥匙，解开古堡的封印。</p>
+  </div>
+  <input type="text" class="nickname-input" id="nickname" placeholder="输入你的昵称（默认：探险家）" maxlength="12">
+  <div class="home-actions">
+    <button class="btn btn-primary btn-block" onclick="startGame()">开始探险</button>
+    <button class="btn btn-secondary btn-block" onclick="shareGame()">分享好友</button>
+  </div>
+  <div class="home-footer" id="pass-count">已有 128 人成功逃脱</div>
+</div>
+
+<!-- ============================================================
+     GAME PAGE
+     ============================================================ -->
+<div class="page" id="page-game">
+  <div class="game-topbar">
+    <div class="game-level-info">
+      <span class="game-level-title" id="level-title">城堡大门</span>
+      <span class="game-level-num" id="level-num">第 1 / 10 关</span>
+    </div>
+    <div class="game-stats">
+      <div class="stat-item stat-keys"><span class="icon">🔑</span><span id="keys-count">0</span></div>
+      <div class="stat-item stat-errors"><span class="icon">❌</span><span id="errors-count">0</span></div>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="story-box">
+    <div class="story-text" id="story-text"></div>
+    <div class="question-text" id="question-text"></div>
+    <div class="options-grid" id="options-grid"></div>
+  </div>
+  <div class="submit-area">
+    <button class="btn btn-primary btn-block" id="submit-btn" disabled onclick="submitAnswer()">提交答案</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     RESULT PAGE
+     ============================================================ -->
+<div class="page" id="page-result">
+  <div class="result-container">
+    <div class="result-header">🎉</div>
+    <div class="certificate">
+      <div class="cert-icon">🏆</div>
+      <div class="cert-title">传奇探险家</div>
+      <div class="cert-name" id="cert-name">探险家</div>
+      <div class="cert-date" id="cert-date"></div>
+      <div class="cert-stats">
+        共答错 <span id="cert-errors">0</span> 次，集齐 <span>10</span> 把钥匙
+      </div>
+      <div class="cert-watermark">扫码添加老师微信，领取高清版证书及下一关密钥</div>
+    </div>
+    <div class="result-actions">
+      <button class="btn btn-primary btn-block" onclick="showWechat()">添加老师微信</button>
+      <button class="btn btn-secondary btn-block" onclick="resetGame()">重新挑战</button>
+    </div>
+  </div>
+</div>
+
+<!-- 微信弹窗 -->
+<div class="wechat-modal" id="wechat-modal">
+  <div class="wechat-content">
+    <div style="font-size:2.5rem;margin-bottom:8px">💬</div>
+    <div style="font-size:1.1rem;font-weight:700;color:var(--gold)">添加老师微信</div>
+    <div class="wechat-id" id="wechat-id">teacher_english_2025</div>
+    <button class="btn btn-primary btn-block btn-sm" onclick="copyWechat()">复制微信号</button>
+    <div class="copy-success" id="copy-success">已复制到剪贴板！</div>
+    <button class="btn btn-secondary btn-block btn-sm" style="margin-top:8px" onclick="closeWechat()">关闭</button>
+  </div>
+</div>
+
+<!-- 反馈弹窗 -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+
+<script>
+// ============================================================
+// 关卡数据（10关）
+// ============================================================
+const LEVELS = [
+  {
+    id:1,title:"城堡大门",keyName:"生锈的铁钥匙",
+    story:"你穿过浓雾弥漫的密林，终于来到一座古老城堡的巨大铁门前。门两侧的石狮子突然开口说话：'凡人，证明你懂得时间的法则，方可进入！'",
+    question:"The lion ___ (roar) loudly at strangers.",
+    options:["roar","roars","roaring","roared"],correctIndex:1,
+    explanation:"主语 the lion 是第三人称单数，一般现在时中动词需加 -s/-es，因此用 roars。",
+    errorType:"主谓不一致",
+    successStory:"石狮子满意地点点头，铁门缓缓打开，一把生锈的铁钥匙浮现在你手中。你听到远处传来宴会厅的喧闹声……",
+    failStory:"石狮子愤怒地咆哮，整个门廊都在震动。'时间法则混乱！再试一次！'"
+  },
+  {
+    id:2,title:"宴会厅",keyName:"银质餐叉钥匙",
+    story:"你推开宴会厅的大门，看见一张巨大的长桌上摆满了烛台和银器。一个幽灵管家飘到你面前，指着桌上的一本旧日记：'昨晚的事，你还记得吗？'",
+    question:"The guests ___ (arrive) at the castle two hours ago.",
+    options:["arrive","arrives","arrived","will arrive"],correctIndex:2,
+    explanation:"two hours ago 是明确的过去时间状语，必须使用一般过去时 arrived。",
+    errorType:"时态错误-一般过去时",
+    successStory:"幽灵管家欣慰地鞠了一躬，从桌上拿起一把银质餐叉——它在你手中变成了一把钥匙。管家指向走廊尽头：'图书馆在等你。'",
+    failStory:"幽灵管家失望地摇头，日记本上的字迹开始模糊。'过去的事情不能搞错，再想想。'"
+  },
+  {
+    id:3,title:"图书馆",keyName:"羽毛笔钥匙",
+    story:"你走进布满灰尘的图书馆，成千上万本书堆到了天花板。一本泛黄的书自动翻开，书页上浮现出一行预言文字：'未来，由你决定。'",
+    question:"The wizard ___ (cast) a powerful spell tomorrow at midnight.",
+    options:["cast","casts","casted","will cast"],correctIndex:3,
+    explanation:"tomorrow at midnight 表示将来时间，须用一般将来时 will + 动词原形。",
+    errorType:"时态错误-一般将来时",
+    successStory:"预言书发出金光，一根羽毛笔从书脊中滑出，化为一把精致的钥匙。书架自动移开，露出一条通往钟楼的旋转楼梯。",
+    failStory:"预言书猛地合上，灰尘飞扬。'未来尚未书写，不可妄下定论！'"
+  },
+  {
+    id:4,title:"钟楼",keyName:"齿轮钥匙",
+    story:"你气喘吁吁地爬上钟楼，巨大的齿轮正在缓慢转动。钟楼守护者——一个机械猫头鹰歪着头看着你：'现在，正在发生什么？'",
+    question:"Listen! The bells ___ (ring) right now.",
+    options:["ring","are ringing","rang","will ring"],correctIndex:1,
+    explanation:"Listen! 和 right now 提示动作正在发生，须用现在进行时 be + V-ing。",
+    errorType:"时态错误-现在进行时",
+    successStory:"机械猫头鹰的眼睛亮了起来，一个小齿轮从它胸口弹出，变成一把钥匙。'向下走，地下通道里有你要的东西。'",
+    failStory:"机械猫头鹰发出刺耳的嘎吱声，钟楼的指针开始倒转。'节奏不对，正在发生的事情要用进行时！'"
+  },
+  {
+    id:5,title:"地下通道",keyName:"蓝火钥匙",
+    story:"你沿着潮湿的台阶走入地下通道，墙壁上的火把散发着幽蓝的光。一个戴着兜帽的幽灵守卫挡在路中央：'你经历了什么？证明给我看。'",
+    question:"I ___ (already / visit) this castle before.",
+    options:["already visit","already visited","have already visited","had already visited"],correctIndex:2,
+    explanation:"before 和 already 提示「已经完成」的经验，须用现在完成时 have/has + 过去分词。",
+    errorType:"时态错误-现在完成时",
+    successStory:"幽灵守卫摘下了兜帽，露出一张微笑的脸。他从墙上取下一团蓝色火焰，火焰在你手中凝结成钥匙。'骑士大厅需要勇敢的人，去吧。'",
+    failStory:"幽灵守卫的兜帽下发出低沉的叹息。'你还没有真正经历过，再试一次。'"
+  },
+  {
+    id:6,title:"骑士大厅",keyName:"盾牌钥匙",
+    story:"你来到宽阔的骑士大厅，墙上挂满了盔甲和盾牌。一套金色盔甲突然动了起来，举起长剑指向你：'告诉我，翡翠之眼被如何对待？'",
+    question:"The Emerald Eye ___ (keep) in this castle for centuries.",
+    options:["keeps","is keeping","kept","is kept"],correctIndex:3,
+    explanation:"翡翠之眼是被保存的，主语是动作的承受者，须用被动语态 be + 过去分词。",
+    errorType:"语态错误-被动语态",
+    successStory:"金色盔甲放下了长剑，从盾牌上取下一枚徽章——它化作一把钥匙落入你手中。'炼金室在走廊尽头，那里藏着更深的秘密。'",
+    failStory:"金色盔甲的长剑发出刺眼的光芒。'翡翠之眼是被守护的，不是主动的！注意语态！'"
+  },
+  {
+    id:7,title:"炼金室",keyName:"水晶瓶钥匙",
+    story:"炼金室里弥漫着药剂的气味，各色液体在烧瓶中咕嘟咕嘟冒泡。一个炼金术师的幻影从镜中出现：'如果……那么会发生什么？'",
+    question:"If you ___ (find) the Eye, you will break the curse.",
+    options:["find","finds","found","will find"],correctIndex:0,
+    explanation:"if 引导的真实条件句，主句用 will + 动词原形，从句用一般现在时表示将来。",
+    errorType:"条件句结构错误",
+    successStory:"炼金术师的幻影微笑着点头，一个装满金色液体的小水晶瓶飘到你手中，液体凝固成钥匙。'向上走，塔楼顶层能看到整个王国的真相。'",
+    failStory:"烧瓶中的液体剧烈沸腾，炼金术师摇头：'条件句中，if 从句用现在时表示将来，主句才用 will！'"
+  },
+  {
+    id:8,title:"塔楼顶层",keyName:"羽翼钥匙",
+    story:"你爬上塔楼顶层，寒风呼啸，从这里可以俯瞰整个古堡和远处的山脉。一只巨大的石像鬼从塔尖飞下，落在你面前：'比较，是智慧的起点。'",
+    question:"This castle is ___ (large) than any other building I have seen.",
+    options:["large","more large","larger","largest"],correctIndex:2,
+    explanation:"than 提示比较级，large 的比较级是 larger（单音节词直接加 -er）。",
+    errorType:"比较级形式错误",
+    successStory:"石像鬼展开巨大的翅膀，一根羽毛缓缓飘落，化为一把闪着微光的钥匙。'密道的入口就在塔楼的阴影之下，小心你的脚步。'",
+    failStory:"石像鬼发出低沉的笑声，翅膀拍打着塔楼的墙壁。'比较级是 larger，不是 more large！'"
+  },
+  {
+    id:9,title:"密道",keyName:"镜面钥匙",
+    story:"你找到隐藏在塔楼阴影中的暗门，进入一条狭窄的密道。密道尽头，一面古老的镜子映出你自己的倒影——但倒影开口说话了：'你相信什么？'",
+    question:"I believe ___ the Emerald Eye is hidden somewhere nearby.",
+    options:["that","what","which","where"],correctIndex:0,
+    explanation:"believe 后接宾语从句，从句结构完整（不缺主语或宾语），用 that 引导。",
+    errorType:"宾语从句连接词错误",
+    successStory:"镜子中的倒影欣慰地笑了，镜面裂开一道缝隙，一片锋利的镜片化为钥匙。'宝藏室就在前方，最后一关，翡翠之眼在等你。'",
+    failStory:"镜中的倒影痛苦地扭曲。'宾语从句中，从句完整就用 that，不需要其他疑问词！'"
+  },
+  {
+    id:10,title:"宝藏室",keyName:"翡翠之眼",
+    story:"你终于推开宝藏室厚重的大门，眼前是堆积如山的金币和珠宝。在房间正中央的基座上，散发着翡翠光芒的宝石——失落翡翠之眼——正静静悬浮。一个威严的声音回荡在大厅：'最后一道考验，证明你已掌握时间的所有奥秘。'",
+    question:"By the time the sun rises, you ___ (complete) all the challenges.",
+    options:["complete","completed","will have completed","have completed"],correctIndex:2,
+    explanation:"By the time 引导的时间状语从句，表示「到将来某个时间点为止已经完成的动作」，须用将来完成时 will have + 过去分词。",
+    errorType:"时态错误-将来完成时",
+    successStory:"翡翠之眼发出耀眼的绿光，缓缓飘入你的掌心。古堡的诅咒终于被打破，所有幽灵、石像鬼和盔甲都恢复了自由。你集齐了所有10把钥匙，成为了古堡的救世主！",
+    failStory:"翡翠之眼的光芒忽明忽暗，威严的声音叹息道：'时间是最复杂的魔法，by the time 需要将来完成时。再试一次，你能做到的。'"
+  }
+];
+
+// ============================================================
+// 错因分析题库（12种 + 第10关特殊题）
+// ============================================================
+const FALLBACK_DATA = [
+  {errorType:"主谓不一致",explanation:"主语是第三人称单数（he/she/it/单数名词），一般现在时动词要加 -s 或 -es。",followUp:{question:"Tom ___ (like) playing basketball after school.",options:["like","likes","liking","liked"],correctIndex:1}},
+  {errorType:"时态错误-一般过去时",explanation:"句中有过去时间词（如 yesterday, last week, ago），动词要用过去式，规则动词加 -ed。",followUp:{question:"My mother ___ (cook) a big dinner for us last night.",options:["cook","cooks","cooked","is cooking"],correctIndex:2}},
+  {errorType:"时态错误-现在完成时",explanation:"现在完成时表示「已经做过的经验」，结构是 have/has + 过去分词，主语是第三人称单数用 has。",followUp:{question:"We ___ (already / finish) our homework.",options:["already finish","already finished","have already finished","has already finished"],correctIndex:2}},
+  {errorType:"时态错误-一般将来时",explanation:"will + 动词原形表示将来会发生的事，be going to + 动词原形表示计划或打算做的事。",followUp:{question:"I think it ___ (rain) tomorrow.",options:["rains","rained","will rain","is raining"],correctIndex:2}},
+  {errorType:"语态错误-被动语态",explanation:"当主语是动作的承受者（不是执行者），要用被动语态 be + 过去分词。",followUp:{question:"Many trees ___ (plant) in our school every spring.",options:["plant","plants","are planted","are planting"],correctIndex:2}},
+  {errorType:"条件句结构错误",explanation:"if 引导的真实条件句中，从句用一般现在时表示将来，主句用 will + 动词原形。",followUp:{question:"If it ___ (not rain) tomorrow, we will go to the park.",options:["doesn't rain","won't rain","didn't rain","isn't raining"],correctIndex:0}},
+  {errorType:"比较级形式错误",explanation:"有 than 时用比较级：单音节词加 -er，多音节词前加 more；三者以上比较用最高级。",followUp:{question:"This story is ___ (interesting) than that one.",options:["interesting","more interesting","most interesting","interestinger"],correctIndex:1}},
+  {errorType:"冠词错误",explanation:"a 用于辅音音素开头的单词前，an 用于元音音素开头；the 表示特指或上文提到过的事物。",followUp:{question:"My father is ___ honest man and he works in ___ university.",options:["a / a","an / an","an / a","a / an"],correctIndex:2}},
+  {errorType:"介词搭配错误",explanation:"动词和介词的搭配是固定的，如 listen to、look at、wait for、depend on 等，需要多记多用。",followUp:{question:"Please listen ___ the teacher carefully in class.",options:["at","on","to","for"],correctIndex:2}},
+  {errorType:"动名词/不定式错误",explanation:"某些动词后只能接 doing（如 enjoy, finish, mind），某些只能接 to do（如 want, decide, hope），需要单独记忆。",followUp:{question:"My sister enjoys ___ (read) storybooks in her free time.",options:["read","to read","reading","reads"],correctIndex:2}},
+  {errorType:"宾语从句语序错误",explanation:"宾语从句中要用陈述句语序（主语+谓语），不能用疑问句语序（助动词+主语+谓语）。",followUp:{question:"Can you tell me ___?",options:["where does he live","where he lives","where he does live","where lives he"],correctIndex:1}},
+  {errorType:"时态呼应错误",explanation:"主句是过去时，宾语从句的时态也要相应变为过去范畴（现在时→过去时，将来时→过去将来时）。",followUp:{question:"The wizard said he ___ (will) open the treasure room soon.",options:["will","would","is going to","has"],correctIndex:1}},
+];
+
+// 第10关特殊综合时态题
+const LEVEL_10_SPECIAL = {
+  errorType:"综合时态错误",
+  explanation:"这是一道综合题！需要根据时间状语判断每个空该用什么时态：过去时对应过去，过去完成时对应过去的过去，将来时对应将来。",
+  followUp:{
+    question:"By the time the explorer ___ (arrive) at the castle yesterday, the guards ___ (already / leave). Tomorrow, he ___ (try) to find the hidden treasure.",
+    options:["arrived / have already left / tries","arrived / had already left / will try","arrives / already left / is trying","had arrived / already left / tried"],
+    correctIndex:1
+  }
+};
+
+// 时态错误-现在进行时 和 宾语从句连接词错误 的 fallback 补充
+FALLBACK_DATA.push(
+  {errorType:"时态错误-现在进行时",explanation:"Look!/Listen! 和 right now 提示动作正在发生，须用现在进行时 be + V-ing。",followUp:{question:"Look! The cat ___ (climb) the tree right now.",options:["climb","climbs","is climbing","climbed"],correctIndex:2}},
+  {errorType:"宾语从句连接词错误",explanation:"宾语从句中，如果从句结构完整（不缺主语或宾语），用 that 引导即可。",followUp:{question:"I think ___ English is very important.",options:["that","what","which","where"],correctIndex:0}},
+  {errorType:"时态错误-将来完成时",explanation:"by the time 表示「到某个时间点为止已经完成的动作」，将来时间用 will have + 过去分词。",followUp:{question:"By the end of this year, she ___ (learn) English for five years.",options:["learns","learned","will have learned","has learned"],correctIndex:2}}
+);
+
+// ============================================================
+// 游戏状态
+// ============================================================
+const STORAGE_KEY = "escape_game_state";
+const PASS_COUNT_KEY = "escape_game_pass_count";
+
+let gameState = {
+  nickname:"探险家",
+  currentLevel:0, // 0-based index
+  keys:0,
+  errors:0,
+  isCompleted:false,
+  levelCompleted:{} // {levelId: true} 记录已通关的关卡
+};
+
+// 当前弹窗中的跟进题状态
+let followUpState = null;
+
+// ============================================================
+// 初始化
+// ============================================================
+function init(){
+  // 加载保存的状态
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(saved){
+    try{
+      const parsed = JSON.parse(saved);
+      gameState = {...gameState, ...parsed};
+    }catch(e){}
+  }
+
+  // 更新通关人数
+  updatePassCount();
+
+  // 填充昵称
+  document.getElementById("nickname").value = gameState.nickname;
+
+  // 背景粒子
+  initParticles();
+
+  // 如果已完成，直接显示结算页
+  if(gameState.isCompleted){
+    showPage("result");
+    showResult();
+  }
+}
+
+// 初始化背景粒子
+function initParticles(){
+  const canvas = document.getElementById("particles");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  for(let i=0;i<30;i++){
+    particles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*2+1,
+      vx:(Math.random()-0.5)*0.5,
+      vy:(Math.random()-0.5)*0.5,
+      alpha:Math.random()*0.5+0.2
+    });
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>canvas.width)p.vx*=-1;
+      if(p.y<0||p.y>canvas.height)p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(201,168,76,${p.alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  window.addEventListener("resize",()=>{
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+  });
+}
+
+// 更新通关人数
+function updatePassCount(){
+  let count = parseInt(localStorage.getItem(PASS_COUNT_KEY)) || 0;
+  const base = 128;
+  document.getElementById("pass-count").textContent = `已有 ${base + count} 人成功逃脱`;
+}
+
+// 保存状态
+function saveState(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(gameState));
+}
+
+// ============================================================
+// 页面切换
+// ============================================================
+function showPage(pageId){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("page-"+pageId).classList.add("active");
+}
+
+// ============================================================
+// 首页操作
+// ============================================================
+function startGame(){
+  const nickname = document.getElementById("nickname").value.trim() || "探险家";
+  gameState.nickname = nickname;
+
+  // 如果已完成，重置
+  if(gameState.isCompleted){
+    gameState = {
+      nickname:nickname,
+      currentLevel:0,
+      keys:0,
+      errors:0,
+      isCompleted:false,
+      levelCompleted:{}
+    };
+  }
+
+  saveState();
+  showPage("game");
+  renderLevel();
+}
+
+function shareGame(){
+  if(navigator.share){
+    navigator.share({
+      title:"失落翡翠之眼",
+      text:"来挑战古堡英语闯关吧！集齐10把钥匙，解开翡翠之眼的秘密！",
+      url:window.location.href
+    }).catch(()=>{});
+  }else{
+    navigator.clipboard.writeText(window.location.href).then(()=>{
+      alert("链接已复制，分享给好友吧！");
+    }).catch(()=>{
+      prompt("复制链接分享给好友：",window.location.href);
+    });
+  }
+}
+
+// ============================================================
+// 游戏渲染
+// ============================================================
+function renderLevel(){
+  const level = LEVELS[gameState.currentLevel];
+  if(!level)return;
+
+  // 更新顶栏
+  document.getElementById("level-title").textContent = level.title;
+  document.getElementById("level-num").textContent = `第 ${level.id} / 10 关`;
+  document.getElementById("keys-count").textContent = gameState.keys;
+  document.getElementById("errors-count").textContent = gameState.errors;
+  document.getElementById("progress-fill").style.width = `${(gameState.keys/10)*100}%`;
+
+  // 判断是否已通关此关
+  const isCompleted = gameState.levelCompleted[level.id];
+
+  // 渲染剧情
+  document.getElementById("story-text").textContent = isCompleted ? level.successStory : level.story;
+  document.getElementById("question-text").textContent = level.question;
+
+  // 渲染选项
+  const optionsGrid = document.getElementById("options-grid");
+  optionsGrid.innerHTML = "";
+  const labels = ["A","B","C","D"];
+  level.options.forEach((opt,i)=>{
+    const btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.textContent = `${labels[i]}. ${opt}`;
+    btn.onclick = ()=>selectOption(i);
+    if(isCompleted){
+      btn.disabled = true;
+      if(i===level.correctIndex)btn.classList.add("correct");
+    }
+    optionsGrid.appendChild(btn);
+  });
+
+  // 提交按钮
+  const submitBtn = document.getElementById("submit-btn");
+  if(isCompleted){
+    submitBtn.textContent = "下一关 →";
+    submitBtn.disabled = false;
+    submitBtn.onclick = nextLevel;
+  }else{
+    submitBtn.textContent = "提交答案";
+    submitBtn.disabled = true;
+    submitBtn.onclick = submitAnswer;
+  }
+
+  // 清除选中状态
+  window._selectedOption = null;
+}
+
+let _selectedOption = null;
+
+function selectOption(index){
+  if(gameState.levelCompleted[LEVELS[gameState.currentLevel].id])return;
+  _selectedOption = index;
+  const btns = document.querySelectorAll(".option-btn");
+  btns.forEach((b,i)=>b.classList.toggle("selected",i===index));
+  document.getElementById("submit-btn").disabled = false;
+}
+
+// ============================================================
+// 提交答案
+// ============================================================
+function submitAnswer(){
+  if(_selectedOption===null)return;
+  const level = LEVELS[gameState.currentLevel];
+  const isCorrect = _selectedOption === level.correctIndex;
+  const btns = document.querySelectorAll(".option-btn");
+
+  if(isCorrect){
+    // 正确
+    btns[_selectedOption].classList.add("correct");
+    if(!gameState.levelCompleted[level.id]){
+      gameState.keys++;
+      gameState.levelCompleted[level.id] = true;
+    }
+    saveState();
+    updateStats();
+    showCorrectModal(level);
+  }else{
+    // 错误
+    btns[_selectedOption].classList.add("wrong");
+    btns[level.correctIndex].classList.add("correct");
+    gameState.errors++;
+    saveState();
+    updateStats();
+    showErrorModal(level);
+  }
+}
+
+function updateStats(){
+  document.getElementById("keys-count").textContent = gameState.keys;
+  document.getElementById("errors-count").textContent = gameState.errors;
+  document.getElementById("progress-fill").style.width = `${(gameState.keys/10)*100}%`;
+}
+
+// ============================================================
+// 正确弹窗
+// ============================================================
+function showCorrectModal(level){
+  const overlay = document.getElementById("modal-overlay");
+  const box = document.getElementById("modal-box");
+  overlay.classList.add("active");
+
+  const isLastLevel = gameState.keys >= 10;
+
+  box.innerHTML = `
+    <div class="modal-icon key-animation">🗝️</div>
+    <div class="modal-title" style="color:var(--green)">获得钥匙！</div>
+    <div class="modal-text">
+      <strong>${level.keyName}</strong><br>
+      ${level.successStory}
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeModal();${isLastLevel?'completeGame()':'nextLevel()'}">
+        ${isLastLevel?'查看通关结果':'继续探险 →'}
+      </button>
+    </div>
+  `;
+}
+
+// ============================================================
+// 错误弹窗 + 跟进题
+// ============================================================
+function showErrorModal(level){
+  const overlay = document.getElementById("modal-overlay");
+  const box = document.getElementById("modal-box");
+  overlay.classList.add("active");
+
+  // 获取错因分析数据
+  const fallback = getFallbackData(level);
+
+  followUpState = {
+    level:level,
+    fallback:fallback,
+    selected:null
+  };
+
+  box.innerHTML = `
+    <div class="modal-icon">❌</div>
+    <div class="modal-title" style="color:var(--red-light)">回答错误</div>
+    <div class="modal-text">${level.failStory}</div>
+    <div class="modal-explanation">
+      <strong style="color:var(--gold)">错误类型：${fallback.errorType}</strong><br>
+      ${fallback.explanation}
+    </div>
+    <div class="followup-section">
+      <div class="followup-label">试试这道同类题：</div>
+      <div class="modal-text">${fallback.followUp.question}</div>
+      <div class="followup-options" id="followup-options">
+        ${fallback.followUp.options.map((opt,i)=>{
+          const labels=["A","B","C","D"];
+          return `<button class="followup-option" onclick="selectFollowUp(${i})">${labels[i]}. ${opt}</button>`;
+        }).join("")}
+      </div>
+      <div class="followup-feedback" id="followup-feedback"></div>
+    </div>
+    <div class="modal-actions" style="margin-top:16px">
+      <button class="btn btn-primary btn-sm" id="followup-submit" disabled onclick="submitFollowUp()">确认</button>
+      <button class="btn btn-secondary btn-sm" onclick="closeModal();retryLevel()">重试本题</button>
+    </div>
+  `;
+}
+
+function getFallbackData(level){
+  // 第10关使用特殊综合题
+  if(level.id===10)return LEVEL_10_SPECIAL;
+  // 按 errorType 精确匹配
+  const match = FALLBACK_DATA.find(f=>f.errorType===level.errorType);
+  return match || FALLBACK_DATA[0];
+}
+
+function selectFollowUp(index){
+  followUpState.selected = index;
+  const btns = document.querySelectorAll("#followup-options .followup-option");
+  btns.forEach((b,i)=>b.classList.toggle("selected",i===index));
+  document.getElementById("followup-submit").disabled = false;
+}
+
+function submitFollowUp(){
+  if(followUpState.selected===null)return;
+  const fb = followUpState.fallback.followUp;
+  const isCorrect = followUpState.selected === fb.correctIndex;
+  const btns = document.querySelectorAll("#followup-options .followup-option");
+  const feedback = document.getElementById("followup-feedback");
+
+  btns.forEach((b,i)=>{
+    if(i===fb.correctIndex)b.classList.add("correct");
+    if(i===followUpState.selected&&!isCorrect)b.classList.add("wrong");
+  });
+  btns.forEach(b=>b.style.pointerEvents="none");
+
+  if(isCorrect){
+    feedback.style.display = "block";
+    feedback.style.background = "rgba(46,204,113,0.15)";
+    feedback.style.color = "#2ecc71";
+    feedback.textContent = "✅ 很好！你掌握了这个语法点！";
+  }else{
+    feedback.style.display = "block";
+    feedback.style.background = "rgba(139,0,0,0.15)";
+    feedback.style.color = "#c0392b";
+    const labels = ["A","B","C","D"];
+    feedback.textContent = `❌ 正确答案是 ${labels[fb.correctIndex]}. ${fb.options[fb.correctIndex]}`;
+  }
+
+  document.getElementById("followup-submit").disabled = true;
+}
+
+function retryLevel(){
+  // 重新渲染当前关卡
+  _selectedOption = null;
+  renderLevel();
+}
+
+// ============================================================
+// 下一关/通关
+// ============================================================
+function nextLevel(){
+  if(gameState.currentLevel < 9){
+    gameState.currentLevel++;
+    saveState();
+    _selectedOption = null;
+    renderLevel();
+  }else{
+    completeGame();
+  }
+}
+
+function completeGame(){
+  gameState.isCompleted = true;
+  saveState();
+  // 更新通关人数
+  let count = parseInt(localStorage.getItem(PASS_COUNT_KEY))||0;
+  localStorage.setItem(PASS_COUNT_KEY,count+1);
+  updatePassCount();
+  showPage("result");
+  showResult();
+}
+
+// ============================================================
+// 结算页
+// ============================================================
+function showResult(){
+  document.getElementById("cert-name").textContent = gameState.nickname;
+  const now = new Date();
+  document.getElementById("cert-date").textContent =
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${now.getHours()}:${String(now.getMinutes()).padStart(2,"0")}`;
+  document.getElementById("cert-errors").textContent = gameState.errors;
+
+  // 彩带
+  spawnConfetti();
+}
+
+function spawnConfetti(){
+  const container = document.getElementById("confetti");
+  const colors = ["#c9a84c","#e0c878","#8b0000","#2ecc71","#3498db","#e74c3c","#9b59b6","#f39c12"];
+  for(let i=0;i<40;i++){
+    const piece = document.createElement("div");
+    piece.className = "confetti-piece";
+    piece.style.left = `${Math.random()*100}%`;
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.width = `${Math.random()*8+6}px`;
+    piece.style.height = `${Math.random()*8+6}px`;
+    piece.style.animationDuration = `${Math.random()*2+2}s`;
+    piece.style.animationDelay = `${Math.random()*1.5}s`;
+    container.appendChild(piece);
+    setTimeout(()=>piece.remove(),4000);
+  }
+}
+
+// ============================================================
+// 微信弹窗
+// ============================================================
+function showWechat(){
+  document.getElementById("wechat-modal").classList.add("active");
+  document.getElementById("copy-success").style.display = "none";
+}
+
+function closeWechat(){
+  document.getElementById("wechat-modal").classList.remove("active");
+}
+
+function copyWechat(){
+  const id = "teacher_english_2025";
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(id).then(()=>{
+      document.getElementById("copy-success").style.display = "block";
+      setTimeout(()=>document.getElementById("copy-success").style.display="none",2000);
+    });
+  }else{
+    // 降级
+    const ta = document.createElement("textarea");
+    ta.value = id;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();
+    document.execCommand("copy");document.body.removeChild(ta);
+    document.getElementById("copy-success").style.display = "block";
+    setTimeout(()=>document.getElementById("copy-success").style.display="none",2000);
+  }
+}
+
+// ============================================================
+// 弹窗关闭
+// ============================================================
+function closeModal(){
+  document.getElementById("modal-overlay").classList.remove("active");
+  followUpState = null;
+}
+
+// 点击遮罩关闭
+document.getElementById("modal-overlay").addEventListener("click",function(e){
+  if(e.target===this)closeModal();
+});
+document.getElementById("wechat-modal").addEventListener("click",function(e){
+  if(e.target===this)closeWechat();
+});
+
+// ============================================================
+// 重新挑战
+// ============================================================
+function resetGame(){
+  gameState = {
+    nickname:gameState.nickname,
+    currentLevel:0,
+    keys:0,
+    errors:0,
+    isCompleted:false,
+    levelCompleted:{}
+  };
+  saveState();
+  _selectedOption = null;
+  followUpState = null;
+  document.getElementById("confetti").innerHTML = "";
+  showPage("home");
+}
+
+// ============================================================
+// 启动
+// ============================================================
+init();
+</script>
+</body>
+</html>
