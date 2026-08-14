@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>失落翡翠之眼 - 古堡探险英语闯关</title>
+<title>失落翡翠之眼 - 英语闯关游戏</title>
 <style>
 /* ============================================================
    CSS Reset & 全局变量
@@ -16,6 +16,9 @@
   --gold:#c9a84c;
   --gold-light:#e0c878;
   --gold-dark:#9a7a2e;
+  --accent:#c9a84c;
+  --accent-light:#e0c878;
+  --accent-dark:#9a7a2e;
   --red:#8b0000;
   --red-light:#c0392b;
   --green:#2ecc71;
@@ -28,6 +31,8 @@
   --radius-sm:8px;
   --shadow:0 4px 20px rgba(0,0,0,0.5);
   --transition:0.3s ease;
+  --card-glow:rgba(201,168,76,0.4);
+  --progress-bar:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));
 }
 html,body{width:100%;min-height:100vh;overflow-x:hidden}
 body{
@@ -57,13 +62,13 @@ body{
 }
 .btn:active{transform:scale(0.96)}
 .btn-primary{
-  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
-  color:var(--bg-primary);box-shadow:0 4px 15px rgba(201,168,76,0.4);
+  background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+  color:var(--bg-primary);box-shadow:0 4px 15px var(--card-glow);
 }
-.btn-primary:hover{box-shadow:0 6px 25px rgba(201,168,76,0.6)}
+.btn-primary:hover{box-shadow:0 6px 25px var(--card-glow)}
 .btn-secondary{
-  background:transparent;color:var(--gold);
-  border:2px solid var(--gold);box-shadow:0 0 10px rgba(201,168,76,0.15);
+  background:transparent;color:var(--accent);
+  border:2px solid var(--accent);box-shadow:0 0 10px var(--card-glow);
 }
 .btn-secondary:hover{background:rgba(201,168,76,0.1)}
 .btn-danger{background:linear-gradient(135deg,var(--red),var(--red-light));color:#fff}
@@ -76,22 +81,30 @@ body{
 .home-header{text-align:center;margin:30px 0 20px}
 .home-title{
   font-size:2.2rem;font-weight:900;
-  background:linear-gradient(180deg,var(--gold-light),var(--gold),var(--gold-dark));
+  background:linear-gradient(180deg,var(--accent-light),var(--accent),var(--accent-dark));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;text-shadow:none;margin-bottom:8px;
   animation:titleGlow 2s ease-in-out infinite alternate;
 }
 @keyframes titleGlow{from{filter:brightness(1)}to{filter:brightness(1.3)}}
-.home-subtitle{font-size:1rem;color:var(--text-secondary);letter-spacing:3px}
+.home-subtitle{font-size:1rem;color:var(--text-secondary);letter-spacing:3px;margin-bottom:8px}
 
-.story-card{
-  background:var(--bg-card);border:1px solid var(--border-color);
-  border-radius:var(--radius);padding:20px;margin:20px 0;
-  max-width:400px;width:100%;box-shadow:var(--shadow);
-  backdrop-filter:blur(10px);
+.storyline-pick-label{color:var(--text-secondary);font-size:0.9rem;margin-bottom:16px;text-align:center}
+
+.storyline-cards{display:flex;gap:16px;max-width:500px;width:100%;margin-bottom:16px;flex-wrap:wrap;justify-content:center}
+.storyline-card{
+  flex:1;min-width:200px;max-width:240px;
+  background:var(--bg-card);border:2px solid var(--border-color);
+  border-radius:var(--radius);padding:24px 16px;cursor:pointer;
+  transition:all var(--transition);text-align:center;
+  position:relative;overflow:hidden;
+  box-shadow:var(--shadow);backdrop-filter:blur(10px);
 }
-.story-card h3{color:var(--gold);margin-bottom:12px;font-size:1.1rem;text-align:center}
-.story-card p{font-size:0.9rem;color:var(--text-secondary);text-align:center;line-height:1.8}
+.storyline-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 8px 30px var(--card-glow)}
+.storyline-card:active{transform:scale(0.97)}
+.storyline-card-icon{font-size:3rem;margin-bottom:12px;display:block}
+.storyline-card-name{font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:6px}
+.storyline-card-desc{font-size:0.8rem;color:var(--text-secondary);line-height:1.5}
 
 .nickname-input{
   width:100%;max-width:400px;padding:12px 16px;
@@ -100,10 +113,10 @@ body{
   font-size:1rem;text-align:center;margin:12px 0;
   outline:none;transition:border-color var(--transition);
 }
-.nickname-input:focus{border-color:var(--gold)}
+.nickname-input:focus{border-color:var(--accent)}
 .nickname-input::placeholder{color:var(--text-muted)}
 
-.home-actions{display:flex;flex-direction:column;gap:12px;max-width:400px;width:100%;margin-top:16px}
+.home-actions{display:flex;flex-direction:column;gap:12px;max-width:400px;width:100%;margin-top:8px}
 .home-footer{text-align:center;margin-top:24px;color:var(--text-muted);font-size:0.8rem}
 
 /* ============================================================
@@ -113,16 +126,20 @@ body{
   display:flex;justify-content:space-between;align-items:center;
   width:100%;max-width:500px;padding:12px 16px;
   background:var(--bg-card);border:1px solid var(--border-color);
-  border-radius:var(--radius);margin-bottom:16px;
+  border-radius:var(--radius);margin-bottom:8px;
   backdrop-filter:blur(10px);
 }
+.game-storyline-tag{
+  font-size:0.75rem;color:var(--accent);background:rgba(201,168,76,0.1);
+  padding:3px 10px;border-radius:20px;margin-bottom:2px;display:inline-block;
+}
 .game-level-info{display:flex;flex-direction:column}
-.game-level-title{color:var(--gold);font-weight:700;font-size:1rem}
+.game-level-title{color:var(--accent);font-weight:700;font-size:1rem}
 .game-level-num{color:var(--text-muted);font-size:0.8rem}
 .game-stats{display:flex;gap:16px;align-items:center}
 .stat-item{display:flex;align-items:center;gap:4px;font-size:0.9rem}
 .stat-item .icon{font-size:1.1rem}
-.stat-keys{color:var(--gold)}
+.stat-keys{color:var(--accent)}
 .stat-errors{color:var(--red-light)}
 
 .progress-bar{
@@ -131,7 +148,7 @@ body{
   margin-bottom:16px;overflow:hidden;
 }
 .progress-fill{
-  height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));
+  height:100%;background:var(--progress-bar);
   border-radius:3px;transition:width 0.5s ease;
 }
 
@@ -152,8 +169,8 @@ body{
   font-size:1rem;cursor:pointer;transition:all var(--transition);
   position:relative;
 }
-.option-btn:hover{background:rgba(201,168,76,0.1);border-color:var(--gold)}
-.option-btn.selected{background:rgba(201,168,76,0.15);border-color:var(--gold);box-shadow:0 0 15px rgba(201,168,76,0.2)}
+.option-btn:hover{background:rgba(201,168,76,0.1);border-color:var(--accent)}
+.option-btn.selected{background:rgba(201,168,76,0.15);border-color:var(--accent);box-shadow:0 0 15px var(--card-glow)}
 .option-btn.correct{background:rgba(46,204,113,0.2);border-color:var(--green)}
 .option-btn.wrong{background:rgba(139,0,0,0.2);border-color:var(--red);animation:shake 0.5s}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
@@ -168,21 +185,21 @@ body{
 }
 .modal-overlay.active{display:flex}
 .modal-box{
-  background:var(--bg-card);border:1px solid var(--gold);
+  background:var(--bg-card);border:1px solid var(--accent);
   border-radius:var(--radius);padding:24px;max-width:420px;width:100%;
-  text-align:center;box-shadow:0 0 40px rgba(201,168,76,0.15);
+  text-align:center;box-shadow:0 0 40px var(--card-glow);
   backdrop-filter:blur(20px);animation:modalIn 0.3s ease;
 }
 @keyframes modalIn{from{opacity:0;transform:scale(0.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .modal-icon{font-size:3rem;margin-bottom:12px}
-.modal-title{font-size:1.2rem;font-weight:700;color:var(--gold);margin-bottom:8px}
+.modal-title{font-size:1.2rem;font-weight:700;color:var(--accent);margin-bottom:8px}
 .modal-text{font-size:0.95rem;color:var(--text-secondary);margin-bottom:16px;line-height:1.8}
 .modal-explanation{font-size:0.9rem;color:var(--text-primary);background:rgba(255,255,255,0.05);padding:12px;border-radius:var(--radius-sm);margin-bottom:16px;text-align:left}
 .modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
 /* 跟进题 */
 .followup-section{margin-top:16px;text-align:left}
-.followup-label{color:var(--gold);font-size:0.9rem;font-weight:600;margin-bottom:8px}
+.followup-label{color:var(--accent);font-size:0.9rem;font-weight:600;margin-bottom:8px}
 .followup-options{display:flex;flex-direction:column;gap:8px;margin-top:8px}
 .followup-option{
   width:100%;padding:12px;text-align:left;
@@ -190,13 +207,13 @@ body{
   background:rgba(255,255,255,0.03);color:var(--text-primary);
   font-size:0.9rem;cursor:pointer;transition:all var(--transition);
 }
-.followup-option:hover{background:rgba(201,168,76,0.1);border-color:var(--gold)}
-.followup-option.selected{background:rgba(201,168,76,0.15);border-color:var(--gold)}
+.followup-option:hover{background:rgba(201,168,76,0.1);border-color:var(--accent)}
+.followup-option.selected{background:rgba(201,168,76,0.15);border-color:var(--accent)}
 .followup-option.correct{background:rgba(46,204,113,0.2);border-color:var(--green)}
 .followup-option.wrong{background:rgba(139,0,0,0.2);border-color:var(--red)}
 .followup-feedback{font-size:0.9rem;margin-top:8px;padding:8px;border-radius:var(--radius-sm);display:none}
 
-/* 钥匙掉落动画 */
+/* 钥匙/晶片掉落动画 */
 @keyframes keyDrop{
   0%{opacity:0;transform:translateY(-60px) rotate(0deg)}
   50%{opacity:1;transform:translateY(0) rotate(180deg)}
@@ -212,9 +229,9 @@ body{
 @keyframes bounceIn{0%{opacity:0;transform:scale(0.3)}50%{transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
 
 .certificate{
-  background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(26,10,46,0.9));
-  border:3px solid var(--gold);border-radius:var(--radius);
-  padding:30px 20px;position:relative;box-shadow:0 0 30px rgba(201,168,76,0.15);
+  background:linear-gradient(135deg,rgba(201,168,76,0.1),var(--bg-card));
+  border:3px solid var(--accent);border-radius:var(--radius);
+  padding:30px 20px;position:relative;box-shadow:0 0 30px var(--card-glow);
   margin:20px 0;
 }
 .certificate::before{
@@ -223,11 +240,12 @@ body{
   pointer-events:none;
 }
 .cert-icon{font-size:3rem;margin-bottom:12px;animation:bounceIn 1s ease 0.3s both}
-.cert-title{font-size:1.5rem;color:var(--gold);font-weight:900;margin-bottom:8px}
+.cert-title{font-size:1.5rem;color:var(--accent);font-weight:900;margin-bottom:8px}
+.cert-storyline{font-size:0.95rem;color:var(--text-secondary);margin-bottom:4px}
 .cert-name{font-size:1.2rem;color:var(--text-primary);margin-bottom:4px}
 .cert-date{font-size:0.85rem;color:var(--text-muted);margin-bottom:8px}
 .cert-stats{font-size:0.9rem;color:var(--text-secondary);margin-bottom:16px}
-.cert-stats span{color:var(--gold);font-weight:700}
+.cert-stats span{color:var(--accent);font-weight:700}
 
 .cert-watermark{
   font-size:0.8rem;color:var(--text-muted);opacity:0.6;
@@ -239,8 +257,8 @@ body{
 /* 微信弹窗 */
 .wechat-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:200;justify-content:center;align-items:center;padding:20px}
 .wechat-modal.active{display:flex}
-.wechat-content{background:var(--bg-card);border:2px solid var(--gold);border-radius:var(--radius);padding:24px;max-width:360px;width:100%;text-align:center;animation:modalIn 0.3s ease}
-.wechat-id{background:rgba(255,255,255,0.05);padding:14px;border-radius:var(--radius-sm);font-size:1.1rem;font-weight:700;color:var(--gold);margin:16px 0;letter-spacing:1px;word-break:break-all}
+.wechat-content{background:var(--bg-card);border:2px solid var(--accent);border-radius:var(--radius);padding:24px;max-width:360px;width:100%;text-align:center;animation:modalIn 0.3s ease}
+.wechat-id{background:rgba(255,255,255,0.05);padding:14px;border-radius:var(--radius-sm);font-size:1.1rem;font-weight:700;color:var(--accent);margin:16px 0;letter-spacing:1px;word-break:break-all}
 .copy-success{color:var(--green);font-size:0.85rem;margin-top:8px;display:none}
 
 /* 彩带 */
@@ -269,15 +287,14 @@ body{
 <div class="page active" id="page-home">
   <div class="home-header">
     <h1 class="home-title">失落翡翠之眼</h1>
-    <p class="home-subtitle">古堡探险 · 英语闯关</p>
+    <p class="home-subtitle">英语闯关游戏</p>
   </div>
-  <div class="story-card">
-    <h3>传说</h3>
-    <p>在古老的迷雾森林深处，有一座被诅咒的古堡。传说中，失落翡翠之眼蕴藏着无尽的力量，但只有掌握英语语法奥秘的人，才能集齐10把钥匙，解开古堡的封印。</p>
+  <p class="storyline-pick-label">选择你的冒险路线</p>
+  <div class="storyline-cards" id="storyline-cards">
+    <!-- 动态生成剧情卡片 -->
   </div>
   <input type="text" class="nickname-input" id="nickname" placeholder="输入你的昵称（默认：探险家）" maxlength="12">
   <div class="home-actions">
-    <button class="btn btn-primary btn-block" onclick="startGame()">开始探险</button>
     <button class="btn btn-secondary btn-block" onclick="shareGame()">分享好友</button>
   </div>
   <div class="home-footer" id="pass-count">已有 128 人成功逃脱</div>
@@ -289,11 +306,12 @@ body{
 <div class="page" id="page-game">
   <div class="game-topbar">
     <div class="game-level-info">
+      <span class="game-storyline-tag" id="storyline-tag">🏰 古堡探险</span>
       <span class="game-level-title" id="level-title">城堡大门</span>
       <span class="game-level-num" id="level-num">第 1 / 10 关</span>
     </div>
     <div class="game-stats">
-      <div class="stat-item stat-keys"><span class="icon">🔑</span><span id="keys-count">0</span></div>
+      <div class="stat-item stat-keys"><span class="icon" id="collect-icon">🗝️</span><span id="keys-count">0</span></div>
       <div class="stat-item stat-errors"><span class="icon">❌</span><span id="errors-count">0</span></div>
     </div>
   </div>
@@ -315,18 +333,19 @@ body{
   <div class="result-container">
     <div class="result-header">🎉</div>
     <div class="certificate">
-      <div class="cert-icon">🏆</div>
-      <div class="cert-title">传奇探险家</div>
+      <div class="cert-icon" id="cert-icon">🏆</div>
+      <div class="cert-title" id="cert-title">传奇探险家</div>
+      <div class="cert-storyline" id="cert-storyline"></div>
       <div class="cert-name" id="cert-name">探险家</div>
       <div class="cert-date" id="cert-date"></div>
-      <div class="cert-stats">
-        共答错 <span id="cert-errors">0</span> 次，集齐 <span>10</span> 把钥匙
+      <div class="cert-stats" id="cert-stats">
+        共答错 <span id="cert-errors">0</span> 次，集齐 <span>10</span> 个收集物
       </div>
       <div class="cert-watermark">扫码添加老师微信，领取高清版证书及下一关密钥</div>
     </div>
     <div class="result-actions">
       <button class="btn btn-primary btn-block" onclick="showWechat()">添加老师微信</button>
-      <button class="btn btn-secondary btn-block" onclick="resetGame()">重新挑战</button>
+      <button class="btn btn-secondary btn-block" onclick="resetGame()">选择其他剧情</button>
     </div>
   </div>
 </div>
@@ -335,7 +354,7 @@ body{
 <div class="wechat-modal" id="wechat-modal">
   <div class="wechat-content">
     <div style="font-size:2.5rem;margin-bottom:8px">💬</div>
-    <div style="font-size:1.1rem;font-weight:700;color:var(--gold)">添加老师微信</div>
+    <div style="font-size:1.1rem;font-weight:700;color:var(--accent)">添加老师微信</div>
     <div class="wechat-id" id="wechat-id">teacher_english_2025</div>
     <button class="btn btn-primary btn-block btn-sm" onclick="copyWechat()">复制微信号</button>
     <div class="copy-success" id="copy-success">已复制到剪贴板！</div>
@@ -350,113 +369,120 @@ body{
 
 <script>
 // ============================================================
-// 关卡数据（10关）
+// 剧情线数据
 // ============================================================
-const LEVELS = [
-  {
-    id:1,title:"城堡大门",keyName:"生锈的铁钥匙",
-    story:"你穿过浓雾弥漫的密林，终于来到一座古老城堡的巨大铁门前。门两侧的石狮子突然开口说话：'凡人，证明你懂得时间的法则，方可进入！'",
-    question:"The lion ___ (roar) loudly at strangers.",
-    options:["roar","roars","roaring","roared"],correctIndex:1,
-    explanation:"主语 the lion 是第三人称单数，一般现在时中动词需加 -s/-es，因此用 roars。",
-    errorType:"主谓不一致",
-    successStory:"石狮子满意地点点头，铁门缓缓打开，一把生锈的铁钥匙浮现在你手中。你听到远处传来宴会厅的喧闹声……",
-    failStory:"石狮子愤怒地咆哮，整个门廊都在震动。'时间法则混乱！再试一次！'"
+const STORYLINES = {
+  castle: {
+    id:"castle",
+    name:"古堡探险",
+    icon:"🏰",
+    description:"穿过迷雾森林，进入诅咒古堡。集齐10把钥匙，解开翡翠之眼的秘密！",
+    collectIcon:"🗝️",
+    collectName:"钥匙",
+    certIcon:"🏆",
+    certTitle:"传奇探险家",
+    theme:{
+      bgPrimary:"#1a0a2e",
+      bgSecondary:"#0d0518",
+      bgCard:"rgba(26,10,46,0.85)",
+      accent:"#c9a84c",
+      accentLight:"#e0c878",
+      accentDark:"#9a7a2e",
+      borderColor:"rgba(201,168,76,0.3)",
+      cardGlow:"rgba(201,168,76,0.4)",
+      progressBar:"linear-gradient(90deg,#9a7a2e,#c9a84c,#e0c878)",
+      bodyBg:"linear-gradient(135deg,#1a0a2e 0%,#0d0518 50%,#120420 100%)",
+      particleColor:"rgba(201,168,76,{alpha})",
+    },
+    levels:[
+      {id:1,title:"城堡大门",keyName:"生锈的铁钥匙",story:"你穿过浓雾弥漫的密林，终于来到一座古老城堡的巨大铁门前。门两侧的石狮子突然开口说话：'凡人，证明你懂得时间的法则，方可进入！'",question:"The lion ___ (roar) loudly at strangers.",options:["roar","roars","roaring","roared"],correctIndex:1,explanation:"主语 the lion 是第三人称单数，一般现在时中动词需加 -s/-es，因此用 roars。",errorType:"主谓不一致",successStory:"石狮子满意地点点头，铁门缓缓打开，一把生锈的铁钥匙浮现在你手中。你听到远处传来宴会厅的喧闹声……",failStory:"石狮子愤怒地咆哮，整个门廊都在震动。'时间法则混乱！再试一次！'"},
+      {id:2,title:"宴会厅",keyName:"银质餐叉钥匙",story:"你推开宴会厅的大门，看见一张巨大的长桌上摆满了烛台和银器。一个幽灵管家飘到你面前，指着桌上的一本旧日记：'昨晚的事，你还记得吗？'",question:"The guests ___ (arrive) at the castle two hours ago.",options:["arrive","arrives","arrived","will arrive"],correctIndex:2,explanation:"two hours ago 是明确的过去时间状语，必须使用一般过去时 arrived。",errorType:"时态错误-一般过去时",successStory:"幽灵管家欣慰地鞠了一躬，从桌上拿起一把银质餐叉——它在你手中变成了一把钥匙。管家指向走廊尽头：'图书馆在等你。'",failStory:"幽灵管家失望地摇头，日记本上的字迹开始模糊。'过去的事情不能搞错，再想想。'"},
+      {id:3,title:"图书馆",keyName:"羽毛笔钥匙",story:"你走进布满灰尘的图书馆，成千上万本书堆到了天花板。一本泛黄的书自动翻开，书页上浮现出一行预言文字：'未来，由你决定。'",question:"The wizard ___ (cast) a powerful spell tomorrow at midnight.",options:["cast","casts","casted","will cast"],correctIndex:3,explanation:"tomorrow at midnight 表示将来时间，须用一般将来时 will + 动词原形。",errorType:"时态错误-一般将来时",successStory:"预言书发出金光，一根羽毛笔从书脊中滑出，化为一把精致的钥匙。书架自动移开，露出一条通往钟楼的旋转楼梯。",failStory:"预言书猛地合上，灰尘飞扬。'未来尚未书写，不可妄下定论！'"},
+      {id:4,title:"钟楼",keyName:"齿轮钥匙",story:"你气喘吁吁地爬上钟楼，巨大的齿轮正在缓慢转动。钟楼守护者——一个机械猫头鹰歪着头看着你：'现在，正在发生什么？'",question:"Listen! The bells ___ (ring) right now.",options:["ring","are ringing","rang","will ring"],correctIndex:1,explanation:"Listen! 和 right now 提示动作正在发生，须用现在进行时 be + V-ing。",errorType:"时态错误-现在进行时",successStory:"机械猫头鹰的眼睛亮了起来，一个小齿轮从它胸口弹出，变成一把钥匙。'向下走，地下通道里有你要的东西。'",failStory:"机械猫头鹰发出刺耳的嘎吱声，钟楼的指针开始倒转。'节奏不对，正在发生的事情要用进行时！'"},
+      {id:5,title:"地下通道",keyName:"蓝火钥匙",story:"你沿着潮湿的台阶走入地下通道，墙壁上的火把散发着幽蓝的光。一个戴着兜帽的幽灵守卫挡在路中央：'你经历了什么？证明给我看。'",question:"I ___ (already / visit) this castle before.",options:["already visit","already visited","have already visited","had already visited"],correctIndex:2,explanation:"before 和 already 提示「已经完成」的经验，须用现在完成时 have/has + 过去分词。",errorType:"时态错误-现在完成时",successStory:"幽灵守卫摘下了兜帽，露出一张微笑的脸。他从墙上取下一团蓝色火焰，火焰在你手中凝结成钥匙。'骑士大厅需要勇敢的人，去吧。'",failStory:"幽灵守卫的兜帽下发出低沉的叹息。'你还没有真正经历过，再试一次。'"},
+      {id:6,title:"骑士大厅",keyName:"盾牌钥匙",story:"你来到宽阔的骑士大厅，墙上挂满了盔甲和盾牌。一套金色盔甲突然动了起来，举起长剑指向你：'告诉我，翡翠之眼被如何对待？'",question:"The Emerald Eye ___ (keep) in this castle for centuries.",options:["keeps","is keeping","kept","is kept"],correctIndex:3,explanation:"翡翠之眼是被保存的，主语是动作的承受者，须用被动语态 be + 过去分词。",errorType:"语态错误-被动语态",successStory:"金色盔甲放下了长剑，从盾牌上取下一枚徽章——它化作一把钥匙落入你手中。'炼金室在走廊尽头，那里藏着更深的秘密。'",failStory:"金色盔甲的长剑发出刺眼的光芒。'翡翠之眼是被守护的，不是主动的！注意语态！'"},
+      {id:7,title:"炼金室",keyName:"水晶瓶钥匙",story:"炼金室里弥漫着药剂的气味，各色液体在烧瓶中咕嘟咕嘟冒泡。一个炼金术师的幻影从镜中出现：'如果……那么会发生什么？'",question:"If you ___ (find) the Eye, you will break the curse.",options:["find","finds","found","will find"],correctIndex:0,explanation:"if 引导的真实条件句，主句用 will + 动词原形，从句用一般现在时表示将来。",errorType:"条件句结构错误",successStory:"炼金术师的幻影微笑着点头，一个装满金色液体的小水晶瓶飘到你手中，液体凝固成钥匙。'向上走，塔楼顶层能看到整个王国的真相。'",failStory:"烧瓶中的液体剧烈沸腾，炼金术师摇头：'条件句中，if 从句用现在时表示将来，主句才用 will！'"},
+      {id:8,title:"塔楼顶层",keyName:"羽翼钥匙",story:"你爬上塔楼顶层，寒风呼啸，从这里可以俯瞰整个古堡和远处的山脉。一只巨大的石像鬼从塔尖飞下，落在你面前：'比较，是智慧的起点。'",question:"This castle is ___ (large) than any other building I have seen.",options:["large","more large","larger","largest"],correctIndex:2,explanation:"than 提示比较级，large 的比较级是 larger（单音节词直接加 -er）。",errorType:"比较级形式错误",successStory:"石像鬼展开巨大的翅膀，一根羽毛缓缓飘落，化为一把闪着微光的钥匙。'密道的入口就在塔楼的阴影之下，小心你的脚步。'",failStory:"石像鬼发出低沉的笑声，翅膀拍打着塔楼的墙壁。'比较级是 larger，不是 more large！'"},
+      {id:9,title:"密道",keyName:"镜面钥匙",story:"你找到隐藏在塔楼阴影中的暗门，进入一条狭窄的密道。密道尽头，一面古老的镜子映出你自己的倒影——但倒影开口说话了：'你相信什么？'",question:"I believe ___ the Emerald Eye is hidden somewhere nearby.",options:["that","what","which","where"],correctIndex:0,explanation:"believe 后接宾语从句，从句结构完整（不缺主语或宾语），用 that 引导。",errorType:"宾语从句连接词错误",successStory:"镜子中的倒影欣慰地笑了，镜面裂开一道缝隙，一片锋利的镜片化为钥匙。'宝藏室就在前方，最后一关，翡翠之眼在等你。'",failStory:"镜中的倒影痛苦地扭曲。'宾语从句中，从句完整就用 that，不需要其他疑问词！'"},
+      {id:10,title:"宝藏室",keyName:"翡翠之眼",story:"你终于推开宝藏室厚重的大门，眼前是堆积如山的金币和珠宝。在房间正中央的基座上，散发着翡翠光芒的宝石——失落翡翠之眼——正静静悬浮。一个威严的声音回荡在大厅：'最后一道考验，证明你已掌握时间的所有奥秘。'",question:"By the time the sun rises, you ___ (complete) all the challenges.",options:["complete","completed","will have completed","have completed"],correctIndex:2,explanation:"By the time 引导的时间状语从句，表示「到将来某个时间点为止已经完成的动作」，须用将来完成时 will have + 过去分词。",errorType:"时态错误-将来完成时",successStory:"翡翠之眼发出耀眼的绿光，缓缓飘入你的掌心。古堡的诅咒终于被打破，所有幽灵、石像鬼和盔甲都恢复了自由。你集齐了所有10把钥匙，成为了古堡的救世主！",failStory:"翡翠之眼的光芒忽明忽暗，威严的声音叹息道：'时间是最复杂的魔法，by the time 需要将来完成时。再试一次，你能做到的。'"},
+    ]
   },
-  {
-    id:2,title:"宴会厅",keyName:"银质餐叉钥匙",
-    story:"你推开宴会厅的大门，看见一张巨大的长桌上摆满了烛台和银器。一个幽灵管家飘到你面前，指着桌上的一本旧日记：'昨晚的事，你还记得吗？'",
-    question:"The guests ___ (arrive) at the castle two hours ago.",
-    options:["arrive","arrives","arrived","will arrive"],correctIndex:2,
-    explanation:"two hours ago 是明确的过去时间状语，必须使用一般过去时 arrived。",
-    errorType:"时态错误-一般过去时",
-    successStory:"幽灵管家欣慰地鞠了一躬，从桌上拿起一把银质餐叉——它在你手中变成了一把钥匙。管家指向走廊尽头：'图书馆在等你。'",
-    failStory:"幽灵管家失望地摇头，日记本上的字迹开始模糊。'过去的事情不能搞错，再想想。'"
+  space: {
+    id:"space",
+    name:"星际迷航 · 失落的信号",
+    icon:"🚀",
+    description:"公元2157年，猎户座号飞船在穿越虫洞时失联。破译星际密钥，重启导航系统，找到回家的路！",
+    collectIcon:"🔮",
+    collectName:"能量晶片",
+    certIcon:"🚀",
+    certTitle:"星际领航员",
+    theme:{
+      bgPrimary:"#0a0a2e",
+      bgSecondary:"#050518",
+      bgCard:"rgba(10,10,46,0.85)",
+      accent:"#4ae6c9",
+      accentLight:"#7ff0da",
+      accentDark:"#2ea88a",
+      borderColor:"rgba(74,230,201,0.3)",
+      cardGlow:"rgba(74,230,201,0.4)",
+      progressBar:"linear-gradient(90deg,#2ea88a,#4ae6c9,#7ff0da)",
+      bodyBg:"linear-gradient(135deg,#0a0a2e 0%,#050518 50%,#060620 100%)",
+      particleColor:"rgba(74,230,201,{alpha})",
+    },
+    levels:[
+      {id:1,title:"通讯舱 · 干扰波",keyName:"🔮 通讯晶片",story:"你来到通讯舱，屏幕上闪烁着杂乱的波形。AI系统用冰冷的电子音说道：'猎户座号通讯阵列已锁定。回答以下问题以解除锁定：信号从最近的行星系传来。'",question:"The signal ___ (come) from the nearest star system.",options:["come","comes","coming","came"],correctIndex:1,explanation:"主语 The signal 是第三人称单数，一般现在时动词需加 -s。",errorType:"主谓不一致",successStory:"通讯阵列成功启动！一段清晰的信号传来：'猎户座号，这里是地球指挥中心。继续前进，我们等你回家。'你获得了一枚通讯晶片。",failStory:"AI系统发出刺耳的警报：'语法错误！通讯阵列锁定中，请重新输入正确指令。'"},
+      {id:2,title:"星图室 · 坐标修正",keyName:"🔮 导航晶片",story:"你走进星图室，全息投影上显示着混乱的星图。导航官的全息影像焦急地说：'虫洞把我们的坐标数据全打乱了！告诉我，我们上一站经过了哪里？'",question:"The Orion ___ (pass) through the wormhole two days ago.",options:["pass","passes","passed","will pass"],correctIndex:2,explanation:"two days ago 是明确的过去时间状语，必须使用一般过去时 passed。",errorType:"时态错误-一般过去时",successStory:"全息星图重新校准，一条清晰的航线浮现出来。导航官微笑：'坐标已修正！'一枚导航晶片从控制台弹出。",failStory:"导航官的全息影像开始闪烁：'时间坐标错误！过去的数据不能篡改，再试一次。'"},
+      {id:3,title:"引擎室 · 能源重启",keyName:"🔮 能源晶片",story:"你来到引擎室，巨大的反应堆发出微弱的嗡鸣声。首席工程师正在焦急地检查控制面板：'能源快耗尽了！我们明天必须启动备用反应堆，否则飞船将永远漂流。'",question:"We ___ (activate) the backup reactor tomorrow morning.",options:["activate","activates","activated","will activate"],correctIndex:3,explanation:"tomorrow morning 表示将来时间，须用一般将来时 will + 动词原形。",errorType:"时态错误-一般将来时",successStory:"备用反应堆成功启动，引擎室重新亮起了蓝色的光芒。工程师松了一口气，递给你一枚能源晶片：'足够支撑到回家了。'",failStory:"反应堆发出危险的红光，工程师大喊：'时间还没到！将来时要用 will + 动词原形！'"},
+      {id:4,title:"休眠舱 · 生命维持",keyName:"🔮 生命晶片",story:"你经过休眠舱区域，发现部分船员的休眠舱显示异常。医疗AI温柔地提醒：'检测到生命体征波动。请确认：现在正在发生什么？'",question:"Look! The crew members ___ (wake) up from their pods right now.",options:["wake","are waking","woke","will wake"],correctIndex:1,explanation:"Look! 和 right now 提示动作正在发生，须用现在进行时 be + V-ing。",errorType:"时态错误-现在进行时",successStory:"休眠舱的指示灯全部变绿，船员们安然无恙地醒来。医疗AI递给你一枚生命晶片：'你救了他们。'",failStory:"医疗AI发出紧急预警：'诊断错误！正在发生的动作要用进行时，不是一般现在时！'"},
+      {id:5,title:"人工智能 · 系统对抗",keyName:"🔮 核心晶片",story:"飞船的主AI系统突然失控，封锁了所有舱门。它的虚拟形象出现在屏幕上，冷冷地说：'在你们之前，没有人类通过我的测试。证明你的经验。'",question:"I ___ (never / see) such an advanced AI system before.",options:["never see","never saw","have never seen","had never seen"],correctIndex:2,explanation:"before 提示「从未见过的经验」，须用现在完成时 have/has + 过去分词。",errorType:"时态错误-现在完成时",successStory:"AI系统的表情变得温和：'你通过了测试。我的防御协议已解除。'一枚核心晶片从主机中弹出，散发着微弱的蓝光。",failStory:"AI系统发出诡异的笑声：'你从未经历过吗？现在完成时都不会用，别想通过我这一关！'"},
+      {id:6,title:"外星信号 · 破译",keyName:"🔮 破译晶片",story:"通讯官截获了一段来自未知文明的外星信号。信号经过翻译器处理后显示出一行文字：'古老的星际密钥，被保存在宇宙的各个角落。'",question:"The ancient codes ___ (hide) in different galaxies for thousands of years.",options:["hide","are hiding","hid","are hidden"],correctIndex:3,explanation:"codes 是被隐藏的，主语是动作的承受者，须用被动语态 be + 过去分词。",errorType:"语态错误-被动语态",successStory:"外星信号被成功破译！屏幕上出现了一幅星际地图，标注着回家的路线。一枚破译晶片从通讯台弹出。",failStory:"信号翻译器报错：'语法结构不匹配！被动语态缺失，无法完成破译。'"},
+      {id:7,title:"时空裂缝 · 选择",keyName:"🔮 时空晶片",story:"飞船前方出现了一道巨大的时空裂缝，裂缝中传来无数个平行宇宙的回声。一个神秘的声音说：'如果你能做出正确的选择，裂缝就会打开回家的通道。'",question:"If you ___ (choose) the correct path, the wormhole will open.",options:["choose","chooses","chose","will choose"],correctIndex:0,explanation:"if 引导的真实条件句，主句用 will + 动词原形，从句用一般现在时表示将来。",errorType:"条件句结构错误",successStory:"时空裂缝中亮起一道金色光芒，一条稳定的虫洞通道在你面前展开。一枚时空晶片从裂缝中飘出，落入你手中。",failStory:"时空裂缝开始剧烈震荡，神秘的声音警告道：'条件句中，if 从句用现在时，主句才用 will！'"},
+      {id:8,title:"星云穿越 · 对比",keyName:"🔮 星云晶片",story:"飞船驶入一片绚丽的玫瑰星云，无数恒星在周围闪烁。航海日志上记录着：'在穿越这片星云时，需要比较不同航线的安全性。'",question:"This route is ___ (safe) than the one through the asteroid belt.",options:["safe","more safe","safer","safest"],correctIndex:2,explanation:"than 提示比较级，safe 的比较级是 safer（单音节词直接加 -er）。",errorType:"比较级形式错误",successStory:"飞船沿着最安全的航线穿过了星云。星云中飘出一枚璀璨的星云晶片，落入了你的收集器。",failStory:"飞船开始剧烈颠簸，导航系统警告：'比较级错误！是 safer，不是 more safe！'"},
+      {id:9,title:"外星文明 · 对话",keyName:"🔮 文明晶片",story:"飞船收到一段来自高等外星文明的问候。翻译器屏幕上显示：'我们想知道……你们相信什么？'你需要用正确的语法回应他们的善意。",question:"The aliens want to know ___ we come in peace.",options:["that","what","which","where"],correctIndex:0,explanation:"know 后接宾语从句，从句结构完整（不缺主语或宾语），用 that 引导。",errorType:"宾语从句连接词错误",successStory:"外星文明发出友好的光芒信号，一艘小型飞船靠近，投射出一枚文明晶片。翻译器上显示：'欢迎回家，地球的朋友。'",failStory:"外星飞船发出警告的红色光芒。翻译器显示：'语法错误！宾语从句完整就用 that 引导。'"},
+      {id:10,title:"星际跳跃 · 归途",keyName:"🔮 翡翠之眼",story:"前方就是最后一个跳跃点了！导航系统显示地球就在不远处。飞船AI发出最后的指令：'到太阳升起的时候，你已完成所有挑战。完成这最后一道题，启动星际跳跃引擎！'",question:"By the time the sun rises over Earth, you ___ (complete) all the challenges.",options:["complete","completed","will have completed","have completed"],correctIndex:2,explanation:"By the time 引导的时间状语从句，表示「到将来某个时间点为止已经完成的动作」，须用将来完成时 will have + 过去分词。",errorType:"时态错误-将来完成时",successStory:"星际跳跃引擎启动！飞船化作一道流光，穿越最后的虫洞。当光芒散去，你看到了那颗美丽的蓝色星球——地球。你集齐了所有10枚能量晶片，成功带领猎户座号回家了！",failStory:"跳跃引擎启动失败，AI平静地说：'时间是最复杂的维度。by the time 需要将来完成时。再试一次，你能做到的。'"},
+    ]
   },
-  {
-    id:3,title:"图书馆",keyName:"羽毛笔钥匙",
-    story:"你走进布满灰尘的图书馆，成千上万本书堆到了天花板。一本泛黄的书自动翻开，书页上浮现出一行预言文字：'未来，由你决定。'",
-    question:"The wizard ___ (cast) a powerful spell tomorrow at midnight.",
-    options:["cast","casts","casted","will cast"],correctIndex:3,
-    explanation:"tomorrow at midnight 表示将来时间，须用一般将来时 will + 动词原形。",
-    errorType:"时态错误-一般将来时",
-    successStory:"预言书发出金光，一根羽毛笔从书脊中滑出，化为一把精致的钥匙。书架自动移开，露出一条通往钟楼的旋转楼梯。",
-    failStory:"预言书猛地合上，灰尘飞扬。'未来尚未书写，不可妄下定论！'"
-  },
-  {
-    id:4,title:"钟楼",keyName:"齿轮钥匙",
-    story:"你气喘吁吁地爬上钟楼，巨大的齿轮正在缓慢转动。钟楼守护者——一个机械猫头鹰歪着头看着你：'现在，正在发生什么？'",
-    question:"Listen! The bells ___ (ring) right now.",
-    options:["ring","are ringing","rang","will ring"],correctIndex:1,
-    explanation:"Listen! 和 right now 提示动作正在发生，须用现在进行时 be + V-ing。",
-    errorType:"时态错误-现在进行时",
-    successStory:"机械猫头鹰的眼睛亮了起来，一个小齿轮从它胸口弹出，变成一把钥匙。'向下走，地下通道里有你要的东西。'",
-    failStory:"机械猫头鹰发出刺耳的嘎吱声，钟楼的指针开始倒转。'节奏不对，正在发生的事情要用进行时！'"
-  },
-  {
-    id:5,title:"地下通道",keyName:"蓝火钥匙",
-    story:"你沿着潮湿的台阶走入地下通道，墙壁上的火把散发着幽蓝的光。一个戴着兜帽的幽灵守卫挡在路中央：'你经历了什么？证明给我看。'",
-    question:"I ___ (already / visit) this castle before.",
-    options:["already visit","already visited","have already visited","had already visited"],correctIndex:2,
-    explanation:"before 和 already 提示「已经完成」的经验，须用现在完成时 have/has + 过去分词。",
-    errorType:"时态错误-现在完成时",
-    successStory:"幽灵守卫摘下了兜帽，露出一张微笑的脸。他从墙上取下一团蓝色火焰，火焰在你手中凝结成钥匙。'骑士大厅需要勇敢的人，去吧。'",
-    failStory:"幽灵守卫的兜帽下发出低沉的叹息。'你还没有真正经历过，再试一次。'"
-  },
-  {
-    id:6,title:"骑士大厅",keyName:"盾牌钥匙",
-    story:"你来到宽阔的骑士大厅，墙上挂满了盔甲和盾牌。一套金色盔甲突然动了起来，举起长剑指向你：'告诉我，翡翠之眼被如何对待？'",
-    question:"The Emerald Eye ___ (keep) in this castle for centuries.",
-    options:["keeps","is keeping","kept","is kept"],correctIndex:3,
-    explanation:"翡翠之眼是被保存的，主语是动作的承受者，须用被动语态 be + 过去分词。",
-    errorType:"语态错误-被动语态",
-    successStory:"金色盔甲放下了长剑，从盾牌上取下一枚徽章——它化作一把钥匙落入你手中。'炼金室在走廊尽头，那里藏着更深的秘密。'",
-    failStory:"金色盔甲的长剑发出刺眼的光芒。'翡翠之眼是被守护的，不是主动的！注意语态！'"
-  },
-  {
-    id:7,title:"炼金室",keyName:"水晶瓶钥匙",
-    story:"炼金室里弥漫着药剂的气味，各色液体在烧瓶中咕嘟咕嘟冒泡。一个炼金术师的幻影从镜中出现：'如果……那么会发生什么？'",
-    question:"If you ___ (find) the Eye, you will break the curse.",
-    options:["find","finds","found","will find"],correctIndex:0,
-    explanation:"if 引导的真实条件句，主句用 will + 动词原形，从句用一般现在时表示将来。",
-    errorType:"条件句结构错误",
-    successStory:"炼金术师的幻影微笑着点头，一个装满金色液体的小水晶瓶飘到你手中，液体凝固成钥匙。'向上走，塔楼顶层能看到整个王国的真相。'",
-    failStory:"烧瓶中的液体剧烈沸腾，炼金术师摇头：'条件句中，if 从句用现在时表示将来，主句才用 will！'"
-  },
-  {
-    id:8,title:"塔楼顶层",keyName:"羽翼钥匙",
-    story:"你爬上塔楼顶层，寒风呼啸，从这里可以俯瞰整个古堡和远处的山脉。一只巨大的石像鬼从塔尖飞下，落在你面前：'比较，是智慧的起点。'",
-    question:"This castle is ___ (large) than any other building I have seen.",
-    options:["large","more large","larger","largest"],correctIndex:2,
-    explanation:"than 提示比较级，large 的比较级是 larger（单音节词直接加 -er）。",
-    errorType:"比较级形式错误",
-    successStory:"石像鬼展开巨大的翅膀，一根羽毛缓缓飘落，化为一把闪着微光的钥匙。'密道的入口就在塔楼的阴影之下，小心你的脚步。'",
-    failStory:"石像鬼发出低沉的笑声，翅膀拍打着塔楼的墙壁。'比较级是 larger，不是 more large！'"
-  },
-  {
-    id:9,title:"密道",keyName:"镜面钥匙",
-    story:"你找到隐藏在塔楼阴影中的暗门，进入一条狭窄的密道。密道尽头，一面古老的镜子映出你自己的倒影——但倒影开口说话了：'你相信什么？'",
-    question:"I believe ___ the Emerald Eye is hidden somewhere nearby.",
-    options:["that","what","which","where"],correctIndex:0,
-    explanation:"believe 后接宾语从句，从句结构完整（不缺主语或宾语），用 that 引导。",
-    errorType:"宾语从句连接词错误",
-    successStory:"镜子中的倒影欣慰地笑了，镜面裂开一道缝隙，一片锋利的镜片化为钥匙。'宝藏室就在前方，最后一关，翡翠之眼在等你。'",
-    failStory:"镜中的倒影痛苦地扭曲。'宾语从句中，从句完整就用 that，不需要其他疑问词！'"
-  },
-  {
-    id:10,title:"宝藏室",keyName:"翡翠之眼",
-    story:"你终于推开宝藏室厚重的大门，眼前是堆积如山的金币和珠宝。在房间正中央的基座上，散发着翡翠光芒的宝石——失落翡翠之眼——正静静悬浮。一个威严的声音回荡在大厅：'最后一道考验，证明你已掌握时间的所有奥秘。'",
-    question:"By the time the sun rises, you ___ (complete) all the challenges.",
-    options:["complete","completed","will have completed","have completed"],correctIndex:2,
-    explanation:"By the time 引导的时间状语从句，表示「到将来某个时间点为止已经完成的动作」，须用将来完成时 will have + 过去分词。",
-    errorType:"时态错误-将来完成时",
-    successStory:"翡翠之眼发出耀眼的绿光，缓缓飘入你的掌心。古堡的诅咒终于被打破，所有幽灵、石像鬼和盔甲都恢复了自由。你集齐了所有10把钥匙，成为了古堡的救世主！",
-    failStory:"翡翠之眼的光芒忽明忽暗，威严的声音叹息道：'时间是最复杂的魔法，by the time 需要将来完成时。再试一次，你能做到的。'"
+  ocean: {
+    id:"ocean",
+    name:"深海秘境 · 亚特兰蒂斯之心",
+    icon:"🌊",
+    description:"潜入万米深海，寻找失落之城亚特兰蒂斯。集齐10颗珍珠，唤醒沉睡的海洋之心！",
+    collectIcon:"🐚",
+    collectName:"珍珠",
+    certIcon:"🌊",
+    certTitle:"亚特兰蒂斯之心 · 通关证书",
+    theme:{
+      bgPrimary:"#0a1628",
+      bgSecondary:"#050d18",
+      bgCard:"rgba(10,22,40,0.85)",
+      accent:"#4ae6c9",
+      accentLight:"#7ff0da",
+      accentDark:"#2ea88a",
+      borderColor:"rgba(74,230,201,0.3)",
+      cardGlow:"rgba(74,230,201,0.4)",
+      progressBar:"linear-gradient(90deg,#2ea88a,#4ae6c9,#7ff0da)",
+      bodyBg:"linear-gradient(135deg,#0a1628 0%,#050d18 50%,#020810 100%)",
+      particleColor:"rgba(74,230,201,{alpha})",
+      red:"#ff6b6b",
+      redLight:"#ff8e8e",
+    },
+    levels:[
+      {id:1,title:"珊瑚宫殿 · 大门",keyName:"🐚 珊瑚珍珠",story:"你潜入深蓝海域，一座由珊瑚构成的宫殿赫然出现在眼前。宫门上刻着古老的亚特兰蒂斯文字，海流中传来低沉的声音：'The gate ___ (open) at dawn.' 只有说出正确的答案，大门才会为你开启。",question:"The gate ___ (open) at dawn every day.",options:["open","opens","opening","opened"],correctIndex:1,explanation:"主语 The gate 是第三人称单数，一般现在时动词需加 -s。",errorType:"主谓不一致",successStory:"珊瑚大门缓缓开启，璀璨的蓝光从门缝中涌出。你获得了第一颗珍珠，珊瑚发出柔和的光芒为你照亮前路。",failStory:"大门纹丝不动，海水中传来低沉的叹息：'语法错误……再想想主语是谁。'"},
+      {id:2,title:"沉船墓地 · 往事",keyName:"🐚 沉船珍珠",story:"你游过一片阴森的沉船墓地，一艘古老的沉船半埋在沙中。船长的幽灵从船舱中飘出，用沙哑的声音说：'告诉我，这艘船发生了什么？'",question:"The ship ___ (sink) during a terrible storm a hundred years ago.",options:["sink","sinks","sank","will sink"],correctIndex:2,explanation:"a hundred years ago 是明确的过去时间状语，须用一般过去时 sank。",errorType:"时态错误-一般过去时",successStory:"船长的幽灵露出了欣慰的微笑，从怀中取出一颗光芒四射的珍珠递给你。'愿亚特兰蒂斯保佑你，年轻的探险者。'",failStory:"船长的幽灵痛苦地摇头，沉船发出嘎吱的响声。'过去的事实不能改变，再想想！'"},
+      {id:3,title:"海藻森林 · 预言",keyName:"🐚 海藻珍珠",story:"你进入一片巨大的海藻森林，海藻如巨树般向上延伸，阳光透过海面洒下斑驳的光影。一条发光的海鳗从海藻中游出，发出预言般的声音：'明天，你将发现什么？'",question:"You ___ (discover) the lost city of Atlantis tomorrow.",options:["discover","discovers","discovered","will discover"],correctIndex:3,explanation:"tomorrow 表示将来时间，须用一般将来时 will + 动词原形。",errorType:"时态错误-一般将来时",successStory:"海鳗发出耀眼的光芒，一颗碧绿色的珍珠从海藻中飘落。海鳗用尾巴指向东方：'向深海沟前进，那里有你要找的东西。'",failStory:"海藻突然剧烈摆动，海鳗发出警告的光芒：'未来尚未发生，要用将来时！'"},
+      {id:4,title:"深海热泉 · 沸腾",keyName:"🐚 热泉珍珠",story:"你来到一片深海热泉区，滚烫的水流从地壳裂缝中喷涌而出，周围聚集着奇异的发光生物。一只巨大的管虫从岩石中探出头来：'看！现在正在发生什么？'",question:"Look! The hot water ___ (boil) from the ocean floor right now.",options:["boil","is boiling","boiled","will boil"],correctIndex:1,explanation:"Look! 和 right now 提示动作正在发生，须用现在进行时 be + V-ing。",errorType:"时态错误-现在进行时",successStory:"管虫满意地缩回岩石中，一颗散发着热量的橙色珍珠从热泉中喷出，落入你的手中。",failStory:"管虫发出急促的鸣叫声，热泉喷涌得更剧烈了。'正在发生的动作要用进行时！'"},
+      {id:5,title:"海底深渊 · 经历",keyName:"🐚 深渊珍珠",story:"你潜入幽暗的海底深渊，四周一片漆黑，只有手中的珍珠发出微弱的光芒。一个巨大的水母无声地飘到你面前，触手轻轻触碰你的头盔：'你曾经到过这么深的地方吗？'",question:"I ___ (never / dive) to such a deep place before.",options:["never dive","never dived","have never dived","had never dived"],correctIndex:2,explanation:"before 提示「从未有过的经验」，须用现在完成时 have/has + 过去分词。",errorType:"时态错误-现在完成时",successStory:"水母发出了柔和的荧光，照亮了深渊的底部。一颗深蓝色的珍珠从黑暗中浮现，散发着神秘的光芒。",failStory:"水母的荧光变得暗淡，深渊中传来回音：'你从未有过的经验，要用现在完成时！'"},
+      {id:6,title:"古城遗迹 · 守护",keyName:"🐚 守护珍珠",story:"你终于来到了亚特兰蒂斯的古城遗迹！残垣断壁中，一座巨大的海神雕像矗立在中央。雕像的双眼突然亮起蓝光，声音如雷鸣般响起：'告诉我，亚特兰蒂斯是如何被守护的？'",question:"The ancient city ___ (guard) by the spirit of the sea for thousands of years.",options:["guards","is guarding","guarded","is guarded"],correctIndex:3,explanation:"城市是被守护的，主语是动作的承受者，须用被动语态 be + 过去分词。",errorType:"语态错误-被动语态",successStory:"海神雕像的双手缓缓张开，一颗散发着神圣光芒的珍珠飘落下来。雕像用低沉的声音说：'你已经理解了守护的真谛。'",failStory:"海神雕像的双眼发出红光，整座遗迹开始震动。'城市是被守护的，不是主动的！注意语态！'"},
+      {id:7,title:"珍珠圣殿 · 选择",keyName:"🐚 圣殿珍珠",story:"你穿过遗迹，来到一座保存完好的珍珠圣殿。圣殿中央的水晶球中，亚特兰蒂斯女王的全息影像浮现出来：'如果你能做出正确的选择，亚特兰蒂斯之心就会显现。'",question:"If you ___ (answer) correctly, the Heart of Atlantis will appear.",options:["answer","answers","answered","will answer"],correctIndex:0,explanation:"if 引导的真实条件句，主句用 will + 动词原形，从句用一般现在时表示将来。",errorType:"条件句结构错误",successStory:"水晶球发出耀眼的光芒，一颗硕大的金色珍珠从中浮现。女王微笑着点头：'你通过了智慧的考验。'",failStory:"水晶球的光芒开始闪烁，女王摇头叹息：'条件句中，if 从句用现在时，主句才用 will！'"},
+      {id:8,title:"海沟峡谷 · 对比",keyName:"🐚 峡谷珍珠",story:"你离开圣殿，面前出现了一道巨大的海沟峡谷。峡谷两侧的岩壁上刻着古老的文字：'在所有的海洋中，这片海沟是最深的。'你需要比较不同海沟的深度才能通过。",question:"This trench is ___ (deep) than any other place in the ocean.",options:["deep","more deep","deeper","deepest"],correctIndex:2,explanation:"than 提示比较级，deep 的比较级是 deeper（单音节词直接加 -er）。",errorType:"比较级形式错误",successStory:"峡谷两侧的岩壁发出蓝色光芒，一道光桥横跨峡谷。一颗闪烁着星光的珍珠从峡谷深处飘上来。",failStory:"峡谷中涌出强烈的暗流，岩壁上的文字发出警告的红光：'比较级是 deeper，不是 more deep！'"},
+      {id:9,title:"海神议会 · 对话",keyName:"🐚 议会珍珠",story:"你来到海神议会的圆桌大厅，十二位海神雕像围坐一圈。最年长的海神睁开眼睛，发出低沉的声音：'我们想知道……你相信什么？'用正确的语法回应他们的审问。",question:"The sea gods want to know ___ you come with a pure heart.",options:["that","what","which","where"],correctIndex:0,explanation:"know 后接宾语从句，从句结构完整（不缺主语或宾语），用 that 引导。",errorType:"宾语从句连接词错误",successStory:"所有海神雕像同时发出光芒，大厅中央升起一颗璀璨的珍珠。海神们齐声说道：'欢迎你，亚特兰蒂斯的守护者。'",failStory:"海神雕像们发出低沉的嗡鸣，一位海神严厉地说：'宾语从句完整就用 that 引导，不需要其他疑问词！'"},
+      {id:10,title:"亚特兰蒂斯之心 · 觉醒",keyName:"🐚 亚特兰蒂斯之心",story:"你终于来到了亚特兰蒂斯的中心圣所。在圣所的最深处，一颗巨大的蓝色宝石悬浮在空中——这就是传说中的亚特兰蒂斯之心。女王的声音回荡在圣所中：'到星辰升起的时候，你已完成所有试炼。最后一道考验，证明你掌握了海洋的所有秘密。'",question:"By the time the stars appear above the waves, you ___ (complete) all the trials.",options:["complete","completed","will have completed","have completed"],correctIndex:2,explanation:"By the time 引导的时间状语从句，表示「到将来某个时间点为止已经完成的动作」，须用将来完成时 will have + 过去分词。",errorType:"时态错误-将来完成时",successStory:"亚特兰蒂斯之心发出耀眼的蓝光，整座海底城市都被唤醒了！珊瑚宫殿重新绽放光芒，沉船中的灵魂得到了安息，海藻森林中的生物欢快地舞动。你集齐了所有10颗珍珠，成为了亚特兰蒂斯的新任守护者！",failStory:"亚特兰蒂斯之心的光芒忽明忽暗，女王的声音变得微弱：'时间是最深邃的海洋，by the time 需要将来完成时。再试一次，你能做到。'"},
+    ]
   }
-];
+};
 
 // ============================================================
-// 错因分析题库（12种 + 第10关特殊题）
+// 错因分析题库（15种，三剧情通用）
 // ============================================================
 const FALLBACK_DATA = [
   {errorType:"主谓不一致",explanation:"主语是第三人称单数（he/she/it/单数名词），一般现在时动词要加 -s 或 -es。",followUp:{question:"Tom ___ (like) playing basketball after school.",options:["like","likes","liking","liked"],correctIndex:1}},
@@ -471,9 +497,12 @@ const FALLBACK_DATA = [
   {errorType:"动名词/不定式错误",explanation:"某些动词后只能接 doing（如 enjoy, finish, mind），某些只能接 to do（如 want, decide, hope），需要单独记忆。",followUp:{question:"My sister enjoys ___ (read) storybooks in her free time.",options:["read","to read","reading","reads"],correctIndex:2}},
   {errorType:"宾语从句语序错误",explanation:"宾语从句中要用陈述句语序（主语+谓语），不能用疑问句语序（助动词+主语+谓语）。",followUp:{question:"Can you tell me ___?",options:["where does he live","where he lives","where he does live","where lives he"],correctIndex:1}},
   {errorType:"时态呼应错误",explanation:"主句是过去时，宾语从句的时态也要相应变为过去范畴（现在时→过去时，将来时→过去将来时）。",followUp:{question:"The wizard said he ___ (will) open the treasure room soon.",options:["will","would","is going to","has"],correctIndex:1}},
+  {errorType:"时态错误-现在进行时",explanation:"Look!/Listen! 和 right now 提示动作正在发生，须用现在进行时 be + V-ing。",followUp:{question:"Look! The cat ___ (climb) the tree right now.",options:["climb","climbs","is climbing","climbed"],correctIndex:2}},
+  {errorType:"宾语从句连接词错误",explanation:"宾语从句中，如果从句结构完整（不缺主语或宾语），用 that 引导即可。",followUp:{question:"I think ___ English is very important.",options:["that","what","which","where"],correctIndex:0}},
+  {errorType:"时态错误-将来完成时",explanation:"by the time 表示「到某个时间点为止已经完成的动作」，将来时间用 will have + 过去分词。",followUp:{question:"By the end of this year, she ___ (learn) English for five years.",options:["learns","learned","will have learned","has learned"],correctIndex:2}},
 ];
 
-// 第10关特殊综合时态题
+// 第10关特殊综合时态题（双剧情通用）
 const LEVEL_10_SPECIAL = {
   errorType:"综合时态错误",
   explanation:"这是一道综合题！需要根据时间状语判断每个空该用什么时态：过去时对应过去，过去完成时对应过去的过去，将来时对应将来。",
@@ -484,18 +513,14 @@ const LEVEL_10_SPECIAL = {
   }
 };
 
-// 时态错误-现在进行时 和 宾语从句连接词错误 的 fallback 补充
-FALLBACK_DATA.push(
-  {errorType:"时态错误-现在进行时",explanation:"Look!/Listen! 和 right now 提示动作正在发生，须用现在进行时 be + V-ing。",followUp:{question:"Look! The cat ___ (climb) the tree right now.",options:["climb","climbs","is climbing","climbed"],correctIndex:2}},
-  {errorType:"宾语从句连接词错误",explanation:"宾语从句中，如果从句结构完整（不缺主语或宾语），用 that 引导即可。",followUp:{question:"I think ___ English is very important.",options:["that","what","which","where"],correctIndex:0}},
-  {errorType:"时态错误-将来完成时",explanation:"by the time 表示「到某个时间点为止已经完成的动作」，将来时间用 will have + 过去分词。",followUp:{question:"By the end of this year, she ___ (learn) English for five years.",options:["learns","learned","will have learned","has learned"],correctIndex:2}}
-);
-
 // ============================================================
 // 游戏状态
 // ============================================================
-const STORAGE_KEY = "escape_game_state";
+const STORAGE_PREFIX = "escape_game";
 const PASS_COUNT_KEY = "escape_game_pass_count";
+
+let currentStoryline = null; // 当前选中的剧情线对象引用
+let storylineId = null;     // 'castle' | 'space' | 'ocean'
 
 let gameState = {
   nickname:"探险家",
@@ -503,7 +528,7 @@ let gameState = {
   keys:0,
   errors:0,
   isCompleted:false,
-  levelCompleted:{} // {levelId: true} 记录已通关的关卡
+  levelCompleted:{} // {levelId: true}
 };
 
 // 当前弹窗中的跟进题状态
@@ -513,28 +538,50 @@ let followUpState = null;
 // 初始化
 // ============================================================
 function init(){
-  // 加载保存的状态
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if(saved){
-    try{
-      const parsed = JSON.parse(saved);
-      gameState = {...gameState, ...parsed};
-    }catch(e){}
-  }
+  // 渲染首页剧情卡片
+  renderStorylineCards();
+
+  // 尝试加载上次的剧情进度
+  loadLastProgress();
 
   // 更新通关人数
   updatePassCount();
 
-  // 填充昵称
-  document.getElementById("nickname").value = gameState.nickname;
-
   // 背景粒子
   initParticles();
+}
 
-  // 如果已完成，直接显示结算页
-  if(gameState.isCompleted){
-    showPage("result");
-    showResult();
+// 渲染首页剧情卡片
+function renderStorylineCards(){
+  const container = document.getElementById("storyline-cards");
+  container.innerHTML = "";
+  Object.values(STORYLINES).forEach(sl=>{
+    const card = document.createElement("div");
+    card.className = "storyline-card";
+    card.innerHTML = `
+      <span class="storyline-card-icon">${sl.icon}</span>
+      <div class="storyline-card-name">${sl.name}</div>
+      <div class="storyline-card-desc">${sl.description}</div>
+    `;
+    card.onclick = ()=>startGame(sl.id);
+    container.appendChild(card);
+  });
+}
+
+// 加载上次的进度
+function loadLastProgress(){
+  // 尝试加载所有剧情线的进度，看哪个有进度
+  for(const [id, sl] of Object.entries(STORYLINES)){
+    const saved = localStorage.getItem(`${STORAGE_PREFIX}_${id}_state`);
+    if(saved){
+      try{
+        const parsed = JSON.parse(saved);
+        if(parsed.isCompleted || parsed.keys > 0){
+          // 有进度，提示用户
+          document.getElementById("nickname").value = parsed.nickname || "探险家";
+        }
+      }catch(e){}
+    }
   }
 }
 
@@ -559,13 +606,15 @@ function initParticles(){
 
   function animate(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
+    const theme = currentStoryline ? currentStoryline.theme : STORYLINES.castle.theme;
+    const colorTemplate = theme.particleColor;
     particles.forEach(p=>{
       p.x+=p.vx;p.y+=p.vy;
       if(p.x<0||p.x>canvas.width)p.vx*=-1;
       if(p.y<0||p.y>canvas.height)p.vy*=-1;
       ctx.beginPath();
       ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(201,168,76,${p.alpha})`;
+      ctx.fillStyle = colorTemplate.replace("{alpha}",p.alpha);
       ctx.fill();
     });
     requestAnimationFrame(animate);
@@ -587,7 +636,28 @@ function updatePassCount(){
 
 // 保存状态
 function saveState(){
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(gameState));
+  const key = `${STORAGE_PREFIX}_${storylineId}_state`;
+  localStorage.setItem(key, JSON.stringify(gameState));
+}
+
+// 应用主题
+function applyTheme(theme){
+  const root = document.documentElement.style;
+  root.setProperty("--bg-primary",theme.bgPrimary);
+  root.setProperty("--bg-secondary",theme.bgSecondary);
+  root.setProperty("--bg-card",theme.bgCard);
+  root.setProperty("--accent",theme.accent);
+  root.setProperty("--accent-light",theme.accentLight);
+  root.setProperty("--accent-dark",theme.accentDark);
+  root.setProperty("--gold",theme.accent);
+  root.setProperty("--gold-light",theme.accentLight);
+  root.setProperty("--gold-dark",theme.accentDark);
+  root.setProperty("--border-color",theme.borderColor);
+  root.setProperty("--card-glow",theme.cardGlow);
+  root.setProperty("--progress-bar",theme.progressBar);
+  root.setProperty("--red",theme.red||"#8b0000");
+  root.setProperty("--red-light",theme.redLight||"#c0392b");
+  document.body.style.background = theme.bodyBg;
 }
 
 // ============================================================
@@ -601,12 +671,25 @@ function showPage(pageId){
 // ============================================================
 // 首页操作
 // ============================================================
-function startGame(){
+function startGame(storylineKey){
+  storylineId = storylineKey;
+  currentStoryline = STORYLINES[storylineKey];
   const nickname = document.getElementById("nickname").value.trim() || "探险家";
-  gameState.nickname = nickname;
 
-  // 如果已完成，重置
-  if(gameState.isCompleted){
+  // 应用主题
+  applyTheme(currentStoryline.theme);
+
+  // 加载该剧情线的存档
+  const saved = localStorage.getItem(`${STORAGE_PREFIX}_${storylineId}_state`);
+  if(saved){
+    try{
+      const parsed = JSON.parse(saved);
+      gameState = {...gameState, ...parsed, nickname:nickname || parsed.nickname};
+    }catch(e){
+      gameState.nickname = nickname;
+    }
+  }else{
+    // 全新开始
     gameState = {
       nickname:nickname,
       currentLevel:0,
@@ -615,6 +698,15 @@ function startGame(){
       isCompleted:false,
       levelCompleted:{}
     };
+  }
+
+  // 如果已完成，重置
+  if(gameState.isCompleted){
+    gameState.currentLevel = 0;
+    gameState.keys = 0;
+    gameState.errors = 0;
+    gameState.isCompleted = false;
+    gameState.levelCompleted = {};
   }
 
   saveState();
@@ -626,7 +718,7 @@ function shareGame(){
   if(navigator.share){
     navigator.share({
       title:"失落翡翠之眼",
-      text:"来挑战古堡英语闯关吧！集齐10把钥匙，解开翡翠之眼的秘密！",
+      text:"来挑战英语闯关游戏吧！古堡探险、星际迷航、深海秘境，三条剧情线等你来战！",
       url:window.location.href
     }).catch(()=>{});
   }else{
@@ -641,15 +733,22 @@ function shareGame(){
 // ============================================================
 // 游戏渲染
 // ============================================================
+function getCurrentLevels(){
+  return currentStoryline.levels;
+}
+
 function renderLevel(){
-  const level = LEVELS[gameState.currentLevel];
+  const levels = getCurrentLevels();
+  const level = levels[gameState.currentLevel];
   if(!level)return;
 
   // 更新顶栏
+  document.getElementById("storyline-tag").textContent = `${currentStoryline.icon} ${currentStoryline.name}`;
   document.getElementById("level-title").textContent = level.title;
   document.getElementById("level-num").textContent = `第 ${level.id} / 10 关`;
   document.getElementById("keys-count").textContent = gameState.keys;
   document.getElementById("errors-count").textContent = gameState.errors;
+  document.getElementById("collect-icon").textContent = currentStoryline.collectIcon;
   document.getElementById("progress-fill").style.width = `${(gameState.keys/10)*100}%`;
 
   // 判断是否已通关此关
@@ -688,13 +787,13 @@ function renderLevel(){
   }
 
   // 清除选中状态
-  window._selectedOption = null;
+  _selectedOption = null;
 }
 
 let _selectedOption = null;
 
 function selectOption(index){
-  if(gameState.levelCompleted[LEVELS[gameState.currentLevel].id])return;
+  if(gameState.levelCompleted[getCurrentLevels()[gameState.currentLevel].id])return;
   _selectedOption = index;
   const btns = document.querySelectorAll(".option-btn");
   btns.forEach((b,i)=>b.classList.toggle("selected",i===index));
@@ -706,12 +805,11 @@ function selectOption(index){
 // ============================================================
 function submitAnswer(){
   if(_selectedOption===null)return;
-  const level = LEVELS[gameState.currentLevel];
+  const level = getCurrentLevels()[gameState.currentLevel];
   const isCorrect = _selectedOption === level.correctIndex;
   const btns = document.querySelectorAll(".option-btn");
 
   if(isCorrect){
-    // 正确
     btns[_selectedOption].classList.add("correct");
     if(!gameState.levelCompleted[level.id]){
       gameState.keys++;
@@ -721,7 +819,6 @@ function submitAnswer(){
     updateStats();
     showCorrectModal(level);
   }else{
-    // 错误
     btns[_selectedOption].classList.add("wrong");
     btns[level.correctIndex].classList.add("correct");
     gameState.errors++;
@@ -748,8 +845,8 @@ function showCorrectModal(level){
   const isLastLevel = gameState.keys >= 10;
 
   box.innerHTML = `
-    <div class="modal-icon key-animation">🗝️</div>
-    <div class="modal-title" style="color:var(--green)">获得钥匙！</div>
+    <div class="modal-icon key-animation">${currentStoryline.collectIcon}</div>
+    <div class="modal-title" style="color:var(--green)">获得${currentStoryline.collectName}！</div>
     <div class="modal-text">
       <strong>${level.keyName}</strong><br>
       ${level.successStory}
@@ -770,7 +867,6 @@ function showErrorModal(level){
   const box = document.getElementById("modal-box");
   overlay.classList.add("active");
 
-  // 获取错因分析数据
   const fallback = getFallbackData(level);
 
   followUpState = {
@@ -784,7 +880,7 @@ function showErrorModal(level){
     <div class="modal-title" style="color:var(--red-light)">回答错误</div>
     <div class="modal-text">${level.failStory}</div>
     <div class="modal-explanation">
-      <strong style="color:var(--gold)">错误类型：${fallback.errorType}</strong><br>
+      <strong style="color:var(--accent)">错误类型：${fallback.errorType}</strong><br>
       ${fallback.explanation}
     </div>
     <div class="followup-section">
@@ -806,9 +902,7 @@ function showErrorModal(level){
 }
 
 function getFallbackData(level){
-  // 第10关使用特殊综合题
   if(level.id===10)return LEVEL_10_SPECIAL;
-  // 按 errorType 精确匹配
   const match = FALLBACK_DATA.find(f=>f.errorType===level.errorType);
   return match || FALLBACK_DATA[0];
 }
@@ -850,7 +944,6 @@ function submitFollowUp(){
 }
 
 function retryLevel(){
-  // 重新渲染当前关卡
   _selectedOption = null;
   renderLevel();
 }
@@ -872,7 +965,6 @@ function nextLevel(){
 function completeGame(){
   gameState.isCompleted = true;
   saveState();
-  // 更新通关人数
   let count = parseInt(localStorage.getItem(PASS_COUNT_KEY))||0;
   localStorage.setItem(PASS_COUNT_KEY,count+1);
   updatePassCount();
@@ -884,19 +976,23 @@ function completeGame(){
 // 结算页
 // ============================================================
 function showResult(){
+  document.getElementById("cert-icon").textContent = currentStoryline.certIcon;
+  document.getElementById("cert-title").textContent = currentStoryline.certTitle;
+  document.getElementById("cert-storyline").textContent = currentStoryline.name;
   document.getElementById("cert-name").textContent = gameState.nickname;
   const now = new Date();
   document.getElementById("cert-date").textContent =
     `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${now.getHours()}:${String(now.getMinutes()).padStart(2,"0")}`;
   document.getElementById("cert-errors").textContent = gameState.errors;
+  document.getElementById("cert-stats").innerHTML =
+    `共答错 <span id="cert-errors">${gameState.errors}</span> 次，集齐 <span>10</span> 个${currentStoryline.collectName}`;
 
-  // 彩带
   spawnConfetti();
 }
 
 function spawnConfetti(){
   const container = document.getElementById("confetti");
-  const colors = ["#c9a84c","#e0c878","#8b0000","#2ecc71","#3498db","#e74c3c","#9b59b6","#f39c12"];
+  const colors = ["#c9a84c","#e0c878","#4ae6c9","#2ecc71","#3498db","#e74c3c","#9b59b6","#f39c12"];
   for(let i=0;i<40;i++){
     const piece = document.createElement("div");
     piece.className = "confetti-piece";
@@ -931,7 +1027,6 @@ function copyWechat(){
       setTimeout(()=>document.getElementById("copy-success").style.display="none",2000);
     });
   }else{
-    // 降级
     const ta = document.createElement("textarea");
     ta.value = id;ta.style.position="fixed";ta.style.opacity="0";
     document.body.appendChild(ta);ta.select();
@@ -949,7 +1044,6 @@ function closeModal(){
   followUpState = null;
 }
 
-// 点击遮罩关闭
 document.getElementById("modal-overlay").addEventListener("click",function(e){
   if(e.target===this)closeModal();
 });
@@ -958,7 +1052,7 @@ document.getElementById("wechat-modal").addEventListener("click",function(e){
 });
 
 // ============================================================
-// 重新挑战
+// 重新挑战（回到首页选剧情）
 // ============================================================
 function resetGame(){
   gameState = {
@@ -969,10 +1063,13 @@ function resetGame(){
     isCompleted:false,
     levelCompleted:{}
   };
-  saveState();
+  currentStoryline = null;
+  storylineId = null;
   _selectedOption = null;
   followUpState = null;
   document.getElementById("confetti").innerHTML = "";
+  // 恢复默认主题
+  applyTheme(STORYLINES.castle.theme);
   showPage("home");
 }
 
