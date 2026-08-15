@@ -72,6 +72,12 @@ body{
   border:2px solid var(--accent);box-shadow:0 0 10px var(--card-glow);
 }
 .btn-secondary:hover{background:rgba(201,168,76,0.1)}
+.btn-cube{
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;border:none;
+  box-shadow:0 4px 15px rgba(102,126,234,0.4);
+}
+.btn-cube:hover{box-shadow:0 6px 25px rgba(102,126,234,0.6);transform:translateY(-1px)}
 .btn-danger{background:linear-gradient(135deg,var(--red),var(--red-light));color:#fff}
 .btn-sm{padding:10px 20px;font-size:0.9rem}
 .btn-block{width:100%}
@@ -398,6 +404,7 @@ body{
   <div class="home-actions">
     <button class="btn btn-primary btn-block" id="btn-select-storyline" onclick="selectCurrentStoryline()">选择此剧情</button>
     <button class="btn btn-secondary btn-block" onclick="shareGame()">分享好友</button>
+    <button class="btn btn-cube" onclick="window.open('cube_english.html','_blank')">🧩 魔方英语 · 闯关模式</button>
   </div>
   <div class="home-footer" id="pass-count">已有 128 人成功逃脱</div>
 </div>

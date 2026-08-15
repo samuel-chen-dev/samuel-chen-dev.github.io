@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🧩 魔方英语 - Cube English</title>
+<style>
+/* ============================================================
+   全局样式
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0d1b2a 100%);
+  color: #e0e0e0;
+  min-height: 100vh;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-x pan-y;
+}
+#app { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+/* ============================================================
+   顶部信息栏
+   ============================================================ */
+.header {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  padding: 12px 16px;
+  display: flex; flex-direction: column; gap: 6px;
+  pointer-events: none;
+}
+.header-top {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.header-title {
+  font-size: 1.2rem; font-weight: 700; color: #fff;
+  text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+}
+.header-stats {
+  font-size: 0.75rem; color: #aaa;
+  background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+.header-stats span { color: #4ae6c9; font-weight: 700; }
+
+/* 面进度条 */
+.face-progress {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  pointer-events: auto;
+}
+.face-progress-item {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 0.65rem; color: #ccc;
+  background: rgba(255,255,255,0.06); padding: 3px 8px; border-radius: 12px;
+  cursor: pointer; transition: background 0.2s;
+}
+.face-progress-item:hover { background: rgba(255,255,255,0.12); }
+.face-progress-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ============================================================
+   3D 画布
+   ============================================================ */
+#cube-canvas { width: 100%; height: 100%; display: block; }
+
+/* ============================================================
+   底部提示
+   ============================================================ */
+.hint-bar {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  font-size: 0.7rem; color: rgba(255,255,255,0.4);
+  pointer-events: none; z-index: 10;
+  text-align: center;
+}
+
+/* 顶部面进度（2行×3列） */
+.face-progress {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px 10px; margin-top: 10px;
+}
+.face-progress-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 1.5rem; color: #ccc; cursor: pointer;
+  padding: 6px 12px; border-radius: 10px; transition: background 0.2s;
+  white-space: nowrap;
+}
+.face-progress-item:hover { background: rgba(255,255,255,0.08); }
+.face-progress-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+/* ============================================================
+   答题弹窗
+   ============================================================ */
+.modal-overlay {
+  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 100; background: rgba(0,0,0,0.7);
+  justify-content: center; align-items: flex-start;
+  overflow-y: auto; padding: 20px 0;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: rgba(20, 20, 40, 0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px; padding: 24px;
+  width: 90%; max-width: 440px;
+  margin: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  animation: modalIn 0.25s ease-out;
+}
+@keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+}
+.modal-face-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.8rem; font-weight: 600; padding: 4px 12px;
+  border-radius: 20px; color: #fff;
+}
+.modal-level { font-size: 0.75rem; color: #aaa; }
+
+.modal-title {
+  font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 12px;
+}
+
+/* 题目类型：短文 */
+.modal-passage {
+  background: rgba(255,255,255,0.05); border-radius: 10px;
+  padding: 12px 14px; font-size: 0.85rem; line-height: 1.7;
+  color: #ccc; margin-bottom: 14px;
+  border-left: 3px solid rgba(138, 43, 226, 0.5);
+}
+
+/* 选项 */
+.modal-question { font-size: 0.95rem; color: #ddd; margin-bottom: 14px; line-height: 1.6; }
+.options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.option-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; border-radius: 10px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: #ddd; font-size: 0.9rem; cursor: pointer;
+  transition: all 0.15s; text-align: left;
+}
+.option-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+.option-btn.selected { border-color: #4ae6c9; background: rgba(74,230,201,0.15); color: #4ae6c9; }
+.option-btn.correct { border-color: #27ae60; background: rgba(39,174,96,0.2); color: #27ae60; }
+.option-btn.wrong { border-color: #e74c3c; background: rgba(231,76,60,0.2); color: #e74c3c; }
+.option-btn:disabled { pointer-events: none; }
+.option-letter { font-weight: 700; font-size: 0.85rem; opacity: 0.6; }
+
+/* 反馈 */
+.feedback-area { display: none; margin-bottom: 16px; }
+.feedback-area.show { display: block; }
+.feedback-correct { color: #27ae60; font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; }
+.feedback-wrong { color: #e74c3c; font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; }
+.feedback-explanation {
+  background: rgba(255,255,255,0.05); border-radius: 8px;
+  padding: 10px 14px; font-size: 0.8rem; color: #bbb; line-height: 1.5;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+  border: none; cursor: pointer; transition: all 0.15s;
+  width: 100%;
+}
+.btn-primary { background: #4ae6c9; color: #0a1628; }
+.btn-primary:hover { background: #7ff0da; }
+.btn-secondary { background: rgba(255,255,255,0.08); color: #ccc; border: 1px solid rgba(255,255,255,0.15); }
+.btn-secondary:hover { background: rgba(255,255,255,0.14); }
+.btn-close {
+  background: none; border: none; color: #aaa; font-size: 1.3rem; cursor: pointer;
+  padding: 4px 8px; line-height: 1;
+}
+.btn-close:hover { color: #fff; }
+
+/* 锁定提示 */
+.locked-tip {
+  text-align: center; color: #888; padding: 20px 0;
+  font-size: 0.9rem;
+}
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width: 480px) {
+  .header { padding: 8px 12px; }
+  .header-title { font-size: 1rem; }
+  .modal-box { padding: 18px; width: 94%; }
+  .face-progress { gap: 2px; }
+  .face-progress-item { font-size: 0.6rem; padding: 2px 6px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- 顶部信息栏 -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title">🧩 魔方英语</div>
+      <div class="header-stats">已点亮 <span id="total-completed">0</span>/54 格</div>
+    </div>
+    <div class="face-progress" id="face-progress"></div>
+  </div>
+
+  <!-- 3D 画布 -->
+  <canvas id="cube-canvas"></canvas>
+
+  <!-- 底部提示 -->
+  <div class="hint-bar" id="hint-bar">↺ 拖拽旋转 · 点击彩色格子开始答题</div>
+
+  <!-- 答题弹窗 -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box" id="modal-box">
+      <div class="modal-header">
+        <div class="modal-face-badge" id="modal-face-badge">📝 语法核心</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="modal-level" id="modal-level">⭐小学</span>
+          <button class="btn-close" id="btn-close-modal">&times;</button>
+        </div>
+      </div>
+      <div class="modal-title" id="modal-title">第1关：一般现在时</div>
+      <div class="modal-passage" id="modal-passage" style="display:none"></div>
+      <div class="modal-question" id="modal-question"></div>
+      <div class="options-list" id="options-list"></div>
+      <div class="feedback-area" id="feedback-area">
+        <div id="feedback-message"></div>
+        <div class="feedback-explanation" id="feedback-explanation"></div>
+      </div>
+      <button class="btn btn-primary" id="btn-submit">提交答案</button>
+      <button class="btn btn-primary" id="btn-next" style="display:none">下一关</button>
+      <div class="locked-tip" id="locked-tip" style="display:none">
+        🔒 请先完成前面的关卡<br><span style="font-size:0.75rem;color:#666">点击此处关闭</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ============================================================
+// 面 ID 到题库 ID 的映射
+const FACE_TO_QB = { front: 'grammar', back: 'vocabulary', left: 'reading', right: 'cloze', top: 'speaking', bottom: 'fun' };
+const QB_TO_FACE = { grammar: 'front', vocabulary: 'back', reading: 'left', cloze: 'right', speaking: 'top', fun: 'bottom' };
+
+// 面定义
+// ============================================================
+const FACES = {
+  front:  { id: 'front',  name: '语法核心', emoji: '📝', color: '#e74c3c', axis: 'z', value: 1,  normal: [0,0,1] },
+  back:   { id: 'back',   name: '词汇辨析', emoji: '📖', color: '#f39c12', axis: 'z', value: -1, normal: [0,0,-1] },
+  left:   { id: 'left',   name: '阅读理解', emoji: '📚', color: '#27ae60', axis: 'x', value: -1, normal: [-1,0,0] },
+  right:  { id: 'right',  name: '完形填空', emoji: '✏️', color: '#2980b9', axis: 'x', value: 1,  normal: [1,0,0] },
+  top:    { id: 'top',    name: '口语表达', emoji: '🎤', color: '#ecf0f1', axis: 'y', value: 1,  normal: [0,1,0] },
+  bottom: { id: 'bottom', name: '趣味英语', emoji: '🎮', color: '#f1c40f', axis: 'y', value: -1, normal: [0,-1,0] },
+};
+
+// 面到行列映射：给定 cubie 位置 (x,y,z) 和被点击面的法线，返回 {row, col}
+function getFaceCell(x, y, z, nx, ny, nz) {
+  if (nz === 1)    return { row: 1 - y, col: x + 1 };       // front
+  if (nz === -1)   return { row: 1 - y, col: 1 - x };       // back
+  if (nx === -1)   return { row: 1 - y, col: 1 - z };       // left
+  if (nx === 1)    return { row: 1 - y, col: z + 1 };       // right
+  if (ny === 1)    return { row: 1 - z, col: x + 1 };       // top
+  if (ny === -1)   return { row: z + 1, col: x + 1 };       // bottom
+  return null;
+}
+
+// 根据法线获取面 ID
+function getFaceFromNormal(nx, ny, nz) {
+  if (nz === 1)  return 'front';
+  if (nz === -1) return 'back';
+  if (nx === -1) return 'left';
+  if (nx === 1)  return 'right';
+  if (ny === 1)  return 'top';
+  if (ny === -1) return 'bottom';
+  return null;
+}
+
+// ============================================================
+// 题库数据：54关（6面 × 9关）
+// ============================================================
+const QUESTIONS = {
+  // ─── 语法核心（红色面）──────────────────────────────
+  grammar: [
+    { id: 1, title: '一般现在时', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'She ___ (go) to school every day.', options: ['go', 'goes', 'going', 'went'], correctIndex: 1, explanation: '主语 She 是第三人称单数，一般现在时动词需加 -s/-es，所以用 goes。' },
+    { id: 2, title: '现在进行时', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Look! The children ___ (play) in the park.', options: ['play', 'plays', 'are playing', 'played'], correctIndex: 2, explanation: 'Look! 提示动作正在发生，须用现在进行时 be + V-ing，主语 children 是复数，用 are playing。' },
+    { id: 3, title: '一般过去时', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'He ___ (visit) his grandparents last weekend.', options: ['visit', 'visits', 'visited', 'will visit'], correctIndex: 2, explanation: 'last weekend 是明确的过去时间状语，须用一般过去时 visited。' },
+    { id: 4, title: '一般将来时', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'I think it ___ (rain) tomorrow.', options: ['rains', 'rained', 'will rain', 'is raining'], correctIndex: 2, explanation: 'tomorrow 表示将来时间，须用 will + 动词原形。' },
+    { id: 5, title: '现在完成时', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'We ___ (already / finish) our homework.', options: ['already finish', 'already finished', 'have already finished', 'will finish'], correctIndex: 2, explanation: 'already 提示「已经完成」，须用现在完成时 have/has + 过去分词。' },
+    { id: 6, title: '被动语态', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'The book ___ (write) by a famous author.', options: ['writes', 'wrote', 'is written', 'is writing'], correctIndex: 2, explanation: '书是被写的，主语是动作承受者，须用被动语态 be + 过去分词。' },
+    { id: 7, title: '条件句', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'If it ___ (rain) tomorrow, we will stay at home.', options: ['rains', 'will rain', 'rained', 'is raining'], correctIndex: 0, explanation: 'if 引导的真实条件句中，从句用一般现在时表将来（主将从现），所以用 rains。' },
+    { id: 8, title: '宾语从句', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'Can you tell me where ___ (be) the nearest hospital?', options: ['is', 'be', 'are', 'being'], correctIndex: 0, explanation: '宾语从句中，where 后的从句用陈述句语序，主语 the nearest hospital 是单数，用 is。' },
+    { id: 9, title: '综合时态', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'By the time he arrives, we ___ (wait) for two hours.', options: ['wait', 'waited', 'will have waited', 'are waiting'], correctIndex: 2, explanation: 'By the time 表示「到将来某个时间点为止」，须用将来完成时 will have + 过去分词。' },
+  ],
+  // ─── 词汇辨析（橙色面）──────────────────────────────
+  vocabulary: [
+    { id: 10, title: 'look / see / watch', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Please ___ at the blackboard.', options: ['look', 'see', 'watch', 'read'], correctIndex: 0, explanation: 'look at 表示「看」的动作，强调有意识地看；see 强调「看到」的结果；watch 表示「观看（动态的东西）」。' },
+    { id: 11, title: 'say / tell / speak', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Can you ___ me a story?', options: ['say', 'tell', 'speak', 'talk'], correctIndex: 1, explanation: 'tell sb. sth. 是固定搭配，tell me a story = 给我讲个故事。say 强调说话内容，speak 强调说话能力或语言。' },
+    { id: 12, title: 'borrow / lend', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Can I ___ your pen? I forgot mine.', options: ['borrow', 'lend', 'give', 'take'], correctIndex: 0, explanation: 'borrow 表示「借入」（从别人那里借来），lend 表示「借出」（把东西借给别人）。这里是向别人借笔，用 borrow。' },
+    { id: 13, title: 'interested / interesting', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'The movie was so ___ that everyone loved it.', options: ['interested', 'interesting', 'interest', 'interests'], correctIndex: 1, explanation: 'interesting 修饰事物（令人感兴趣的），interested 修饰人（感到有兴趣的）。电影是事物，用 interesting。' },
+    { id: 14, title: '固定搭配', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'I\'m looking forward ___ hearing from you.', options: ['at', 'to', 'for', 'on'], correctIndex: 1, explanation: 'look forward to 是固定搭配，其中 to 是介词，后接名词或动名词。' },
+    { id: 15, title: '词性转换', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'He runs very ___ (quick).', options: ['quick', 'quicker', 'quickly', 'quickest'], correctIndex: 2, explanation: '修饰动词 runs 需要用副词，quick 的副词形式是 quickly。' },
+    { id: 16, title: '近义词辨析', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'The news ___ quickly across the campus.', options: ['spread', 'extended', 'expanded', 'stretched'], correctIndex: 0, explanation: 'spread 表示消息、新闻的「传播」；extend 表示时间或空间的延长；expand 表示体积的膨胀；stretch 表示拉伸。' },
+    { id: 17, title: '固定搭配2', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'He succeeded ___ passing the exam.', options: ['at', 'to', 'in', 'on'], correctIndex: 2, explanation: 'succeed in doing sth. 是固定搭配，表示「成功做某事」。' },
+    { id: 18, title: '综合词汇', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'The professor ___ a new theory at the conference.', options: ['put forward', 'put off', 'put out', 'put up'], correctIndex: 0, explanation: 'put forward 表示「提出（建议、理论）」，put off 表示「推迟」，put out 表示「扑灭」，put up 表示「搭建/张贴」。' },
+  ],
+  // ─── 阅读理解（绿色面）──────────────────────────────
+  reading: [
+    { id: 19, title: '小故事：猫咪', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'Tom has a cat named Mimi. Mimi is white and very cute. Every morning, Mimi sits by the window and watches the birds outside.', question: 'What color is Mimi?', options: ['Black', 'White', 'Brown', 'Gray'], correctIndex: 1, explanation: '文中明确说 "Mimi is white"，所以答案是 White。' },
+    { id: 20, title: '小故事：生日', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'It is Lily\'s birthday today. She is ten years old. Her mother makes a big cake for her. Lily and her friends sing and dance happily.', question: 'How old is Lily?', options: ['Nine', 'Ten', 'Eleven', 'Eight'], correctIndex: 1, explanation: '文中明确说 "She is ten years old."' },
+    { id: 21, title: '小故事：动物园', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'Last Sunday, Jack went to the zoo with his family. They saw many animals. Jack\'s favorite animal was the panda. The panda was eating bamboo.', question: 'What was Jack\'s favorite animal?', options: ['Monkey', 'Lion', 'Panda', 'Elephant'], correctIndex: 2, explanation: '文中说 "Jack\'s favorite animal was the panda."' },
+    { id: 22, title: '短文：环保', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'More and more people are paying attention to environmental protection. They use reusable bags, turn off lights when leaving rooms, and take public transportation. These small actions can make a big difference.', question: 'What is the main idea of this passage?', options: ['Traveling', 'Shopping', 'Environmental protection', 'Cooking'], correctIndex: 2, explanation: '文章主题是环保，提到了使用环保袋、随手关灯、乘坐公共交通等环保行为。' },
+    { id: 23, title: '短文：运动', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'Running is one of the most popular sports. It doesn\'t need special equipment and can be done almost anywhere. Studies show that running for 30 minutes a day can improve your health greatly.', question: 'How long should you run each day according to the passage?', options: ['10 minutes', '20 minutes', '30 minutes', '60 minutes'], correctIndex: 2, explanation: '文中明确提到 "running for 30 minutes a day"。' },
+    { id: 24, title: '短文：科技', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'Smartphones have changed our lives in many ways. We can now communicate with anyone, anywhere, at any time. However, spending too much time on phones can be harmful to our eyes and social skills.', question: 'What is one disadvantage of smartphones mentioned in the passage?', options: ['They are expensive', 'They are slow', 'They can harm our eyes', 'They are hard to use'], correctIndex: 2, explanation: '文中提到 "spending too much time on phones can be harmful to our eyes"。' },
+    { id: 25, title: '短文：历史', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'The Silk Road was not a single road but a network of trade routes connecting China with the West. It began during the Han Dynasty and lasted for over 1,500 years. Silk, tea, and spices were transported from East to West, while gold, glass, and new ideas traveled from West to East.', question: 'When did the Silk Road begin?', options: ['The Tang Dynasty', 'The Song Dynasty', 'The Han Dynasty', 'The Ming Dynasty'], correctIndex: 2, explanation: '文中明确提到 "It began during the Han Dynasty"。' },
+    { id: 26, title: '短文：心理', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'A growth mindset is the belief that abilities can be developed through hard work and dedication. People with a growth mindset see challenges as opportunities to learn. In contrast, a fixed mindset assumes that intelligence is static and cannot be changed.', question: 'What do people with a growth mindset think about challenges?', options: ['They avoid them', 'They see them as opportunities', 'They ignore them', 'They fear them'], correctIndex: 1, explanation: '文中说 "People with a growth mindset see challenges as opportunities to learn"。' },
+    { id: 27, title: '短文：科学', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'Photosynthesis is the process by which plants convert sunlight into energy. During this process, plants take in carbon dioxide and water, and release oxygen as a byproduct. This process is essential for life on Earth as it provides the oxygen we breathe.', question: 'What do plants release during photosynthesis?', options: ['Carbon dioxide', 'Nitrogen', 'Oxygen', 'Hydrogen'], correctIndex: 2, explanation: '文中说 "release oxygen as a byproduct"。' },
+  ],
+  // ─── 完形填空（蓝色面）──────────────────────────────
+  cloze: [
+    { id: 28, title: '完形: 日常', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'Mike gets up at 7:00 every morning. He ___ (1) his teeth and then has breakfast. He usually ___ (2) to school by bike.', question: '选择空格1的正确答案', options: ['brush', 'brushes', 'brushing', 'brushed'], correctIndex: 1, explanation: '主语 He 是第三人称单数，一般现在时动词加 -es。' },
+    { id: 29, title: '完形: 天气', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'It was a ___ (1) day. The sun was shining and the birds were singing. Amy ___ (2) to the park with her dog.', question: '选择空格1的正确答案', options: ['sunny', 'rain', 'cloud', 'wind'], correctIndex: 0, explanation: '根据后文 "The sun was shining" 可知是晴天，形容词 sunny 修饰 day。' },
+    { id: 30, title: '完形: 购物', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'Mom went to the supermarket. She bought some ___ (1) and vegetables. She also got a ___ (2) of milk for breakfast.', question: '选择空格2的正确答案', options: ['bottle', 'piece', 'loaf', 'pair'], correctIndex: 0, explanation: 'a bottle of milk 是固定搭配，表示一瓶牛奶。' },
+    { id: 31, title: '完形: 旅行', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'Last summer, my family ___ (1) to Beijing. We visited the Great Wall and the Forbidden City. The trip was ___ (2) and we all had a great time.', question: '选择空格1的正确答案', options: ['go', 'goes', 'went', 'will go'], correctIndex: 2, explanation: 'Last summer 是过去时间，须用一般过去时 went。' },
+    { id: 32, title: '完形: 友谊', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'A true friend is someone who always ___ (1) by your side. When you are sad, they ___ (2) you up. When you succeed, they are happy for you.', question: '选择空格2的正确答案', options: ['cheer', 'cheers', 'cheering', 'cheered'], correctIndex: 0, explanation: '助动词 do 后用动词原形，they cheer you up。cheer up 是固定搭配，表示「使振作」。' },
+    { id: 33, title: '完形: 健康', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'Getting enough sleep is very important for teenagers. Research shows that teenagers ___ (1) at least 8 hours of sleep each night. Lack of sleep can ___ (2) to poor concentration.', question: '选择空格2的正确答案', options: ['lead', 'leads', 'leading', 'led'], correctIndex: 0, explanation: 'can 后接动词原形，lead to 表示「导致」。' },
+    { id: 34, title: '完形: 文化', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'Different cultures have different customs. In Japan, people bow when they greet each other. In Western countries, people usually ___ (1) hands. Understanding these differences can help avoid ___ (2).', question: '选择空格2的正确答案', options: ['misunderstand', 'misunderstanding', 'misunderstood', 'misunderstands'], correctIndex: 1, explanation: 'avoid 后接动名词，avoid misunderstanding 表示「避免误解」。' },
+    { id: 35, title: '完形: 环境', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'Global warming is one of the biggest challenges facing humanity. If we ___ (1) act now, the consequences will be severe. Many countries have already started ___ (2) measures to reduce carbon emissions.', question: '选择空格1的正确答案', options: ['don\'t', 'didn\'t', 'won\'t', 'haven\'t'], correctIndex: 0, explanation: 'if 条件句中用一般现在时表将来，don\'t act 表示「如果不采取行动」。' },
+    { id: 36, title: '完形: 综合', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'The invention of the Internet has fundamentally ___ (1) the way we live and work. It has made information ___ (2) to billions of people worldwide.', question: '选择空格1的正确答案', options: ['change', 'changed', 'changing', 'changes'], correctIndex: 1, explanation: 'has + 过去分词构成现在完成时，change 的过去分词是 changed。' },
+  ],
+  // ─── 口语表达（紫色面）──────────────────────────────
+  speaking: [
+    { id: 37, title: '打招呼', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'How do you respond when someone says "Nice to meet you"?', options: ['Goodbye', 'Nice to meet you, too', 'I\'m sorry', 'Thank you'], correctIndex: 1, explanation: '当别人说 "Nice to meet you"（很高兴认识你），你应回答 "Nice to meet you, too"（我也很高兴认识你）。' },
+    { id: 38, title: '问路', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Excuse me, ___ is the nearest hospital?', options: ['what', 'where', 'when', 'why'], correctIndex: 1, explanation: '问地点用 where，where is the nearest hospital? = 最近的医院在哪里？' },
+    { id: 39, title: '点餐', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'In a restaurant, the waiter asks: "What would you like to ___?"', options: ['eat', 'drink', 'order', 'cook'], correctIndex: 2, explanation: '在餐厅点餐时，服务员通常问 "What would you like to order?"（您想点什么？）。' },
+    { id: 40, title: '电话用语', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'When you answer the phone, you should say:', options: ['Who are you?', 'What do you want?', 'Hello, this is [name] speaking.', 'Speak!'], correctIndex: 2, explanation: '接电话时礼貌的说法是 "Hello, this is [name] speaking."，表示「你好，我是…」。' },
+    { id: 41, title: '道歉', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'If you accidentally step on someone\'s foot, you should say:', options: ['Excuse me', 'I\'m sorry', 'Thank you', 'Never mind'], correctIndex: 1, explanation: '踩到别人脚是不小心造成的伤害，应该说 "I\'m sorry"（对不起）。Excuse me 用于打扰别人时。' },
+    { id: 42, title: '请假', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'You are sick and want to ask for a day off. You say:', options: ['I quit!', 'May I have a day off?', 'I don\'t care', 'Leave me alone'], correctIndex: 1, explanation: '请假应该礼貌地问 "May I have a day off?"（我可以请一天假吗？）。' },
+    { id: 43, title: '商务对话', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'In a job interview, the interviewer asks: "What are your strengths?" You should respond:', options: ['I don\'t have any', 'I\'m good at teamwork and problem-solving', 'That\'s personal', 'I don\'t know'], correctIndex: 1, explanation: '面试中问优点，应该自信地展示自己的技能，如团队合作和解决问题的能力。' },
+    { id: 44, title: '投诉', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'You received a damaged product. You call customer service and say:', options: ['You are terrible!', 'I\'d like to make a complaint about a damaged item.', 'Give me my money!', 'Whatever'], correctIndex: 1, explanation: '投诉时应该礼貌地说明问题，用 "I\'d like to make a complaint about..." 是得体的表达方式。' },
+    { id: 45, title: '演讲开场', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'What is a good way to start a presentation?', options: ['Good morning, everyone. Today I\'d like to talk about...', 'Hey guys, let\'s just get this over with.', 'I didn\'t prepare anything.', 'Can someone else do this?'], correctIndex: 0, explanation: '演讲开场应该礼貌问候听众并说明演讲主题，用 "Good morning, everyone. Today I\'d like to talk about..." 是标准开场。' },
+  ],
+  // ─── 趣味英语（棕色面）──────────────────────────────
+  fun: [
+    { id: 46, title: '谜语：字母', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'What letter is a drink?', options: ['T (tea)', 'C (coffee)', 'W (water)', 'M (milk)'], correctIndex: 0, explanation: '字母 T 的发音与 tea（茶）相同，所以说 "T" is a drink！' },
+    { id: 47, title: '常识：颜色', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'What color is the British phone booth?', options: ['Blue', 'Green', 'Red', 'Yellow'], correctIndex: 2, explanation: '英国的红色电话亭（Red Phone Booth）是英国的标志性文化符号。' },
+    { id: 48, title: '谜语：月份', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Which month has 28 days?', options: ['February', 'January', 'All of them', 'None'], correctIndex: 2, explanation: '所有月份都有28天（甚至更多），这是一个常见的英语脑筋急转弯！' },
+    { id: 49, title: '常识：节日', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'What holiday is celebrated on December 25th?', options: ['Halloween', 'Thanksgiving', 'Christmas', 'Easter'], correctIndex: 2, explanation: '12月25日是圣诞节（Christmas Day），是西方最重要的节日之一。' },
+    { id: 50, title: '谜语：蛋', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'What has to be broken before you can use it?', options: ['A window', 'An egg', 'A door', 'A book'], correctIndex: 1, explanation: '鸡蛋（egg）在使用前必须先打破（break），这是一个经典的英语谜语。' },
+    { id: 51, title: '常识：地标', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'In which city can you find the Statue of Liberty?', options: ['Los Angeles', 'Chicago', 'New York', 'Boston'], correctIndex: 2, explanation: '自由女神像（Statue of Liberty）位于美国纽约（New York）。' },
+    { id: 52, title: '文化：文学', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'Who wrote "Romeo and Juliet"?', options: ['Charles Dickens', 'William Shakespeare', 'Jane Austen', 'Mark Twain'], correctIndex: 1, explanation: '《罗密欧与朱丽叶》是英国剧作家威廉·莎士比亚（William Shakespeare）的经典作品。' },
+    { id: 53, title: '文化：名言', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: '"To be, or not to be" is from which play?', options: ['Macbeth', 'Hamlet', 'King Lear', 'Othello'], correctIndex: 1, explanation: '"To be, or not to be"（生存还是毁灭）是莎士比亚的《哈姆雷特》（Hamlet）中的经典独白。' },
+    { id: 54, title: '文化：食物', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'What is the traditional British meal "fish and chips" served with?', options: ['Rice', 'Fries (chips)', 'Pasta', 'Bread'], correctIndex: 1, explanation: 'Fish and Chips（炸鱼薯条）是英国传统美食，鱼和薯条（chips=炸薯条）一起搭配食用。' },
+  ],
+};
+
+// ============================================================
+// Three.js 初始化
+// ============================================================
+const canvas = document.getElementById('cube-canvas');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(5, 4, 7);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+
+// 灯光
+const ambientLight = new THREE.AmbientLight(0x404060, 1.5);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 2);
+dirLight.position.set(5, 10, 5);
+scene.add(dirLight);
+const dirLight2 = new THREE.DirectionalLight(0x8899cc, 0.8);
+dirLight2.position.set(-3, -1, -3);
+scene.add(dirLight2);
+
+// 轨道控制器
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 4;
+controls.maxDistance = 10;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.5;
+controls.target.set(0, 0, 0);
+
+// 粒子背景
+const particlesGeo = new THREE.BufferGeometry();
+const particlesCount = 200;
+const posArray = new Float32Array(particlesCount * 3);
+for (let i = 0; i < particlesCount * 3; i++) {
+  posArray[i] = (Math.random() - 0.5) * 20;
+}
+particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+const particlesMat = new THREE.PointsMaterial({ size: 0.02, color: 0x4ae6c9, transparent: true, opacity: 0.5 });
+const particles = new THREE.Points(particlesGeo, particlesMat);
+scene.add(particles);
+
+// ============================================================
+// 创建魔方
+// ============================================================
+const CUBIE_SIZE = 0.95;
+const CUBIE_GAP = 0.05;
+const cubieGroup = new THREE.Group();
+const cubieMap = {}; // key: "x,y,z" → { mesh, materials, pos }
+const cubieMeshes = []; // for raycasting
+
+const DARK_COLOR = 0x1a1a2e;
+
+function createCubie(x, y, z) {
+  // 判断每个面是否暴露
+  const exposed = {
+    front:  z === 1,
+    back:   z === -1,
+    left:   x === -1,
+    right:  x === 1,
+    top:    y === 1,
+    bottom: y === -1,
+  };
+
+  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
+  const faceColors = {
+    right:  exposed.right  ? FACES.right.color  : DARK_COLOR,
+    left:   exposed.left   ? FACES.left.color   : DARK_COLOR,
+    top:    exposed.top    ? FACES.top.color    : DARK_COLOR,
+    bottom: exposed.bottom ? FACES.bottom.color : DARK_COLOR,
+    front:  exposed.front  ? FACES.front.color  : DARK_COLOR,
+    back:   exposed.back   ? FACES.back.color   : DARK_COLOR,
+  };
+
+  const materials = faceOrder.map(f => new THREE.MeshStandardMaterial({
+    color: faceColors[f],
+    roughness: 0.3,
+    metalness: 0.1,
+  }));
+
+  const geo = new THREE.BoxGeometry(CUBIE_SIZE, CUBIE_SIZE, CUBIE_SIZE);
+  const mesh = new THREE.Mesh(geo, materials);
+  mesh.position.set(x * (CUBIE_SIZE + CUBIE_GAP), y * (CUBIE_SIZE + CUBIE_GAP), z * (CUBIE_SIZE + CUBIE_GAP));
+
+  // 边框（禁用射线检测，避免干扰点击）
+  const edges = new THREE.EdgesGeometry(geo);
+  const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 }));
+  line.raycast = () => {};
+  mesh.add(line);
+
+  return { mesh, materials, faceOrder, exposed };
+}
+
+// 生成所有 cubie（排除中心块）
+for (let x = -1; x <= 1; x++) {
+  for (let y = -1; y <= 1; y++) {
+    for (let z = -1; z <= 1; z++) {
+      if (x === 0 && y === 0 && z === 0) continue;
+      const key = `${x},${y},${z}`;
+      const { mesh, materials, faceOrder, exposed } = createCubie(x, y, z);
+      cubieGroup.add(mesh);
+      cubieMap[key] = { mesh, materials, faceOrder, exposed, x, y, z };
+      cubieMeshes.push(mesh);
+    }
+  }
+}
+scene.add(cubieGroup);
+
+// ============================================================
+// 进度管理
+// ============================================================
+const STORAGE_KEY = 'cube_english_progress';
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+function saveProgress(progress) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
+
+function getCellKey(faceId, row, col) {
+  return `${faceId}_${row}_${col}`;
+}
+
+function getCellState(faceId, row, col) {
+  const progress = loadProgress();
+  const key = getCellKey(faceId, row, col);
+  if (progress[key] === 'completed') return 'completed';
+  // 解锁逻辑：每个面的关卡按顺序解锁 (row*3+col 顺序)
+  const order = row * 3 + col;
+  if (order === 0) return 'unlocked';
+  // 检查前一关是否完成
+  const prevRow = Math.floor((order - 1) / 3);
+  const prevCol = (order - 1) % 3;
+  const prevKey = getCellKey(faceId, prevRow, prevCol);
+  return progress[prevKey] === 'completed' ? 'unlocked' : 'locked';
+}
+
+function markCompleted(faceId, row, col) {
+  const progress = loadProgress();
+  progress[getCellKey(faceId, row, col)] = 'completed';
+  saveProgress(progress);
+  updateAllCubieColors();
+  updateHeaderStats();
+}
+
+function getTotalCompleted() {
+  const progress = loadProgress();
+  return Object.values(progress).filter(v => v === 'completed').length;
+}
+
+function getFaceCompleted(faceId) {
+  const progress = loadProgress();
+  let count = 0;
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      if (progress[getCellKey(faceId, row, col)] === 'completed') count++;
+    }
+  }
+  return count;
+}
+
+// ============================================================
+// 更新 cubie 颜色（根据完成状态）
+// ============================================================
+function updateAllCubieColors() {
+  const progress = loadProgress();
+  for (const key in cubieMap) {
+    const [x, y, z] = key.split(',').map(Number);
+    const { materials, faceOrder, exposed } = cubieMap[key];
+
+    for (const faceId of Object.keys(FACES)) {
+      if (!exposed[faceId]) continue;
+      const cell = getFaceCell(x, y, z, ...FACES[faceId].normal);
+      if (!cell) continue;
+      const state = getCellState(faceId, cell.row, cell.col);
+      const matIdx = faceOrder.indexOf(faceId === 'front' ? 'front' : faceId === 'back' ? 'back' : faceId === 'left' ? 'left' : faceId === 'right' ? 'right' : faceId === 'top' ? 'top' : 'bottom');
+      if (matIdx === -1) continue;
+
+      const baseColor = FACES[faceId].color;
+      if (state === 'completed') {
+        materials[matIdx].color.set(baseColor);
+        materials[matIdx].emissive.set(baseColor);
+        materials[matIdx].emissiveIntensity = 0.5;
+      } else if (state === 'locked') {
+        materials[matIdx].color.set(0x333344);
+        materials[matIdx].emissive.set(0x000000);
+        materials[matIdx].emissiveIntensity = 0;
+      } else {
+        materials[matIdx].color.set(baseColor);
+        materials[matIdx].emissive.set(0x000000);
+        materials[matIdx].emissiveIntensity = 0;
+      }
+    }
+  }
+}
+
+// ============================================================
+// 顶部统计
+// ============================================================
+function updateHeaderStats() {
+  document.getElementById('total-completed').textContent = getTotalCompleted();
+
+  const container = document.getElementById('face-progress');
+  container.innerHTML = '';
+
+  for (const face of Object.values(FACES)) {
+    const completed = getFaceCompleted(face.id);
+    const item = document.createElement('div');
+    item.className = 'face-progress-item';
+    item.innerHTML = `<span class="face-progress-dot" style="background:${face.color}"></span>${face.name} ${completed}/9`;
+    item.onclick = (e) => { e.stopPropagation(); faceCameraToFace(face.id); };
+    container.appendChild(item);
+  }
+}
+
+// 旋转视角到指定面
+function faceCameraToFace(faceId) {
+  const face = FACES[faceId];
+  const target = new THREE.Vector3(
+    face.normal[0] * 5,
+    face.normal[1] * 5,
+    face.normal[2] * 5
+  );
+  // 平滑动画
+  const start = camera.position.clone();
+  const startTarget = controls.target.clone();
+  const endTarget = new THREE.Vector3(0, 0, 0);
+  const startTime = performance.now();
+  const duration = 800;
+
+  function animate(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOutQuad
+
+    camera.position.lerpVectors(start, target, ease);
+    controls.target.lerpVectors(startTarget, endTarget, ease);
+    controls.update();
+
+    if (t < 1) {
+      requestAnimationFrame(animate);
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+// ============================================================
+// 点击检测 (Raycaster)
+// ============================================================
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let currentQuestion = null;
+let currentFaceId = null;
+let currentCell = null;
+let selectedOption = null;
+let answered = false;
+
+// 点击检测：监听 document 的 click 事件，绕过 OrbitControls 的 pointer 事件拦截
+document.addEventListener('click', (e) => {
+  // 只有点击在 canvas 上才处理
+  if (e.target !== canvas) return;
+  if (document.getElementById('modal-overlay').classList.contains('active')) return;
+
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(cubieMeshes);
+
+  console.log('click detected, intersects:', intersects.length);
+
+  if (intersects.length > 0) {
+    const intersect = intersects[0];
+    let hitObj = intersect.object;
+    // 如果射线命中的是子对象（如边框），向上查找父级 Mesh
+    if (!(hitObj instanceof THREE.Mesh)) {
+      hitObj = hitObj.parent;
+    }
+
+    let cubieData = null;
+    for (const key in cubieMap) {
+      if (cubieMap[key].mesh === hitObj) {
+        cubieData = cubieMap[key];
+        break;
+      }
+    }
+    if (!cubieData) { console.log('cubie not found'); return; }
+
+    const normal = intersect.face.normal.clone();
+    normal.x = Math.round(normal.x);
+    normal.y = Math.round(normal.y);
+    normal.z = Math.round(normal.z);
+
+    const faceId = getFaceFromNormal(normal.x, normal.y, normal.z);
+    if (!faceId) return;
+
+    const cell = getFaceCell(cubieData.x, cubieData.y, cubieData.z, normal.x, normal.y, normal.z);
+    if (!cell) return;
+
+    const state = getCellState(faceId, cell.row, cell.col);
+    if (state === 'locked') {
+      showLockedModal(faceId, cell);
+      return;
+    }
+
+    openQuestionModal(faceId, cell);
+  }
+});
+
+// 鼠标悬停时改变光标
+canvas.addEventListener('mousemove', (event) => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(cubieMeshes);
+  canvas.style.cursor = intersects.length > 0 ? 'pointer' : 'grab';
+});
+
+// 浮动按钮：打开第一个未完成的关卡
+window.startFirstQuestion = function() {
+  // 按面顺序查找第一个未完成的关卡（使用面 ID）
+  const faceOrder = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+  for (const faceId of faceOrder) {
+    for (let order = 0; order < 9; order++) {
+      const row = Math.floor(order / 3);
+      const col = order % 3;
+      const state = getCellState(faceId, row, col);
+      if (state !== 'locked') {
+        openQuestionModal(faceId, { row, col });
+        return;
+      }
+    }
+  }
+  // 全部完成
+  alert('🎉 恭喜！你已经完成了所有54个关卡！');
+};
+
+// ============================================================
+// 答题弹窗
+// ============================================================
+function openQuestionModal(faceId, cell) {
+  // 兼容面 ID (front/back/...) 和题库 ID (grammar/vocabulary/...)
+  const isFaceKey = FACES[faceId] !== undefined;
+  const qbId = isFaceKey ? FACE_TO_QB[faceId] : faceId;
+  const faceKey = isFaceKey ? faceId : QB_TO_FACE[faceId];
+  const face = FACES[faceKey];
+  const questions = QUESTIONS[qbId];
+
+  currentFaceId = faceKey;
+  currentCell = cell;
+  selectedOption = null;
+  answered = false;
+
+  const qIndex = cell.row * 3 + cell.col;
+  const q = questions[qIndex];
+  currentQuestion = q;
+
+  // 设置面标签
+  const badge = document.getElementById('modal-face-badge');
+  badge.textContent = `${face.emoji} ${face.name}`;
+  badge.style.background = face.color + '33';
+  badge.style.color = face.color;
+
+  document.getElementById('modal-level').textContent = q.difficultyLabel;
+  document.getElementById('modal-title').textContent = `第${qIndex + 1}关：${q.title}`;
+
+  // 短文
+  const passageEl = document.getElementById('modal-passage');
+  if (q.passage) {
+    passageEl.style.display = 'block';
+    passageEl.textContent = q.passage;
+  } else {
+    passageEl.style.display = 'none';
+  }
+
+  document.getElementById('modal-question').textContent = q.question;
+
+  // 选项
+  const optionsList = document.getElementById('options-list');
+  optionsList.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}.</span> ${opt}`;
+    btn.onclick = () => selectOption(i, btn);
+    optionsList.appendChild(btn);
+  });
+
+  // 重置反馈
+  document.getElementById('feedback-area').classList.remove('show');
+  document.getElementById('btn-submit').style.display = 'block';
+  document.getElementById('btn-submit').disabled = true;
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('locked-tip').style.display = 'none';
+
+  document.getElementById('modal-overlay').classList.add('active');
+}
+
+function showLockedModal(faceId, cell) {
+  currentFaceId = faceId;
+  currentCell = cell;
+  const face = FACES[faceId];
+  const badge = document.getElementById('modal-face-badge');
+  badge.textContent = `${face.emoji} ${face.name}`;
+  badge.style.background = face.color + '33';
+  badge.style.color = face.color;
+
+  document.getElementById('modal-level').textContent = '';
+  document.getElementById('modal-title').textContent = `第${cell.row * 3 + cell.col + 1}关`;
+  document.getElementById('modal-passage').style.display = 'none';
+  document.getElementById('modal-question').textContent = '';
+  document.getElementById('options-list').innerHTML = '';
+  document.getElementById('feedback-area').classList.remove('show');
+  document.getElementById('btn-submit').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('locked-tip').style.display = 'block';
+
+  document.getElementById('modal-overlay').classList.add('active');
+}
+
+function selectOption(index, btn) {
+  if (answered) return;
+  selectedOption = index;
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('btn-submit').disabled = false;
+}
+
+function submitAnswer() {
+  if (selectedOption === null || !currentQuestion || answered) return;
+  answered = true;
+
+  const q = currentQuestion;
+  const isCorrect = selectedOption === q.correctIndex;
+  const feedbackArea = document.getElementById('feedback-area');
+  const feedbackMsg = document.getElementById('feedback-message');
+  const feedbackExp = document.getElementById('feedback-explanation');
+
+  feedbackArea.classList.add('show');
+
+  // 高亮选项
+  const optionBtns = document.querySelectorAll('.option-btn');
+  optionBtns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correctIndex) btn.classList.add('correct');
+    if (i === selectedOption && !isCorrect) btn.classList.add('wrong');
+  });
+
+  if (isCorrect) {
+    feedbackMsg.innerHTML = '<div class="feedback-correct">✅ 回答正确！</div>';
+    feedbackExp.textContent = q.explanation;
+    markCompleted(currentFaceId, currentCell.row, currentCell.col);
+  } else {
+    feedbackMsg.innerHTML = '<div class="feedback-wrong">❌ 回答错误</div>';
+    feedbackExp.textContent = q.explanation;
+  }
+
+  document.getElementById('btn-submit').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'block';
+}
+
+function nextQuestion() {
+  closeModal();
+  // 尝试打开下一关
+  if (currentFaceId && currentCell) {
+    const nextOrder = currentCell.row * 3 + currentCell.col + 1;
+    if (nextOrder < 9) {
+      const nextRow = Math.floor(nextOrder / 3);
+      const nextCol = nextOrder % 3;
+      const state = getCellState(currentFaceId, nextRow, nextCol);
+      if (state !== 'locked') {
+        openQuestionModal(currentFaceId, { row: nextRow, col: nextCol });
+        return;
+      }
+    }
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('active');
+  currentQuestion = null;
+  selectedOption = null;
+  answered = false;
+}
+
+// 点击遮罩关闭
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// 遮罩内点击不冒泡
+document.getElementById('modal-box').addEventListener('click', (e) => {
+  e.stopPropagation();
+});
+
+// ============================================================
+// 动画循环
+// ============================================================
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  particles.rotation.y += 0.0002;
+  renderer.render(scene, camera);
+}
+animate();
+
+// ============================================================
+// 窗口大小调整
+// ============================================================
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// ============================================================
+// 键盘快捷键
+// ============================================================
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && document.getElementById('modal-overlay').classList.contains('active') && !answered) {
+    submitAnswer();
+  }
+});
+
+// ============================================================
+// 按钮事件绑定（ES module 中 onclick 属性无法访问模块函数）
+// ============================================================
+document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+document.getElementById('btn-submit').addEventListener('click', submitAnswer);
+document.getElementById('btn-next').addEventListener('click', nextQuestion);
+
+// ============================================================
+// 初始化
+// ============================================================
+updateAllCubieColors();
+updateHeaderStats();
+
+console.log('🧩 魔方英语已就绪！');
+console.log('  - 6个面，54个关卡');
+console.log('  - 拖拽旋转魔方');
+console.log('  - 点击彩色格子（红色=语法，橙色=词汇…）开始答题');
+console.log('  - 完成进度自动保存');
+</script>
+</body>
+</html>
