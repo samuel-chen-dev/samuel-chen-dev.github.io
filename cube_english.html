@@ -2,17 +2,104 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>🧩 魔方英语 - Cube English</title>
 <style>
 /* ============================================================
    全局样式
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ============================================================
+   CSS 变量 - 主题系统
+   ============================================================ */
+:root {
+  --bg-primary: #0a0a1a;
+  --bg-secondary: #1a0a2e;
+  --bg-tertiary: #0d1b2a;
+  --bg-card: rgba(10,10,30,0.7);
+  --bg-card-solid: #1a1a2e;
+  --bg-panel: rgba(10,10,30,0.45);
+  --bg-passage: rgba(255,255,255,0.05);
+  --bg-item: rgba(255,255,255,0.04);
+  --border-color: rgba(255,255,255,0.1);
+  --border-light: rgba(255,255,255,0.06);
+  --text-primary: #f0e6d3;
+  --text-secondary: #aaaacc;
+  --text-title: #fff;
+  --text-muted: #666;
+  --text-option: #ddd;
+  --btn-bg: rgba(255,255,255,0.04);
+  --btn-text: #aaaacc;
+  --btn-active-bg: rgba(74,230,201,0.2);
+  --btn-active-text: #fff;
+  --btn-hover-bg: rgba(255,255,255,0.1);
+  --btn-hover-border: rgba(255,255,255,0.2);
+  --modal-bg: rgba(10,10,30,0.92);
+  --modal-border: rgba(74,230,201,0.15);
+  --option-bg: rgba(255,255,255,0.06);
+  --option-text: #ddd;
+  --progress-bg: rgba(255,255,255,0.06);
+  --hint-color: rgba(255,255,255,0.35);
+  --header-bg: rgba(255,255,255,0.06);
+  --stat-text: #aaaacc;
+  --lock-color: #1a1a2e;
+  --lock-unlocked-alpha: 0.5;
+  --cubie-inner: #1a1a2e;
+  --confirm-bg: rgba(20,20,40,0.95);
+  --confirm-border: rgba(255,255,255,0.12);
+}
+
+[data-theme="light"] {
+  --bg-primary: #f5f0eb;
+  --bg-secondary: #faf0e6;
+  --bg-tertiary: #f0ebe3;
+  --bg-card: rgba(255,255,255,0.85);
+  --bg-card-solid: #ffffff;
+  --bg-panel: rgba(255,255,255,0.7);
+  --bg-passage: rgba(0,0,0,0.04);
+  --bg-item: rgba(0,0,0,0.04);
+  --border-color: rgba(0,0,0,0.08);
+  --border-light: rgba(0,0,0,0.04);
+  --text-primary: #2d2a24;
+  --text-secondary: #6b6a66;
+  --text-title: #1a1a2e;
+  --text-muted: #999;
+  --text-option: #2d2a24;
+  --btn-bg: rgba(0,0,0,0.04);
+  --btn-text: #6b6a66;
+  --btn-active-bg: rgba(74,230,201,0.15);
+  --btn-active-text: #1a1a2e;
+  --btn-hover-bg: rgba(0,0,0,0.06);
+  --btn-hover-border: rgba(0,0,0,0.15);
+  --modal-bg: rgba(255,252,248,0.95);
+  --modal-border: rgba(74,230,201,0.25);
+  --option-bg: rgba(0,0,0,0.04);
+  --option-text: #2d2a24;
+  --progress-bg: rgba(0,0,0,0.08);
+  --hint-color: rgba(0,0,0,0.25);
+  --header-bg: rgba(0,0,0,0.04);
+  --stat-text: #6b6a66;
+  --lock-color: #e8e0d8;
+  --lock-unlocked-alpha: 0.4;
+  --cubie-inner: #e8e0d8;
+  --confirm-bg: rgba(255,255,255,0.95);
+  --confirm-border: rgba(0,0,0,0.12);
+}
+
+/* 主题切换过渡 */
+body, .header, .progress-panel, .modal-overlay, .modal-box, .option-btn,
+.header-top, .header-stats, .panel-header, .panel-body, .confirm-box, .hint-bar,
+.diff-btn, .cloze-passage, .wordbank-passage, .grammar-passage, .cloze-option,
+.wordbank-tag, .wordbank-tags, .feedback-area, .modal-passage, .theme-toggle {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0d1b2a 100%);
-  color: #e0e0e0;
+  background: radial-gradient(ellipse at 50% 55%, rgba(74,230,201,0.06) 0%, transparent 70%),
+              linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+  color: var(--text-primary);
   min-height: 100vh;
   overflow: hidden;
   user-select: none;
@@ -20,6 +107,17 @@ body {
   touch-action: pan-x pan-y;
 }
 #app { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+/* ============================================================
+   主题切换按钮
+   ============================================================ */
+.theme-toggle {
+  background: var(--header-bg); border: 1px solid var(--border-light);
+  border-radius: 50%; width: 34px; height: 34px; font-size: 1rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s ease; line-height: 1; padding: 0;
+}
+.theme-toggle:hover { background: var(--btn-hover-bg); transform: rotate(15deg); }
 
 /* ============================================================
    顶部信息栏
@@ -32,83 +130,225 @@ body {
 }
 .header-top {
   display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 6px;
+  position: relative;
+}
+.header-top::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(230,200,154,0.3), transparent);
 }
 .header-title {
   font-size: 1.2rem; font-weight: 700; color: #fff;
-  text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+  text-shadow: 0 0 30px rgba(138, 43, 226, 0.3), 0 0 10px rgba(138, 43, 226, 0.15);
+  animation: titleBreath 3s ease-in-out infinite;
 }
-.header-stats {
-  font-size: 0.75rem; color: #aaa;
-  background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 20px;
-  backdrop-filter: blur(10px);
+@keyframes titleBreath {
+  0%, 100% { text-shadow: 0 0 30px rgba(138,43,226,0.3), 0 0 10px rgba(138,43,226,0.15); }
+  50% { text-shadow: 0 0 40px rgba(138,43,226,0.5), 0 0 20px rgba(138,43,226,0.3); }
 }
+.header-stats { font-size: 0.75rem; color: var(--stat-text); background: var(--header-bg); padding: 4px 12px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid var(--border-light); }
 .header-stats span { color: #4ae6c9; font-weight: 700; }
+.header-diff-badge {
+  font-size: 0.7rem; font-weight: 600; color: #e6c89a;
+  background: rgba(230,200,154,0.1); padding: 3px 10px; border-radius: 12px;
+  border: 1px solid rgba(230,200,154,0.15);
+}
+.header-action-btn {
+  background: var(--header-bg); border: 1px solid var(--border-light);
+  border-radius: 8px; color: var(--text-secondary); font-size: 0.8rem; padding: 4px 8px;
+  cursor: pointer; transition: all 0.2s; line-height: 1;
+}
+.header-action-btn:hover { background: var(--btn-hover-bg); color: var(--text-title); }
+.difficulty-selector { display: flex; gap: 4px; margin-top: 0; }
+.diff-btn {
+  padding: 5px 16px; border-radius: 20px; border: 1px solid var(--border-color);
+  background: var(--btn-bg); color: var(--btn-text); font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.diff-btn:hover {
+  border-color: rgba(74,230,201,0.4); color: var(--text-title);
+  transform: translateY(-1px);
+}
+.diff-btn.active {
+  background: linear-gradient(135deg, rgba(74,230,201,0.2), rgba(74,230,201,0.35));
+  border-color: #4ae6c9; color: var(--btn-active-text);
+  box-shadow: 0 0 20px rgba(74,230,201,0.25), 0 0 40px rgba(74,230,201,0.08);
+}
 
-/* 面进度条 */
-.face-progress {
-  display: flex; gap: 4px; flex-wrap: wrap;
+/* 悬浮迷你进度面板 - 顶部 */
+.progress-panel {
+  position: relative; margin-top: 8px;
+  background: var(--bg-panel); backdrop-filter: blur(10px);
+  border-radius: 12px; border: 1px solid var(--border-color);
+  overflow: hidden; transition: all 0.35s ease;
   pointer-events: auto;
 }
-.face-progress-item {
-  display: flex; align-items: center; gap: 3px;
-  font-size: 0.65rem; color: #ccc;
-  background: rgba(255,255,255,0.06); padding: 3px 8px; border-radius: 12px;
-  cursor: pointer; transition: background 0.2s;
+.panel-header {
+  display: flex; align-items: center; gap: 10px; padding: 0 14px;
+  height: 44px; cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
-.face-progress-item:hover { background: rgba(255,255,255,0.12); }
-.face-progress-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.panel-header:hover { background: var(--btn-hover-bg); }
+.panel-icon { font-size: 1.1rem; }
+.panel-title { font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; }
+.panel-progress-text { font-size: 0.8rem; color: var(--text-title); font-weight: 700; white-space: nowrap; }
+.panel-progress-bar {
+  flex: 1; height: 6px; background: var(--progress-bg); border-radius: 3px;
+  overflow: hidden; min-width: 40px;
+}
+.panel-progress-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1);
+  box-shadow: 0 0 12px rgba(72, 219, 251, 0.3);
+  transition: width 0.4s ease;
+}
+.panel-percent { font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; min-width: 35px; text-align: right; }
+.panel-toggle {
+  background: none; border: none; color: var(--text-secondary); font-size: 0.75rem;
+  cursor: pointer; padding: 4px; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.panel-toggle.open { transform: rotate(90deg); }
+.panel-body {
+  max-height: 0; overflow: hidden; opacity: 0;
+  transform: translateY(-4px);
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.35s ease,
+              transform 0.35s ease,
+              padding 0.3s ease;
+  padding: 0 14px; display: flex; flex-direction: column; gap: 6px;
+}
+.panel-body.open {
+  max-height: 100px; padding: 0 14px 10px;
+  opacity: 1; transform: translateY(0);
+}
+.panel-body-row {
+  display: flex; gap: 12px;
+}
+.panel-body-item {
+  flex: 1; display: flex; align-items: center; gap: 5px;
+  font-size: 0.78rem; color: var(--text-secondary); cursor: pointer;
+  padding: 4px 8px; border-radius: 8px; transition: background 0.2s;
+  white-space: nowrap;
+  opacity: 0; transform: translateY(-4px);
+}
+.panel-body.open .panel-body-item {
+  opacity: 1; transform: translateY(0);
+}
+.panel-body.open .panel-body-item:nth-child(1) { transition: all 0.3s ease 0ms; }
+.panel-body.open .panel-body-item:nth-child(2) { transition: all 0.3s ease 50ms; }
+.panel-body.open .panel-body-item:nth-child(3) { transition: all 0.3s ease 100ms; }
+.panel-body.open .panel-body-row:nth-child(2) .panel-body-item:nth-child(1) { transition: all 0.3s ease 150ms; }
+.panel-body.open .panel-body-row:nth-child(2) .panel-body-item:nth-child(2) { transition: all 0.3s ease 200ms; }
+.panel-body.open .panel-body-row:nth-child(2) .panel-body-item:nth-child(3) { transition: all 0.3s ease 250ms; }
+.panel-body-item:hover { background: rgba(255,255,255,0.08); }
+.panel-body-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
 /* ============================================================
    3D 画布
    ============================================================ */
-#cube-canvas { width: 100%; height: 100%; display: block; }
+#cube-canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+
+/* 点击脉冲动画 */
+@keyframes cubiePulse {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.08); filter: brightness(1.5); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+/* ============================================================
+   确认对话框
+   ============================================================ */
+.confirm-overlay {
+  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 200; background: rgba(10,10,30,0.8);
+  backdrop-filter: blur(8px);
+  justify-content: center; align-items: center;
+}
+.confirm-overlay.active { display: flex; }
+.confirm-box {
+  background: var(--confirm-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--confirm-border);
+  border-radius: 16px; padding: 24px;
+  width: 90%; max-width: 360px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  animation: modalIn 0.25s ease-out;
+}
+.confirm-title { font-size: 1rem; font-weight: 700; color: var(--text-title); margin-bottom: 8px; }
+.confirm-message { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+.confirm-buttons { display: flex; gap: 10px; justify-content: center; }
+.confirm-btn {
+  padding: 8px 24px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+  border: none; cursor: pointer; transition: all 0.2s;
+}
+.confirm-btn-cancel { background: var(--btn-bg); color: var(--text-secondary); border: 1px solid var(--border-color); }
+.confirm-btn-cancel:hover { background: var(--btn-hover-bg); }
+.confirm-btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; }
+.confirm-btn-danger:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(231,76,60,0.3); }
+
+/* 面板内重置按钮 */
+.panel-reset-btn {
+  background: none; border: none; color: #555; font-size: 0.7rem;
+  cursor: pointer; padding: 2px 4px; border-radius: 4px;
+  transition: all 0.2s; margin-left: 2px; opacity: 0.5;
+}
+.panel-reset-btn:hover { color: #e74c3c; opacity: 1; background: rgba(231,76,60,0.1); }
+.panel-reset-all {
+  display: block; width: 100%; margin-top: 8px; padding: 6px 0;
+  background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.2);
+  border-radius: 8px; color: #e74c3c; font-size: 0.75rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; text-align: center;
+}
+.panel-reset-all:hover { background: rgba(231,76,60,0.15); border-color: rgba(231,76,60,0.4); }
 
 /* ============================================================
    底部提示
    ============================================================ */
 .hint-bar {
-  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-  font-size: 0.7rem; color: rgba(255,255,255,0.4);
+  position: absolute;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  left: 50%; transform: translateX(-50%);
+  font-size: 0.7rem; color: var(--hint-color);
   pointer-events: none; z-index: 10;
   text-align: center;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: opacity 0.5s ease;
 }
 
-/* 顶部面进度（2行×3列） */
-.face-progress {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px 10px; margin-top: 10px;
-}
-.face-progress-item {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 1.5rem; color: #ccc; cursor: pointer;
-  padding: 6px 12px; border-radius: 10px; transition: background 0.2s;
-  white-space: nowrap;
-}
-.face-progress-item:hover { background: rgba(255,255,255,0.08); }
-.face-progress-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+/* ============================================================
+   3D 画布
+   ============================================================ */
+#cube-canvas { width: 100%; height: 100%; display: block; touch-action: none; }
 
 /* ============================================================
    答题弹窗
    ============================================================ */
 .modal-overlay {
   display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 100; background: rgba(0,0,0,0.7);
+  z-index: 100; background: rgba(10,10,30,0.85);
+  backdrop-filter: blur(8px);
   justify-content: center; align-items: flex-start;
   overflow-y: auto; padding: 20px 0;
 }
 .modal-overlay.active { display: flex; }
 .modal-box {
-  background: rgba(20, 20, 40, 0.92);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px; padding: 24px;
-  width: 90%; max-width: 440px;
+  background: var(--modal-bg);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--modal-border);
+  border-radius: 16px; padding: 16px;
+  width: 96%; max-width: 480px; max-height: 85vh; overflow-y: auto;
   margin: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  animation: modalIn 0.25s ease-out;
+  box-shadow: 0 0 40px rgba(74,230,201,0.06), 0 20px 60px rgba(0,0,0,0.5);
+  animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1), borderGlow 3s ease-in-out infinite;
+}
+@media (min-width: 480px) {
+  .modal-box { width: 90%; padding: 24px; }
 }
 @keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(74,230,201,0.15); box-shadow: 0 0 20px rgba(74,230,201,0.05); }
+  50% { border-color: rgba(74,230,201,0.35); box-shadow: 0 0 40px rgba(74,230,201,0.15); }
+}
 
 .modal-header {
   display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
@@ -117,79 +357,191 @@ body {
   display: flex; align-items: center; gap: 6px;
   font-size: 0.8rem; font-weight: 600; padding: 4px 12px;
   border-radius: 20px; color: #fff;
+  box-shadow: 0 0 20px rgba(74,230,201,0.25);
 }
-.modal-level { font-size: 0.75rem; color: #aaa; }
+.modal-level { font-size: 0.75rem; color: var(--text-secondary); }
 
 .modal-title {
-  font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 12px;
+  font-size: 1.1rem; font-weight: 700; color: var(--text-title); margin-bottom: 12px;
 }
 
 /* 题目类型：短文 */
 .modal-passage {
-  background: rgba(255,255,255,0.05); border-radius: 10px;
+  background: var(--bg-passage); border-radius: 10px;
   padding: 12px 14px; font-size: 0.85rem; line-height: 1.7;
-  color: #ccc; margin-bottom: 14px;
+  color: var(--text-secondary); margin-bottom: 14px;
   border-left: 3px solid rgba(138, 43, 226, 0.5);
 }
 
 /* 选项 */
-.modal-question { font-size: 0.95rem; color: #ddd; margin-bottom: 14px; line-height: 1.6; }
+.modal-question { font-size: 0.95rem; color: var(--text-primary); margin-bottom: 14px; line-height: 1.6; }
 .options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
 .option-btn {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px; border-radius: 10px;
-  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-  color: #ddd; font-size: 0.9rem; cursor: pointer;
-  transition: all 0.15s; text-align: left;
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border-radius: 10px;
+  background: var(--option-bg); border: 1px solid var(--border-color);
+  color: var(--option-text); font-size: 1rem; cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); text-align: left; min-height: 44px;
 }
-.option-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+.option-btn:hover {
+  background: var(--btn-hover-bg); border-color: var(--btn-hover-border);
+  transform: translateY(-2px); box-shadow: 0 4px 15px rgba(74,230,201,0.1);
+}
 .option-btn.selected { border-color: #4ae6c9; background: rgba(74,230,201,0.15); color: #4ae6c9; }
-.option-btn.correct { border-color: #27ae60; background: rgba(39,174,96,0.2); color: #27ae60; }
-.option-btn.wrong { border-color: #e74c3c; background: rgba(231,76,60,0.2); color: #e74c3c; }
+.option-btn.correct { border-color: #27ae60; background: rgba(39,174,96,0.2); color: #27ae60; animation: correctPop 0.4s ease; }
+.option-btn.wrong { border-color: #e74c3c; background: rgba(231,76,60,0.2); color: #e74c3c; animation: wrongShake 0.4s ease; }
 .option-btn:disabled { pointer-events: none; }
-.option-letter { font-weight: 700; font-size: 0.85rem; opacity: 0.6; }
+.option-letter { font-weight: 700; font-size: 1rem; opacity: 0.6; min-width: 24px; }
+
+/* 题型标签 */
+.question-type-badge {
+  display: inline-block; font-size: 0.65rem; font-weight: 600;
+  padding: 2px 8px; border-radius: 8px; margin-left: 8px;
+  vertical-align: middle;
+}
+.type-choice { background: rgba(74,230,201,0.15); color: #4ae6c9; }
+.type-cloze { background: rgba(162,155,254,0.15); color: #a29bfe; }
+.type-wordbank { background: rgba(253,203,110,0.15); color: #fdcb6e; }
+.type-grammar { background: rgba(255,107,107,0.15); color: #ff6b6b; }
+
+/* 完形填空 - 短文中的空格 */
+.cloze-passage {
+  background: var(--bg-passage); border-radius: 10px;
+  padding: 14px; font-size: 0.85rem; line-height: 2.2;
+  color: var(--text-secondary); margin-bottom: 14px;
+}
+.cloze-blank {
+  display: inline-block; min-width: 80px; text-align: center;
+  border-bottom: 2px dashed rgba(74,230,201,0.5);
+  padding: 0 6px; margin: 0 2px; color: #4ae6c9; font-weight: 600;
+  cursor: default; transition: all 0.2s;
+}
+.cloze-blank.filled { border-bottom-color: #4ae6c9; }
+.cloze-blank.current { background: rgba(74,230,201,0.1); border-bottom-color: #4ae6c9; }
+.cloze-blank.correct-blank { border-bottom-color: #27ae60; color: #27ae60; }
+.cloze-blank.wrong-blank { border-bottom-color: #e74c3c; color: #e74c3c; }
+.cloze-options-group { margin-bottom: 10px; }
+.cloze-options-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+.cloze-options-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.cloze-option {
+  padding: 6px 14px; border-radius: 8px; font-size: 0.85rem;
+  background: var(--option-bg); border: 1px solid var(--border-color);
+  color: var(--option-text); cursor: pointer; transition: all 0.15s;
+}
+.cloze-option:hover { background: var(--btn-hover-bg); border-color: var(--btn-hover-border); }
+.cloze-option.selected-opt { border-color: #4ae6c9; background: rgba(74,230,201,0.15); color: #4ae6c9; }
+.cloze-option.correct-opt { border-color: #27ae60; background: rgba(39,174,96,0.2); color: #27ae60; }
+.cloze-option.wrong-opt { border-color: #e74c3c; background: rgba(231,76,60,0.2); color: #e74c3c; }
+
+/* 选词填空 */
+.wordbank-passage {
+  background: var(--bg-passage); border-radius: 10px;
+  padding: 14px; font-size: 0.85rem; line-height: 2.2;
+  color: var(--text-secondary); margin-bottom: 14px;
+}
+.wordbank-blank {
+  display: inline-block; min-width: 80px; text-align: center;
+  border-bottom: 2px dashed rgba(253,203,110,0.5);
+  padding: 0 6px; margin: 0 2px; color: #fdcb6e; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; border-radius: 2px;
+}
+.wordbank-blank.filled { border-bottom-style: solid; }
+.wordbank-blank.current { background: rgba(253,203,110,0.1); }
+.wordbank-blank.correct-blank { border-bottom-color: #27ae60; color: #27ae60; }
+.wordbank-blank.wrong-blank { border-bottom-color: #e74c3c; color: #e74c3c; }
+.wordbank-tags {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+  padding: 10px; background: var(--bg-passage); border-radius: 10px;
+  border: 1px solid var(--border-light);
+}
+.wordbank-tag {
+  padding: 6px 14px; border-radius: 8px; font-size: 0.85rem;
+  background: rgba(253,203,110,0.1); border: 1px solid rgba(253,203,110,0.25);
+  color: #fdcb6e; cursor: pointer; transition: all 0.15s;
+}
+.wordbank-tag:hover { background: rgba(253,203,110,0.2); border-color: rgba(253,203,110,0.4); }
+.wordbank-tag.used { opacity: 0.3; pointer-events: none; text-decoration: line-through; }
+
+/* 语法填空 */
+.grammar-passage {
+  background: var(--bg-passage); border-radius: 10px;
+  padding: 14px; font-size: 0.85rem; line-height: 2.2;
+  color: var(--text-secondary); margin-bottom: 14px;
+}
+.grammar-input {
+  display: inline-block; width: 120px; padding: 4px 8px;
+  background: var(--option-bg); border: 1px solid rgba(255,107,107,0.3);
+  border-radius: 6px; color: var(--text-title); font-size: 0.85rem; text-align: center;
+  margin: 0 4px; outline: none; transition: all 0.2s;
+}
+.grammar-input:focus { border-color: #ff6b6b; box-shadow: 0 0 8px rgba(255,107,107,0.2); }
+.grammar-input.correct-input { border-color: #27ae60; background: rgba(39,174,96,0.1); }
+.grammar-input.wrong-input { border-color: #e74c3c; background: rgba(231,76,60,0.1); }
+.grammar-hint { font-size: 0.7rem; color: var(--text-muted); margin-left: 2px; }
 
 /* 反馈 */
 .feedback-area { display: none; margin-bottom: 16px; }
 .feedback-area.show { display: block; }
-.feedback-correct { color: #27ae60; font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; }
-.feedback-wrong { color: #e74c3c; font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; }
+.feedback-correct { color: #27ae60; font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; animation: correctPop 0.5s ease; }
+.feedback-wrong { color: #e74c3c; font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; animation: wrongShake 0.5s ease; }
 .feedback-explanation {
-  background: rgba(255,255,255,0.05); border-radius: 8px;
-  padding: 10px 14px; font-size: 0.8rem; color: #bbb; line-height: 1.5;
+  background: var(--bg-passage); border-radius: 8px;
+  padding: 10px 14px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;
+}
+
+@keyframes correctPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-4px); }
 }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   padding: 10px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
-  border: none; cursor: pointer; transition: all 0.15s;
+  border: none; cursor: pointer; transition: all 0.2s ease;
   width: 100%;
 }
-.btn-primary { background: #4ae6c9; color: #0a1628; }
-.btn-primary:hover { background: #7ff0da; }
-.btn-secondary { background: rgba(255,255,255,0.08); color: #ccc; border: 1px solid rgba(255,255,255,0.15); }
-.btn-secondary:hover { background: rgba(255,255,255,0.14); }
+.btn-primary { background: linear-gradient(135deg, #4ae6c9, #3dd6b5); color: #0a1628; box-shadow: 0 4px 15px rgba(74,230,201,0.2); }
+.btn-primary:hover { background: linear-gradient(135deg, #7ff0da, #5ee6c9); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(74,230,201,0.3); }
+.btn-secondary { background: var(--btn-bg); color: var(--text-secondary); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background: var(--btn-hover-bg); }
 .btn-close {
-  background: none; border: none; color: #aaa; font-size: 1.3rem; cursor: pointer;
+  background: none; border: none; color: var(--text-secondary); font-size: 1.3rem; cursor: pointer;
   padding: 4px 8px; line-height: 1;
 }
-.btn-close:hover { color: #fff; }
+.btn-close:hover { color: var(--text-title); }
 
 /* 锁定提示 */
 .locked-tip {
-  text-align: center; color: #888; padding: 20px 0;
+  text-align: center; color: var(--text-muted); padding: 20px 0;
   font-size: 0.9rem;
+  cursor: pointer;
 }
 
 /* ============================================================
    响应式
    ============================================================ */
 @media (max-width: 480px) {
-  .header { padding: 8px 12px; }
-  .header-title { font-size: 1rem; }
+  .header { padding: 6px 10px; }
+  .header-title { font-size: 0.95rem; }
   .modal-box { padding: 18px; width: 94%; }
   .face-progress { gap: 2px; }
   .face-progress-item { font-size: 0.6rem; padding: 2px 6px; }
+  .diff-btn { padding: 2px 8px; font-size: 0.65rem; }
+  .panel-header { height: 32px; padding: 0 10px; }
+  .panel-icon { font-size: 0.85rem; }
+  .panel-title { font-size: 0.65rem; }
+  .panel-progress-text { font-size: 0.65rem; }
+  .panel-percent { font-size: 0.6rem; min-width: 28px; }
+  .header-action-btn { font-size: 0.7rem; padding: 3px 6px; }
+  .header-diff-badge { font-size: 0.65rem; padding: 2px 8px; }
+  .header-stats { font-size: 0.7rem; padding: 3px 8px; }
 }
 </style>
 </head>
@@ -199,16 +551,87 @@ body {
   <div class="header">
     <div class="header-top">
       <div class="header-title">🧩 魔方英语</div>
-      <div class="header-stats">已点亮 <span id="total-completed">0</span>/54 格</div>
+      <div class="difficulty-selector" id="difficulty-selector">
+        <button class="diff-btn" data-diff="easy">🌱 小学</button>
+        <button class="diff-btn active" data-diff="medium">📖 初中</button>
+        <button class="diff-btn" data-diff="hard">🎯 高中</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+        <button class="theme-toggle" id="theme-toggle" title="切换主题">🌙</button>
+        <button class="header-action-btn" id="btn-wrong-book" title="错题本">📕</button>
+        <button class="header-action-btn" id="btn-stats" title="统计">📊</button>
+        <button class="header-action-btn" id="btn-daily" title="今日挑战">🎯</button>
+        <button class="header-action-btn" id="btn-share" title="分享">📤</button>
+        <span class="header-diff-badge" id="header-diff-badge">📖 初中</span>
+        <div class="header-stats">已点亮 <span id="total-completed">0</span>/54 格</div>
+      </div>
     </div>
-    <div class="face-progress" id="face-progress"></div>
+
+    <!-- 悬浮迷你进度面板 -->
+    <div class="progress-panel" id="progress-panel">
+      <div class="panel-header" id="panel-header">
+        <span class="panel-icon">🧊</span>
+        <span class="panel-title">总进度</span>
+        <span class="panel-progress-text" id="panel-progress-text">0/54</span>
+        <div class="panel-progress-bar">
+          <div class="panel-progress-fill" id="panel-progress-fill" style="width:0%"></div>
+        </div>
+        <span class="panel-percent" id="panel-percent">0%</span>
+        <button class="panel-toggle" id="panel-toggle">▶</button>
+      </div>
+      <div class="panel-body" id="panel-body">
+        <div class="panel-body-row" id="panel-body-row1"></div>
+        <div class="panel-body-row" id="panel-body-row2"></div>
+        <button class="panel-reset-all" id="panel-reset-all">↺ 重置全部进度</button>
+      </div>
+    </div>
   </div>
 
   <!-- 3D 画布 -->
   <canvas id="cube-canvas"></canvas>
 
   <!-- 底部提示 -->
-  <div class="hint-bar" id="hint-bar">↺ 拖拽旋转 · 点击彩色格子开始答题</div>
+  <div class="hint-bar" id="hint-bar">↺ 拖拽旋转 · 点击彩色格子开始答题 · 多难度可选</div>
+
+  <!-- 确认对话框 -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box">
+      <div class="confirm-title" id="confirm-title">确认操作</div>
+      <div class="confirm-message" id="confirm-message"></div>
+      <div class="confirm-buttons">
+        <button class="confirm-btn confirm-btn-cancel" id="confirm-cancel">取消</button>
+        <button class="confirm-btn confirm-btn-danger" id="confirm-ok">确认重置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 错题本 / 统计 / 每日挑战 通用弹窗 -->
+  <div class="modal-overlay" id="panel-overlay">
+    <div class="modal-box" id="panel-box" style="max-height:80vh;overflow-y:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <span style="font-size:1.1rem;font-weight:700;color:#fff" id="panel-title">面板</span>
+        <button style="background:none;border:none;color:#888;font-size:1.2rem;cursor:pointer" id="btn-panel-close">✕</button>
+      </div>
+      <div id="panel-content"></div>
+    </div>
+  </div>
+
+  <!-- 通关证书弹窗 -->
+  <div class="modal-overlay" id="cert-overlay">
+    <div class="modal-box" id="cert-box" style="text-align:center;border:2px solid rgba(230,200,154,0.3);box-shadow:0 0 60px rgba(230,200,154,0.15)">
+      <div style="font-size:3rem;margin-bottom:8px">🏆</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#e6c89a;margin-bottom:4px">语法大师 · 通关证书</div>
+      <div style="font-size:0.85rem;color:#aaa;margin-bottom:12px">🎉 恭喜完成全部 54 关！</div>
+      <input id="cert-name" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;padding:6px 12px;text-align:center;width:200px;margin-bottom:8px;font-size:0.9rem" value="探险家">
+      <div style="font-size:0.8rem;color:#aaaacc;margin-bottom:4px">完成时间：<span id="cert-time" style="color:#4ae6c9">-</span></div>
+      <div style="font-size:0.8rem;color:#aaaacc;margin-bottom:12px">总正确率：<span id="cert-accuracy" style="color:#4ae6c9">-</span></div>
+      <div id="cert-faces" style="margin-bottom:16px;text-align:left"></div>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="confirm-btn" style="background:rgba(255,255,255,0.08);color:#ccc;border:1px solid rgba(255,255,255,0.15)" id="btn-cert-close">关闭</button>
+        <button class="confirm-btn confirm-btn-danger" id="btn-cert-share" style="background:linear-gradient(135deg,#4ae6c9,#3dd6b5);color:#0a1628">📤 分享</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 答题弹窗 -->
   <div class="modal-overlay" id="modal-overlay">
@@ -240,8 +663,8 @@ body {
 <script type="importmap">
 {
   "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
   }
 }
 </script>
@@ -249,6 +672,8 @@ body {
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+console.log('🧩 魔方英语 | Three.js v' + THREE.REVISION);
 
 // ============================================================
 // 面 ID 到题库 ID 的映射
@@ -258,12 +683,12 @@ const QB_TO_FACE = { grammar: 'front', vocabulary: 'back', reading: 'left', cloz
 // 面定义
 // ============================================================
 const FACES = {
-  front:  { id: 'front',  name: '语法核心', emoji: '📝', color: '#e74c3c', axis: 'z', value: 1,  normal: [0,0,1] },
-  back:   { id: 'back',   name: '词汇辨析', emoji: '📖', color: '#f39c12', axis: 'z', value: -1, normal: [0,0,-1] },
-  left:   { id: 'left',   name: '阅读理解', emoji: '📚', color: '#27ae60', axis: 'x', value: -1, normal: [-1,0,0] },
-  right:  { id: 'right',  name: '完形填空', emoji: '✏️', color: '#2980b9', axis: 'x', value: 1,  normal: [1,0,0] },
-  top:    { id: 'top',    name: '口语表达', emoji: '🎤', color: '#ecf0f1', axis: 'y', value: 1,  normal: [0,1,0] },
-  bottom: { id: 'bottom', name: '趣味英语', emoji: '🎮', color: '#f1c40f', axis: 'y', value: -1, normal: [0,-1,0] },
+  front:  { id: 'front',  name: '语法核心', emoji: '📝', color: '#ff4757', axis: 'z', value: 1,  normal: [0,0,1] },
+  back:   { id: 'back',   name: '词汇辨析', emoji: '📖', color: '#ffc312', axis: 'z', value: -1, normal: [0,0,-1] },
+  left:   { id: 'left',   name: '阅读理解', emoji: '📚', color: '#1dd1a1', axis: 'x', value: -1, normal: [-1,0,0] },
+  right:  { id: 'right',  name: '完形填空', emoji: '✏️', color: '#3742fa', axis: 'x', value: 1,  normal: [1,0,0] },
+  top:    { id: 'top',    name: '口语表达', emoji: '🎤', color: '#6c5ce7', axis: 'y', value: 1,  normal: [0,1,0] },
+  bottom: { id: 'bottom', name: '趣味英语', emoji: '🎮', color: '#f9ca24', axis: 'y', value: -1, normal: [0,-1,0] },
 };
 
 // 面到行列映射：给定 cubie 位置 (x,y,z) 和被点击面的法线，返回 {row, col}
@@ -289,81 +714,218 @@ function getFaceFromNormal(nx, ny, nz) {
 }
 
 // ============================================================
-// 题库数据：54关（6面 × 9关）
+// 题库数据：54关（6面 × 9关）× 3个难度等级
 // ============================================================
 const QUESTIONS = {
-  // ─── 语法核心（红色面）──────────────────────────────
-  grammar: [
-    { id: 1, title: '一般现在时', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'She ___ (go) to school every day.', options: ['go', 'goes', 'going', 'went'], correctIndex: 1, explanation: '主语 She 是第三人称单数，一般现在时动词需加 -s/-es，所以用 goes。' },
-    { id: 2, title: '现在进行时', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Look! The children ___ (play) in the park.', options: ['play', 'plays', 'are playing', 'played'], correctIndex: 2, explanation: 'Look! 提示动作正在发生，须用现在进行时 be + V-ing，主语 children 是复数，用 are playing。' },
-    { id: 3, title: '一般过去时', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'He ___ (visit) his grandparents last weekend.', options: ['visit', 'visits', 'visited', 'will visit'], correctIndex: 2, explanation: 'last weekend 是明确的过去时间状语，须用一般过去时 visited。' },
-    { id: 4, title: '一般将来时', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'I think it ___ (rain) tomorrow.', options: ['rains', 'rained', 'will rain', 'is raining'], correctIndex: 2, explanation: 'tomorrow 表示将来时间，须用 will + 动词原形。' },
-    { id: 5, title: '现在完成时', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'We ___ (already / finish) our homework.', options: ['already finish', 'already finished', 'have already finished', 'will finish'], correctIndex: 2, explanation: 'already 提示「已经完成」，须用现在完成时 have/has + 过去分词。' },
-    { id: 6, title: '被动语态', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'The book ___ (write) by a famous author.', options: ['writes', 'wrote', 'is written', 'is writing'], correctIndex: 2, explanation: '书是被写的，主语是动作承受者，须用被动语态 be + 过去分词。' },
-    { id: 7, title: '条件句', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'If it ___ (rain) tomorrow, we will stay at home.', options: ['rains', 'will rain', 'rained', 'is raining'], correctIndex: 0, explanation: 'if 引导的真实条件句中，从句用一般现在时表将来（主将从现），所以用 rains。' },
-    { id: 8, title: '宾语从句', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'Can you tell me where ___ (be) the nearest hospital?', options: ['is', 'be', 'are', 'being'], correctIndex: 0, explanation: '宾语从句中，where 后的从句用陈述句语序，主语 the nearest hospital 是单数，用 is。' },
-    { id: 9, title: '综合时态', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'By the time he arrives, we ___ (wait) for two hours.', options: ['wait', 'waited', 'will have waited', 'are waiting'], correctIndex: 2, explanation: 'By the time 表示「到将来某个时间点为止」，须用将来完成时 will have + 过去分词。' },
-  ],
-  // ─── 词汇辨析（橙色面）──────────────────────────────
-  vocabulary: [
-    { id: 10, title: 'look / see / watch', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Please ___ at the blackboard.', options: ['look', 'see', 'watch', 'read'], correctIndex: 0, explanation: 'look at 表示「看」的动作，强调有意识地看；see 强调「看到」的结果；watch 表示「观看（动态的东西）」。' },
-    { id: 11, title: 'say / tell / speak', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Can you ___ me a story?', options: ['say', 'tell', 'speak', 'talk'], correctIndex: 1, explanation: 'tell sb. sth. 是固定搭配，tell me a story = 给我讲个故事。say 强调说话内容，speak 强调说话能力或语言。' },
-    { id: 12, title: 'borrow / lend', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Can I ___ your pen? I forgot mine.', options: ['borrow', 'lend', 'give', 'take'], correctIndex: 0, explanation: 'borrow 表示「借入」（从别人那里借来），lend 表示「借出」（把东西借给别人）。这里是向别人借笔，用 borrow。' },
-    { id: 13, title: 'interested / interesting', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'The movie was so ___ that everyone loved it.', options: ['interested', 'interesting', 'interest', 'interests'], correctIndex: 1, explanation: 'interesting 修饰事物（令人感兴趣的），interested 修饰人（感到有兴趣的）。电影是事物，用 interesting。' },
-    { id: 14, title: '固定搭配', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'I\'m looking forward ___ hearing from you.', options: ['at', 'to', 'for', 'on'], correctIndex: 1, explanation: 'look forward to 是固定搭配，其中 to 是介词，后接名词或动名词。' },
-    { id: 15, title: '词性转换', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'He runs very ___ (quick).', options: ['quick', 'quicker', 'quickly', 'quickest'], correctIndex: 2, explanation: '修饰动词 runs 需要用副词，quick 的副词形式是 quickly。' },
-    { id: 16, title: '近义词辨析', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'The news ___ quickly across the campus.', options: ['spread', 'extended', 'expanded', 'stretched'], correctIndex: 0, explanation: 'spread 表示消息、新闻的「传播」；extend 表示时间或空间的延长；expand 表示体积的膨胀；stretch 表示拉伸。' },
-    { id: 17, title: '固定搭配2', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'He succeeded ___ passing the exam.', options: ['at', 'to', 'in', 'on'], correctIndex: 2, explanation: 'succeed in doing sth. 是固定搭配，表示「成功做某事」。' },
-    { id: 18, title: '综合词汇', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'The professor ___ a new theory at the conference.', options: ['put forward', 'put off', 'put out', 'put up'], correctIndex: 0, explanation: 'put forward 表示「提出（建议、理论）」，put off 表示「推迟」，put out 表示「扑灭」，put up 表示「搭建/张贴」。' },
-  ],
-  // ─── 阅读理解（绿色面）──────────────────────────────
-  reading: [
-    { id: 19, title: '小故事：猫咪', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'Tom has a cat named Mimi. Mimi is white and very cute. Every morning, Mimi sits by the window and watches the birds outside.', question: 'What color is Mimi?', options: ['Black', 'White', 'Brown', 'Gray'], correctIndex: 1, explanation: '文中明确说 "Mimi is white"，所以答案是 White。' },
-    { id: 20, title: '小故事：生日', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'It is Lily\'s birthday today. She is ten years old. Her mother makes a big cake for her. Lily and her friends sing and dance happily.', question: 'How old is Lily?', options: ['Nine', 'Ten', 'Eleven', 'Eight'], correctIndex: 1, explanation: '文中明确说 "She is ten years old."' },
-    { id: 21, title: '小故事：动物园', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'Last Sunday, Jack went to the zoo with his family. They saw many animals. Jack\'s favorite animal was the panda. The panda was eating bamboo.', question: 'What was Jack\'s favorite animal?', options: ['Monkey', 'Lion', 'Panda', 'Elephant'], correctIndex: 2, explanation: '文中说 "Jack\'s favorite animal was the panda."' },
-    { id: 22, title: '短文：环保', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'More and more people are paying attention to environmental protection. They use reusable bags, turn off lights when leaving rooms, and take public transportation. These small actions can make a big difference.', question: 'What is the main idea of this passage?', options: ['Traveling', 'Shopping', 'Environmental protection', 'Cooking'], correctIndex: 2, explanation: '文章主题是环保，提到了使用环保袋、随手关灯、乘坐公共交通等环保行为。' },
-    { id: 23, title: '短文：运动', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'Running is one of the most popular sports. It doesn\'t need special equipment and can be done almost anywhere. Studies show that running for 30 minutes a day can improve your health greatly.', question: 'How long should you run each day according to the passage?', options: ['10 minutes', '20 minutes', '30 minutes', '60 minutes'], correctIndex: 2, explanation: '文中明确提到 "running for 30 minutes a day"。' },
-    { id: 24, title: '短文：科技', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'Smartphones have changed our lives in many ways. We can now communicate with anyone, anywhere, at any time. However, spending too much time on phones can be harmful to our eyes and social skills.', question: 'What is one disadvantage of smartphones mentioned in the passage?', options: ['They are expensive', 'They are slow', 'They can harm our eyes', 'They are hard to use'], correctIndex: 2, explanation: '文中提到 "spending too much time on phones can be harmful to our eyes"。' },
-    { id: 25, title: '短文：历史', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'The Silk Road was not a single road but a network of trade routes connecting China with the West. It began during the Han Dynasty and lasted for over 1,500 years. Silk, tea, and spices were transported from East to West, while gold, glass, and new ideas traveled from West to East.', question: 'When did the Silk Road begin?', options: ['The Tang Dynasty', 'The Song Dynasty', 'The Han Dynasty', 'The Ming Dynasty'], correctIndex: 2, explanation: '文中明确提到 "It began during the Han Dynasty"。' },
-    { id: 26, title: '短文：心理', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'A growth mindset is the belief that abilities can be developed through hard work and dedication. People with a growth mindset see challenges as opportunities to learn. In contrast, a fixed mindset assumes that intelligence is static and cannot be changed.', question: 'What do people with a growth mindset think about challenges?', options: ['They avoid them', 'They see them as opportunities', 'They ignore them', 'They fear them'], correctIndex: 1, explanation: '文中说 "People with a growth mindset see challenges as opportunities to learn"。' },
-    { id: 27, title: '短文：科学', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'Photosynthesis is the process by which plants convert sunlight into energy. During this process, plants take in carbon dioxide and water, and release oxygen as a byproduct. This process is essential for life on Earth as it provides the oxygen we breathe.', question: 'What do plants release during photosynthesis?', options: ['Carbon dioxide', 'Nitrogen', 'Oxygen', 'Hydrogen'], correctIndex: 2, explanation: '文中说 "release oxygen as a byproduct"。' },
-  ],
-  // ─── 完形填空（蓝色面）──────────────────────────────
-  cloze: [
-    { id: 28, title: '完形: 日常', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'Mike gets up at 7:00 every morning. He ___ (1) his teeth and then has breakfast. He usually ___ (2) to school by bike.', question: '选择空格1的正确答案', options: ['brush', 'brushes', 'brushing', 'brushed'], correctIndex: 1, explanation: '主语 He 是第三人称单数，一般现在时动词加 -es。' },
-    { id: 29, title: '完形: 天气', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'It was a ___ (1) day. The sun was shining and the birds were singing. Amy ___ (2) to the park with her dog.', question: '选择空格1的正确答案', options: ['sunny', 'rain', 'cloud', 'wind'], correctIndex: 0, explanation: '根据后文 "The sun was shining" 可知是晴天，形容词 sunny 修饰 day。' },
-    { id: 30, title: '完形: 购物', difficulty: 'easy', difficultyLabel: '⭐小学', passage: 'Mom went to the supermarket. She bought some ___ (1) and vegetables. She also got a ___ (2) of milk for breakfast.', question: '选择空格2的正确答案', options: ['bottle', 'piece', 'loaf', 'pair'], correctIndex: 0, explanation: 'a bottle of milk 是固定搭配，表示一瓶牛奶。' },
-    { id: 31, title: '完形: 旅行', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'Last summer, my family ___ (1) to Beijing. We visited the Great Wall and the Forbidden City. The trip was ___ (2) and we all had a great time.', question: '选择空格1的正确答案', options: ['go', 'goes', 'went', 'will go'], correctIndex: 2, explanation: 'Last summer 是过去时间，须用一般过去时 went。' },
-    { id: 32, title: '完形: 友谊', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'A true friend is someone who always ___ (1) by your side. When you are sad, they ___ (2) you up. When you succeed, they are happy for you.', question: '选择空格2的正确答案', options: ['cheer', 'cheers', 'cheering', 'cheered'], correctIndex: 0, explanation: '助动词 do 后用动词原形，they cheer you up。cheer up 是固定搭配，表示「使振作」。' },
-    { id: 33, title: '完形: 健康', difficulty: 'medium', difficultyLabel: '⭐⭐初中', passage: 'Getting enough sleep is very important for teenagers. Research shows that teenagers ___ (1) at least 8 hours of sleep each night. Lack of sleep can ___ (2) to poor concentration.', question: '选择空格2的正确答案', options: ['lead', 'leads', 'leading', 'led'], correctIndex: 0, explanation: 'can 后接动词原形，lead to 表示「导致」。' },
-    { id: 34, title: '完形: 文化', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'Different cultures have different customs. In Japan, people bow when they greet each other. In Western countries, people usually ___ (1) hands. Understanding these differences can help avoid ___ (2).', question: '选择空格2的正确答案', options: ['misunderstand', 'misunderstanding', 'misunderstood', 'misunderstands'], correctIndex: 1, explanation: 'avoid 后接动名词，avoid misunderstanding 表示「避免误解」。' },
-    { id: 35, title: '完形: 环境', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'Global warming is one of the biggest challenges facing humanity. If we ___ (1) act now, the consequences will be severe. Many countries have already started ___ (2) measures to reduce carbon emissions.', question: '选择空格1的正确答案', options: ['don\'t', 'didn\'t', 'won\'t', 'haven\'t'], correctIndex: 0, explanation: 'if 条件句中用一般现在时表将来，don\'t act 表示「如果不采取行动」。' },
-    { id: 36, title: '完形: 综合', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', passage: 'The invention of the Internet has fundamentally ___ (1) the way we live and work. It has made information ___ (2) to billions of people worldwide.', question: '选择空格1的正确答案', options: ['change', 'changed', 'changing', 'changes'], correctIndex: 1, explanation: 'has + 过去分词构成现在完成时，change 的过去分词是 changed。' },
-  ],
-  // ─── 口语表达（紫色面）──────────────────────────────
-  speaking: [
-    { id: 37, title: '打招呼', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'How do you respond when someone says "Nice to meet you"?', options: ['Goodbye', 'Nice to meet you, too', 'I\'m sorry', 'Thank you'], correctIndex: 1, explanation: '当别人说 "Nice to meet you"（很高兴认识你），你应回答 "Nice to meet you, too"（我也很高兴认识你）。' },
-    { id: 38, title: '问路', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Excuse me, ___ is the nearest hospital?', options: ['what', 'where', 'when', 'why'], correctIndex: 1, explanation: '问地点用 where，where is the nearest hospital? = 最近的医院在哪里？' },
-    { id: 39, title: '点餐', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'In a restaurant, the waiter asks: "What would you like to ___?"', options: ['eat', 'drink', 'order', 'cook'], correctIndex: 2, explanation: '在餐厅点餐时，服务员通常问 "What would you like to order?"（您想点什么？）。' },
-    { id: 40, title: '电话用语', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'When you answer the phone, you should say:', options: ['Who are you?', 'What do you want?', 'Hello, this is [name] speaking.', 'Speak!'], correctIndex: 2, explanation: '接电话时礼貌的说法是 "Hello, this is [name] speaking."，表示「你好，我是…」。' },
-    { id: 41, title: '道歉', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'If you accidentally step on someone\'s foot, you should say:', options: ['Excuse me', 'I\'m sorry', 'Thank you', 'Never mind'], correctIndex: 1, explanation: '踩到别人脚是不小心造成的伤害，应该说 "I\'m sorry"（对不起）。Excuse me 用于打扰别人时。' },
-    { id: 42, title: '请假', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'You are sick and want to ask for a day off. You say:', options: ['I quit!', 'May I have a day off?', 'I don\'t care', 'Leave me alone'], correctIndex: 1, explanation: '请假应该礼貌地问 "May I have a day off?"（我可以请一天假吗？）。' },
-    { id: 43, title: '商务对话', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'In a job interview, the interviewer asks: "What are your strengths?" You should respond:', options: ['I don\'t have any', 'I\'m good at teamwork and problem-solving', 'That\'s personal', 'I don\'t know'], correctIndex: 1, explanation: '面试中问优点，应该自信地展示自己的技能，如团队合作和解决问题的能力。' },
-    { id: 44, title: '投诉', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'You received a damaged product. You call customer service and say:', options: ['You are terrible!', 'I\'d like to make a complaint about a damaged item.', 'Give me my money!', 'Whatever'], correctIndex: 1, explanation: '投诉时应该礼貌地说明问题，用 "I\'d like to make a complaint about..." 是得体的表达方式。' },
-    { id: 45, title: '演讲开场', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'What is a good way to start a presentation?', options: ['Good morning, everyone. Today I\'d like to talk about...', 'Hey guys, let\'s just get this over with.', 'I didn\'t prepare anything.', 'Can someone else do this?'], correctIndex: 0, explanation: '演讲开场应该礼貌问候听众并说明演讲主题，用 "Good morning, everyone. Today I\'d like to talk about..." 是标准开场。' },
-  ],
-  // ─── 趣味英语（棕色面）──────────────────────────────
-  fun: [
-    { id: 46, title: '谜语：字母', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'What letter is a drink?', options: ['T (tea)', 'C (coffee)', 'W (water)', 'M (milk)'], correctIndex: 0, explanation: '字母 T 的发音与 tea（茶）相同，所以说 "T" is a drink！' },
-    { id: 47, title: '常识：颜色', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'What color is the British phone booth?', options: ['Blue', 'Green', 'Red', 'Yellow'], correctIndex: 2, explanation: '英国的红色电话亭（Red Phone Booth）是英国的标志性文化符号。' },
-    { id: 48, title: '谜语：月份', difficulty: 'easy', difficultyLabel: '⭐小学', question: 'Which month has 28 days?', options: ['February', 'January', 'All of them', 'None'], correctIndex: 2, explanation: '所有月份都有28天（甚至更多），这是一个常见的英语脑筋急转弯！' },
-    { id: 49, title: '常识：节日', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'What holiday is celebrated on December 25th?', options: ['Halloween', 'Thanksgiving', 'Christmas', 'Easter'], correctIndex: 2, explanation: '12月25日是圣诞节（Christmas Day），是西方最重要的节日之一。' },
-    { id: 50, title: '谜语：蛋', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'What has to be broken before you can use it?', options: ['A window', 'An egg', 'A door', 'A book'], correctIndex: 1, explanation: '鸡蛋（egg）在使用前必须先打破（break），这是一个经典的英语谜语。' },
-    { id: 51, title: '常识：地标', difficulty: 'medium', difficultyLabel: '⭐⭐初中', question: 'In which city can you find the Statue of Liberty?', options: ['Los Angeles', 'Chicago', 'New York', 'Boston'], correctIndex: 2, explanation: '自由女神像（Statue of Liberty）位于美国纽约（New York）。' },
-    { id: 52, title: '文化：文学', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'Who wrote "Romeo and Juliet"?', options: ['Charles Dickens', 'William Shakespeare', 'Jane Austen', 'Mark Twain'], correctIndex: 1, explanation: '《罗密欧与朱丽叶》是英国剧作家威廉·莎士比亚（William Shakespeare）的经典作品。' },
-    { id: 53, title: '文化：名言', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: '"To be, or not to be" is from which play?', options: ['Macbeth', 'Hamlet', 'King Lear', 'Othello'], correctIndex: 1, explanation: '"To be, or not to be"（生存还是毁灭）是莎士比亚的《哈姆雷特》（Hamlet）中的经典独白。' },
-    { id: 54, title: '文化：食物', difficulty: 'hard', difficultyLabel: '⭐⭐⭐高中', question: 'What is the traditional British meal "fish and chips" served with?', options: ['Rice', 'Fries (chips)', 'Pasta', 'Bread'], correctIndex: 1, explanation: 'Fish and Chips（炸鱼薯条）是英国传统美食，鱼和薯条（chips=炸薯条）一起搭配食用。' },
-  ],
+  // ─── 小学难度 (easy) ──────────────────────────────
+  easy: {
+    grammar: [
+      { id: 'e1', title: 'be动词', question: 'I ___ a student.', options: ['am', 'is', 'are', 'be'], correctIndex: 0, explanation: '主语 I 与 be 动词 am 搭配：I am, you are, he/she/it is。' },
+      { id: 'e2', title: '名词复数', question: 'There are three ___ on the desk.', options: ['book', 'books', 'bookes', 'bookies'], correctIndex: 1, explanation: '大多数名词复数直接加 -s，book 的复数是 books。' },
+      { id: 'e3', title: '人称代词', question: '___ is my friend. ___ name is Tom.', options: ['He, His', 'He, He', 'His, He', 'His, His'], correctIndex: 0, explanation: '作主语用主格 He，作定语修饰 name 用形容词性物主代词 His。' },
+      { id: 'e4', title: '祈使句', question: '___ the window, please. It\'s hot.', options: ['Open', 'Opens', 'Opening', 'Opened'], correctIndex: 0, explanation: '祈使句以动词原形开头，表示命令或请求。Open the window = 请开窗。' },
+      { id: 'e5', title: '一般现在时', question: 'My mother ___ breakfast every morning.', options: ['make', 'makes', 'making', 'made'], correctIndex: 1, explanation: 'every morning 表示经常性动作，主语 My mother 是第三人称单数，用 makes。' },
+      { id: 'e6', title: '现在进行时', question: 'Listen! The girl ___ a song.', options: ['sings', 'sing', 'is singing', 'sang'], correctIndex: 2, explanation: 'Listen! 提示动作正在发生，用现在进行时 is singing。' },
+      { id: 'e7', title: '冠词', question: 'I have ___ apple and ___ banana.', options: ['a, a', 'an, a', 'a, an', 'an, an'], correctIndex: 1, explanation: 'apple 以元音音素开头用 an，banana 以辅音音素开头用 a。' },
+      { id: 'e8', title: '一般过去时', question: 'They ___ to the park yesterday.', options: ['go', 'goes', 'went', 'going'], correctIndex: 2, explanation: 'yesterday 是过去时间，go 的过去式是 went。' },
+      { id: 'e9', title: '疑问句', question: '___ you like ice cream?', options: ['Are', 'Do', 'Is', 'Does'], correctIndex: 1, explanation: '一般现在时的一般疑问句，主语是 you，用助动词 Do 开头。' },
+    ],
+    vocabulary: [
+      { id: 'e10', title: '颜色', question: 'The sky is ___.', options: ['red', 'blue', 'green', 'yellow'], correctIndex: 1, explanation: '天空是蓝色的，blue 是基础颜色词汇。' },
+      { id: 'e11', title: '数字', question: 'There are ___ days in a week.', options: ['five', 'six', 'seven', 'eight'], correctIndex: 2, explanation: '一周有七天：Monday 到 Sunday，seven days。' },
+      { id: 'e12', title: '家庭成员', question: 'Your mother\'s sister is your ___.', options: ['aunt', 'uncle', 'cousin', 'sister'], correctIndex: 0, explanation: '妈妈的姐妹是阿姨/姨妈，英文是 aunt。' },
+      { id: 'e13', title: '动物', question: 'A ___ says "meow".', options: ['dog', 'cat', 'bird', 'fish'], correctIndex: 1, explanation: '猫叫 "meow"（喵喵），dog 叫 "woof"，bird 叫 "tweet"。' },
+      { id: 'e14', title: '身体部位', question: 'We use our ___ to see.', options: ['ears', 'eyes', 'nose', 'mouth'], correctIndex: 1, explanation: '眼睛（eyes）用来看东西，耳朵（ears）用来听，鼻子（nose）用来闻。' },
+      { id: 'e15', title: '水果', question: 'Which of these is a fruit?', options: ['Carrot', 'Potato', 'Apple', 'Onion'], correctIndex: 2, explanation: 'Apple（苹果）是水果，carrot/potato/onion 都是蔬菜。' },
+      { id: 'e16', title: '反义词', question: 'The opposite of "big" is ___.', options: ['tall', 'small', 'long', 'short'], correctIndex: 1, explanation: 'big（大的）的反义词是 small（小的），tall↔short（高↔矮），long↔short（长↔短）。' },
+      { id: 'e17', title: '交通工具', question: 'I go to school by ___.', options: ['bus', 'desk', 'chair', 'book'], correctIndex: 0, explanation: 'by bus 表示乘公交车，是常见的交通工具表达。desk/chair/book 不是交通工具。' },
+      { id: 'e18', title: '天气', question: 'It\'s raining. Take your ___.', options: ['hat', 'umbrella', 'bag', 'watch'], correctIndex: 1, explanation: '下雨了要带伞（umbrella）。hat 是帽子，不能挡雨。' },
+    ],
+    reading: [
+      { id: 'e19', title: '小故事：上学', passage: 'Lucy is a student. She is eight years old. She goes to school at 7:30 every morning. She likes her teacher very much.', question: 'How old is Lucy?', options: ['Six', 'Seven', 'Eight', 'Nine'], correctIndex: 2, explanation: '文中明确说 "She is eight years old."' },
+      { id: 'e20', title: '小故事：宠物', passage: 'I have a dog. His name is Max. Max is brown. He likes to run and play with a ball. He is my best friend.', question: 'What is the dog\'s name?', options: ['Tom', 'Max', 'Jack', 'Sam'], correctIndex: 1, explanation: '文中说 "His name is Max."' },
+      { id: 'e21', title: '小故事：季节', passage: 'Spring is coming. The flowers are blooming. The birds are singing. Children are flying kites in the park. Everyone is happy.', question: 'What are children doing in the park?', options: ['Running', 'Flying kites', 'Swimming', 'Reading'], correctIndex: 1, explanation: '文中说 "Children are flying kites in the park."' },
+      { id: 'e22', title: '小故事：早餐', passage: 'Tom eats breakfast at 7 o\'clock. He likes milk and bread. Sometimes he eats an egg. His mother says breakfast is very important.', question: 'What time does Tom eat breakfast?', options: ['6 o\'clock', '7 o\'clock', '8 o\'clock', '9 o\'clock'], correctIndex: 1, explanation: '文中说 "Tom eats breakfast at 7 o\'clock."' },
+      { id: 'e23', title: '小故事：朋友', passage: 'Amy and Kate are good friends. They sit together in class. After school, they play in the playground. They share their toys.', question: 'Who are good friends?', options: ['Amy and Tom', 'Amy and Kate', 'Kate and Tom', 'Amy and Lily'], correctIndex: 1, explanation: '文中第一句说 "Amy and Kate are good friends."' },
+      { id: 'e24', title: '小故事：购物', passage: 'Mom goes to the market. She buys apples, bananas, and oranges. She also buys some milk and bread. She spends 30 yuan.', question: 'How much does Mom spend?', options: ['20 yuan', '30 yuan', '40 yuan', '50 yuan'], correctIndex: 1, explanation: '文中说 "She spends 30 yuan."' },
+      { id: 'e25', title: '小故事：天气', passage: 'It is a sunny day. The sun is bright. There are no clouds in the sky. A gentle wind is blowing. It feels warm and nice.', question: 'What is the weather like?', options: ['Rainy', 'Cloudy', 'Sunny', 'Snowy'], correctIndex: 2, explanation: '文中第一句说 "It is a sunny day."' },
+      { id: 'e26', title: '小故事：家庭', passage: 'My family has four people: my father, my mother, my sister, and me. We live in a small house. We eat dinner together every evening.', question: 'How many people are in the family?', options: ['Three', 'Four', 'Five', 'Six'], correctIndex: 1, explanation: '文中说 "My family has four people."' },
+      { id: 'e27', title: '小故事：学校', passage: 'I like my school very much. My classroom is big and clean. There are twenty desks in the room. The teacher is very kind.', question: 'How many desks are in the classroom?', options: ['Ten', 'Fifteen', 'Twenty', 'Thirty'], correctIndex: 2, explanation: '文中说 "There are twenty desks in the room."' },
+    ],
+    cloze: [
+      { id: 'e28', title: '完形: 日常', passage: 'Tom is a boy. He ___ (1) ten years old. He ___ (2) to school every day.', question: '选择空格1的正确答案', options: ['am', 'is', 'are', 'be'], correctIndex: 1, explanation: 'He 后面用 is，He is ten years old = 他十岁了。' },
+      { id: 'e29', title: '完形: 颜色', passage: 'I have a red ___ (1). It is very nice. I like to ___ (2) it to school.', question: '选择空格1的正确答案', options: ['bag', 'book', 'pen', 'ruler'], correctIndex: 0, explanation: '根据上下文，可以背去学校的物品，red bag 是合理的搭配。' },
+      { id: 'e30', title: '完形: 食物', passage: 'I am hungry. I want to ___ (1) some rice. I also want ___ (2) water.', question: '选择空格1的正确答案', options: ['eat', 'drink', 'see', 'go'], correctIndex: 0, explanation: '饿了想吃东西，eat some rice = 吃一些米饭。' },
+      { id: 'e31', title: '完形: 天气', passage: 'It is ___ (1) outside. I need to wear a coat. I don\'t like ___ (2) weather.', question: '选择空格1的正确答案', options: ['hot', 'cold', 'warm', 'cool'], correctIndex: 1, explanation: '根据后文 "wear a coat"，说明外面很冷（cold）。' },
+      { id: 'e32', title: '完形: 动物', passage: 'Look! There is a ___ (1) in the tree. It can ___ (2) very well.', question: '选择空格1的正确答案', options: ['fish', 'bird', 'dog', 'cat'], correctIndex: 1, explanation: '在树上的是鸟（bird），鸟会飞（fly）。' },
+      { id: 'e33', title: '完形: 时间', passage: 'I get up ___ (1) six o\'clock every morning. Then I ___ (2) my face.', question: '选择空格1的正确答案', options: ['at', 'on', 'in', 'to'], correctIndex: 0, explanation: '具体时间点前用介词 at：at six o\'clock。' },
+      { id: 'e34', title: '完形: 教室', passage: 'We are in the ___ (1). The teacher is writing on the ___ (2).', question: '选择空格2的正确答案', options: ['desk', 'chair', 'blackboard', 'door'], correctIndex: 2, explanation: '老师在黑板上写字，blackboard = 黑板。' },
+      { id: 'e35', title: '完形: 星期', passage: 'Today is ___ (1). Tomorrow will be Saturday. I am very ___ (2).', question: '选择空格1的正确答案', options: ['Sunday', 'Monday', 'Friday', 'Thursday'], correctIndex: 2, explanation: '明天是周六，所以今天是周五（Friday）。' },
+      { id: 'e36', title: '完形: 运动', passage: 'I like ___ (1) basketball. I play it ___ (2) my friends after school.', question: '选择空格2的正确答案', options: ['and', 'with', 'or', 'but'], correctIndex: 1, explanation: 'play with my friends = 和朋友一起玩，with 表示「和…一起」。' },
+    ],
+    speaking: [
+      { id: 'e37', title: '打招呼', question: 'When you meet someone in the morning, you say:', options: ['Good afternoon', 'Good morning', 'Good evening', 'Good night'], correctIndex: 1, explanation: '早上见面说 Good morning，下午说 Good afternoon，晚上说 Good evening。' },
+      { id: 'e38', title: '自我介绍', question: 'What do you say when you first meet someone?', options: ['Goodbye', 'Hello, my name is...', 'I\'m hungry', 'See you later'], correctIndex: 1, explanation: '初次见面要说 "Hello, my name is..." 来介绍自己。' },
+      { id: 'e39', title: '感谢', question: 'Someone gives you a gift. You say:', options: ['I\'m sorry', 'Excuse me', 'Thank you', 'Goodbye'], correctIndex: 2, explanation: '收到礼物要说 Thank you（谢谢）表示感谢。' },
+      { id: 'e40', title: '道别', question: 'When you leave school, you say to your teacher:', options: ['Hello', 'Goodbye', 'Thank you', 'I\'m sorry'], correctIndex: 1, explanation: '离开时说 Goodbye（再见）是基本的道别用语。' },
+      { id: 'e41', title: '询问名字', question: 'You want to know someone\'s name. You ask:', options: ['How are you?', 'What\'s your name?', 'Where are you?', 'Who is that?'], correctIndex: 1, explanation: '想知道对方名字，问 "What\'s your name?"（你叫什么名字？）。' },
+      { id: 'e42', title: '道歉', question: 'You are late for class. You say:', options: ['Hello!', 'Goodbye!', 'I\'m sorry I\'m late.', 'How are you?'], correctIndex: 2, explanation: '迟到要说 "I\'m sorry I\'m late."（对不起我迟到了）。' },
+      { id: 'e43', title: '请求帮助', question: 'You need help with homework. You say:', options: ['Go away!', 'Can you help me, please?', 'I don\'t care.', 'Leave me alone.'], correctIndex: 1, explanation: '请求帮助要说 "Can you help me, please?"（请帮帮我好吗？）。' },
+      { id: 'e44', title: '问候', question: 'What do you say when you see a friend?', options: ['How are you?', 'What is this?', 'Where is it?', 'Who are you?'], correctIndex: 0, explanation: '见到朋友问候 "How are you?"（你好吗？）是最常见的问候语。' },
+      { id: 'e45', title: '电话', question: 'You answer the phone. You say:', options: ['Who are you?', 'Hello?', 'What?', 'Speak!'], correctIndex: 1, explanation: '接电话最基本的说法是 "Hello?"（喂？）。' },
+    ],
+    fun: [
+      { id: 'e46', title: '谜语：字母', question: 'What letter is the ocean?', options: ['C (sea)', 'O (ocean)', 'W (water)', 'S (sea)'], correctIndex: 0, explanation: '字母 C 的发音与 sea（大海）相同，所以 C 就是大海！' },
+      { id: 'e47', title: '常识：颜色', question: 'What color are bananas?', options: ['Red', 'Blue', 'Yellow', 'Green'], correctIndex: 2, explanation: '成熟的香蕉是黄色的（yellow）。' },
+      { id: 'e48', title: '谜语：动物', question: 'What animal is the king of the jungle?', options: ['Tiger', 'Elephant', 'Lion', 'Bear'], correctIndex: 2, explanation: '狮子（lion）被称为"丛林之王"（king of the jungle）。' },
+      { id: 'e49', title: '常识：节日', question: 'On which holiday do children get red envelopes in China?', options: ['Mid-Autumn Festival', 'Spring Festival', 'Dragon Boat Festival', 'Lantern Festival'], correctIndex: 1, explanation: '春节（Spring Festival）时孩子们会收到红包（red envelopes）。' },
+      { id: 'e50', title: '谜语：数字', question: 'I am an odd number. Take away a letter and I become even. What number am I?', options: ['Three', 'Five', 'Seven', 'Nine'], correctIndex: 2, explanation: 'Seven 去掉字母 s 变成 even（偶数），这是一个经典英语字谜！' },
+      { id: 'e51', title: '常识：动物', question: 'How many legs does a spider have?', options: ['Six', 'Seven', 'Eight', 'Ten'], correctIndex: 2, explanation: '蜘蛛有八条腿（eight legs）。' },
+      { id: 'e52', title: '谜语：水果', question: 'What fruit is always sad?', options: ['Apple', 'Banana', 'Blueberry', 'Orange'], correctIndex: 2, explanation: 'Blueberry 里有 "blue"（忧郁的），所以它总是 sad（伤心的），这是一个双关语。' },
+      { id: 'e53', title: '常识：国旗', question: 'What colors are on the Chinese flag?', options: ['Red and blue', 'Red and yellow', 'Red and white', 'Yellow and green'], correctIndex: 1, explanation: '中国国旗是红色底加黄色五角星（red and yellow）。' },
+      { id: 'e54', title: '谜语：物品', question: 'What has hands but can\'t clap?', options: ['A person', 'A clock', 'A dog', 'A tree'], correctIndex: 1, explanation: '钟表（clock）有指针（hands），但不会拍手（clap），这是一个经典谜语。' },
+    ],
+  },
+
+  // ─── 初中难度 (medium) ──────────────────────────────
+  medium: {
+    grammar: [
+      { id: 'm1', title: '一般现在时', question: 'She ___ (go) to school every day.', options: ['go', 'goes', 'going', 'went'], correctIndex: 1, explanation: '主语 She 是第三人称单数，一般现在时动词需加 -s/-es，所以用 goes。' },
+      { id: 'm2', title: '现在进行时', question: 'Look! The children ___ (play) in the park.', options: ['play', 'plays', 'are playing', 'played'], correctIndex: 2, explanation: 'Look! 提示动作正在发生，须用现在进行时 be + V-ing，主语 children 是复数，用 are playing。' },
+      { id: 'm3', title: '一般过去时', question: 'He ___ (visit) his grandparents last weekend.', options: ['visit', 'visits', 'visited', 'will visit'], correctIndex: 2, explanation: 'last weekend 是明确的过去时间状语，须用一般过去时 visited。' },
+      { id: 'm4', title: '一般将来时', question: 'I think it ___ (rain) tomorrow.', options: ['rains', 'rained', 'will rain', 'is raining'], correctIndex: 2, explanation: 'tomorrow 表示将来时间，须用 will + 动词原形。' },
+      { id: 'm5', title: '现在完成时', question: 'We ___ (already / finish) our homework.', options: ['already finish', 'already finished', 'have already finished', 'will finish'], correctIndex: 2, explanation: 'already 提示「已经完成」，须用现在完成时 have/has + 过去分词。' },
+      { id: 'm6', title: '被动语态', question: 'The book ___ (write) by a famous author.', options: ['writes', 'wrote', 'is written', 'is writing'], correctIndex: 2, explanation: '书是被写的，主语是动作承受者，须用被动语态 be + 过去分词。' },
+      { id: 'm7', title: '条件句', question: 'If it ___ (rain) tomorrow, we will stay at home.', options: ['rains', 'will rain', 'rained', 'is raining'], correctIndex: 0, explanation: 'if 引导的真实条件句中，从句用一般现在时表将来（主将从现），所以用 rains。' },
+      { id: 'm8', title: '宾语从句', question: 'Can you tell me where ___ (be) the nearest hospital?', options: ['is', 'be', 'are', 'being'], correctIndex: 0, explanation: '宾语从句中，where 后的从句用陈述句语序，主语 the nearest hospital 是单数，用 is。' },
+      { id: 'm9', title: '综合时态', question: 'By the time he arrives, we ___ (wait) for two hours.', options: ['wait', 'waited', 'will have waited', 'are waiting'], correctIndex: 2, explanation: 'By the time 表示「到将来某个时间点为止」，须用将来完成时 will have + 过去分词。' },
+    ],
+    vocabulary: [
+      { id: 'm10', title: 'look / see / watch', question: 'Please ___ at the blackboard.', options: ['look', 'see', 'watch', 'read'], correctIndex: 0, explanation: 'look at 表示「看」的动作，强调有意识地看；see 强调「看到」的结果；watch 表示「观看（动态的东西）」。' },
+      { id: 'm11', title: 'say / tell / speak', question: 'Can you ___ me a story?', options: ['say', 'tell', 'speak', 'talk'], correctIndex: 1, explanation: 'tell sb. sth. 是固定搭配，tell me a story = 给我讲个故事。say 强调说话内容，speak 强调说话能力或语言。' },
+      { id: 'm12', title: 'borrow / lend', question: 'Can I ___ your pen? I forgot mine.', options: ['borrow', 'lend', 'give', 'take'], correctIndex: 0, explanation: 'borrow 表示「借入」（从别人那里借来），lend 表示「借出」（把东西借给别人）。这里是向别人借笔，用 borrow。' },
+      { id: 'm13', title: 'interested / interesting', question: 'The movie was so ___ that everyone loved it.', options: ['interested', 'interesting', 'interest', 'interests'], correctIndex: 1, explanation: 'interesting 修饰事物（令人感兴趣的），interested 修饰人（感到有兴趣的）。电影是事物，用 interesting。' },
+      { id: 'm14', title: '固定搭配', question: 'I\'m looking forward ___ hearing from you.', options: ['at', 'to', 'for', 'on'], correctIndex: 1, explanation: 'look forward to 是固定搭配，其中 to 是介词，后接名词或动名词。' },
+      { id: 'm15', title: '词性转换', question: 'He runs very ___ (quick).', options: ['quick', 'quicker', 'quickly', 'quickest'], correctIndex: 2, explanation: '修饰动词 runs 需要用副词，quick 的副词形式是 quickly。' },
+      { id: 'm16', title: '近义词辨析', question: 'The news ___ quickly across the campus.', options: ['spread', 'extended', 'expanded', 'stretched'], correctIndex: 0, explanation: 'spread 表示消息、新闻的「传播」；extend 表示时间或空间的延长；expand 表示体积的膨胀；stretch 表示拉伸。' },
+      { id: 'm17', title: '固定搭配2', question: 'He succeeded ___ passing the exam.', options: ['at', 'to', 'in', 'on'], correctIndex: 2, explanation: 'succeed in doing sth. 是固定搭配，表示「成功做某事」。' },
+      { id: 'm18', title: '综合词汇', question: 'The professor ___ a new theory at the conference.', options: ['put forward', 'put off', 'put out', 'put up'], correctIndex: 0, explanation: 'put forward 表示「提出（建议、理论）」，put off 表示「推迟」，put out 表示「扑灭」，put up 表示「搭建/张贴」。' },
+    ],
+    reading: [
+      { id: 'm19', title: '小故事：猫咪', passage: 'Tom has a cat named Mimi. Mimi is white and very cute. Every morning, Mimi sits by the window and watches the birds outside.', question: 'What color is Mimi?', options: ['Black', 'White', 'Brown', 'Gray'], correctIndex: 1, explanation: '文中明确说 "Mimi is white"，所以答案是 White。' },
+      { id: 'm20', title: '小故事：生日', passage: 'It is Lily\'s birthday today. She is ten years old. Her mother makes a big cake for her. Lily and her friends sing and dance happily.', question: 'How old is Lily?', options: ['Nine', 'Ten', 'Eleven', 'Eight'], correctIndex: 1, explanation: '文中明确说 "She is ten years old."' },
+      { id: 'm21', title: '小故事：动物园', passage: 'Last Sunday, Jack went to the zoo with his family. They saw many animals. Jack\'s favorite animal was the panda. The panda was eating bamboo.', question: 'What was Jack\'s favorite animal?', options: ['Monkey', 'Lion', 'Panda', 'Elephant'], correctIndex: 2, explanation: '文中说 "Jack\'s favorite animal was the panda."' },
+      { id: 'm22', title: '短文：环保', passage: 'More and more people are paying attention to environmental protection. They use reusable bags, turn off lights when leaving rooms, and take public transportation. These small actions can make a big difference.', question: 'What is the main idea of this passage?', options: ['Traveling', 'Shopping', 'Environmental protection', 'Cooking'], correctIndex: 2, explanation: '文章主题是环保，提到了使用环保袋、随手关灯、乘坐公共交通等环保行为。' },
+      { id: 'm23', title: '短文：运动', passage: 'Running is one of the most popular sports. It doesn\'t need special equipment and can be done almost anywhere. Studies show that running for 30 minutes a day can improve your health greatly.', question: 'How long should you run each day according to the passage?', options: ['10 minutes', '20 minutes', '30 minutes', '60 minutes'], correctIndex: 2, explanation: '文中明确提到 "running for 30 minutes a day"。' },
+      { id: 'm24', title: '短文：科技', passage: 'Smartphones have changed our lives in many ways. We can now communicate with anyone, anywhere, at any time. However, spending too much time on phones can be harmful to our eyes and social skills.', question: 'What is one disadvantage of smartphones mentioned in the passage?', options: ['They are expensive', 'They are slow', 'They can harm our eyes', 'They are hard to use'], correctIndex: 2, explanation: '文中提到 "spending too much time on phones can be harmful to our eyes"。' },
+      { id: 'm25', title: '短文：历史', passage: 'The Silk Road was not a single road but a network of trade routes connecting China with the West. It began during the Han Dynasty and lasted for over 1,500 years. Silk, tea, and spices were transported from East to West, while gold, glass, and new ideas traveled from West to East.', question: 'When did the Silk Road begin?', options: ['The Tang Dynasty', 'The Song Dynasty', 'The Han Dynasty', 'The Ming Dynasty'], correctIndex: 2, explanation: '文中明确提到 "It began during the Han Dynasty"。' },
+      { id: 'm26', title: '短文：心理', passage: 'A growth mindset is the belief that abilities can be developed through hard work and dedication. People with a growth mindset see challenges as opportunities to learn. In contrast, a fixed mindset assumes that intelligence is static and cannot be changed.', question: 'What do people with a growth mindset think about challenges?', options: ['They avoid them', 'They see them as opportunities', 'They ignore them', 'They fear them'], correctIndex: 1, explanation: '文中说 "People with a growth mindset see challenges as opportunities to learn"。' },
+      { id: 'm27', title: '短文：科学', passage: 'Photosynthesis is the process by which plants convert sunlight into energy. During this process, plants take in carbon dioxide and water, and release oxygen as a byproduct. This process is essential for life on Earth as it provides the oxygen we breathe.', question: 'What do plants release during photosynthesis?', options: ['Carbon dioxide', 'Nitrogen', 'Oxygen', 'Hydrogen'], correctIndex: 2, explanation: '文中说 "release oxygen as a byproduct"。' },
+    ],
+    cloze: [
+      { id: 'm28', title: '完形: 日常', passage: 'Mike gets up at 7:00 every morning. He ___ (1) his teeth and then has breakfast. He usually ___ (2) to school by bike.', question: '选择空格1的正确答案', options: ['brush', 'brushes', 'brushing', 'brushed'], correctIndex: 1, explanation: '主语 He 是第三人称单数，一般现在时动词加 -es。' },
+      { id: 'm29', title: '完形: 天气', passage: 'It was a ___ (1) day. The sun was shining and the birds were singing. Amy ___ (2) to the park with her dog.', question: '选择空格1的正确答案', options: ['sunny', 'rain', 'cloud', 'wind'], correctIndex: 0, explanation: '根据后文 "The sun was shining" 可知是晴天，形容词 sunny 修饰 day。' },
+      { id: 'm30', title: '完形: 购物', passage: 'Mom went to the supermarket. She bought some ___ (1) and vegetables. She also got a ___ (2) of milk for breakfast.', question: '选择空格2的正确答案', options: ['bottle', 'piece', 'loaf', 'pair'], correctIndex: 0, explanation: 'a bottle of milk 是固定搭配，表示一瓶牛奶。' },
+      { id: 'm31', title: '完形: 旅行', passage: 'Last summer, my family ___ (1) to Beijing. We visited the Great Wall and the Forbidden City. The trip was ___ (2) and we all had a great time.', question: '选择空格1的正确答案', options: ['go', 'goes', 'went', 'will go'], correctIndex: 2, explanation: 'Last summer 是过去时间，须用一般过去时 went。' },
+      { id: 'm32', title: '完形: 友谊', passage: 'A true friend is someone who always ___ (1) by your side. When you are sad, they ___ (2) you up. When you succeed, they are happy for you.', question: '选择空格2的正确答案', options: ['cheer', 'cheers', 'cheering', 'cheered'], correctIndex: 0, explanation: '助动词 do 后用动词原形，they cheer you up。cheer up 是固定搭配，表示「使振作」。' },
+      { id: 'm33', title: '完形: 健康', passage: 'Getting enough sleep is very important for teenagers. Research shows that teenagers ___ (1) at least 8 hours of sleep each night. Lack of sleep can ___ (2) to poor concentration.', question: '选择空格2的正确答案', options: ['lead', 'leads', 'leading', 'led'], correctIndex: 0, explanation: 'can 后接动词原形，lead to 表示「导致」。' },
+      { id: 'm34', title: '完形: 文化', passage: 'Different cultures have different customs. In Japan, people bow when they greet each other. In Western countries, people usually ___ (1) hands. Understanding these differences can help avoid ___ (2).', question: '选择空格2的正确答案', options: ['misunderstand', 'misunderstanding', 'misunderstood', 'misunderstands'], correctIndex: 1, explanation: 'avoid 后接动名词，avoid misunderstanding 表示「避免误解」。' },
+      { id: 'm35', title: '完形: 环境', passage: 'Global warming is one of the biggest challenges facing humanity. If we ___ (1) act now, the consequences will be severe. Many countries have already started ___ (2) measures to reduce carbon emissions.', question: '选择空格1的正确答案', options: ['don\'t', 'didn\'t', 'won\'t', 'haven\'t'], correctIndex: 0, explanation: 'if 条件句中用一般现在时表将来，don\'t act 表示「如果不采取行动」。' },
+      { id: 'm36', title: '完形: 综合', passage: 'The invention of the Internet has fundamentally ___ (1) the way we live and work. It has made information ___ (2) to billions of people worldwide.', question: '选择空格1的正确答案', options: ['change', 'changed', 'changing', 'changes'], correctIndex: 1, explanation: 'has + 过去分词构成现在完成时，change 的过去分词是 changed。' },
+    ],
+    speaking: [
+      { id: 'm37', title: '打招呼', question: 'How do you respond when someone says "Nice to meet you"?', options: ['Goodbye', 'Nice to meet you, too', 'I\'m sorry', 'Thank you'], correctIndex: 1, explanation: '当别人说 "Nice to meet you"（很高兴认识你），你应回答 "Nice to meet you, too"（我也很高兴认识你）。' },
+      { id: 'm38', title: '问路', question: 'Excuse me, ___ is the nearest hospital?', options: ['what', 'where', 'when', 'why'], correctIndex: 1, explanation: '问地点用 where，where is the nearest hospital? = 最近的医院在哪里？' },
+      { id: 'm39', title: '点餐', question: 'In a restaurant, the waiter asks: "What would you like to ___?"', options: ['eat', 'drink', 'order', 'cook'], correctIndex: 2, explanation: '在餐厅点餐时，服务员通常问 "What would you like to order?"（您想点什么？）。' },
+      { id: 'm40', title: '电话用语', question: 'When you answer the phone, you should say:', options: ['Who are you?', 'What do you want?', 'Hello, this is [name] speaking.', 'Speak!'], correctIndex: 2, explanation: '接电话时礼貌的说法是 "Hello, this is [name] speaking."，表示「你好，我是…」。' },
+      { id: 'm41', title: '道歉', question: 'If you accidentally step on someone\'s foot, you should say:', options: ['Excuse me', 'I\'m sorry', 'Thank you', 'Never mind'], correctIndex: 1, explanation: '踩到别人脚是不小心造成的伤害，应该说 "I\'m sorry"（对不起）。Excuse me 用于打扰别人时。' },
+      { id: 'm42', title: '请假', question: 'You are sick and want to ask for a day off. You say:', options: ['I quit!', 'May I have a day off?', 'I don\'t care', 'Leave me alone'], correctIndex: 1, explanation: '请假应该礼貌地问 "May I have a day off?"（我可以请一天假吗？）。' },
+      { id: 'm43', title: '商务对话', question: 'In a job interview, the interviewer asks: "What are your strengths?" You should respond:', options: ['I don\'t have any', 'I\'m good at teamwork and problem-solving', 'That\'s personal', 'I don\'t know'], correctIndex: 1, explanation: '面试中问优点，应该自信地展示自己的技能，如团队合作和解决问题的能力。' },
+      { id: 'm44', title: '投诉', question: 'You received a damaged product. You call customer service and say:', options: ['You are terrible!', 'I\'d like to make a complaint about a damaged item.', 'Give me my money!', 'Whatever'], correctIndex: 1, explanation: '投诉时应该礼貌地说明问题，用 "I\'d like to make a complaint about..." 是得体的表达方式。' },
+      { id: 'm45', title: '演讲开场', question: 'What is a good way to start a presentation?', options: ['Good morning, everyone. Today I\'d like to talk about...', 'Hey guys, let\'s just get this over with.', 'I didn\'t prepare anything.', 'Can someone else do this?'], correctIndex: 0, explanation: '演讲开场应该礼貌问候听众并说明演讲主题，用 "Good morning, everyone. Today I\'d like to talk about..." 是标准开场。' },
+    ],
+    fun: [
+      { id: 'm46', title: '谜语：字母', question: 'What letter is a drink?', options: ['T (tea)', 'C (coffee)', 'W (water)', 'M (milk)'], correctIndex: 0, explanation: '字母 T 的发音与 tea（茶）相同，所以说 "T" is a drink！' },
+      { id: 'm47', title: '常识：颜色', question: 'What color is the British phone booth?', options: ['Blue', 'Green', 'Red', 'Yellow'], correctIndex: 2, explanation: '英国的红色电话亭（Red Phone Booth）是英国的标志性文化符号。' },
+      { id: 'm48', title: '谜语：月份', question: 'Which month has 28 days?', options: ['February', 'January', 'All of them', 'None'], correctIndex: 2, explanation: '所有月份都有28天（甚至更多），这是一个常见的英语脑筋急转弯！' },
+      { id: 'm49', title: '常识：节日', question: 'What holiday is celebrated on December 25th?', options: ['Halloween', 'Thanksgiving', 'Christmas', 'Easter'], correctIndex: 2, explanation: '12月25日是圣诞节（Christmas Day），是西方最重要的节日之一。' },
+      { id: 'm50', title: '谜语：蛋', question: 'What has to be broken before you can use it?', options: ['A window', 'An egg', 'A door', 'A book'], correctIndex: 1, explanation: '鸡蛋（egg）在使用前必须先打破（break），这是一个经典的英语谜语。' },
+      { id: 'm51', title: '常识：地标', question: 'In which city can you find the Statue of Liberty?', options: ['Los Angeles', 'Chicago', 'New York', 'Boston'], correctIndex: 2, explanation: '自由女神像（Statue of Liberty）位于美国纽约（New York）。' },
+      { id: 'm52', title: '文化：文学', question: 'Who wrote "Romeo and Juliet"?', options: ['Charles Dickens', 'William Shakespeare', 'Jane Austen', 'Mark Twain'], correctIndex: 1, explanation: '《罗密欧与朱丽叶》是英国剧作家威廉·莎士比亚（William Shakespeare）的经典作品。' },
+      { id: 'm53', title: '文化：名言', question: '"To be, or not to be" is from which play?', options: ['Macbeth', 'Hamlet', 'King Lear', 'Othello'], correctIndex: 1, explanation: '"To be, or not to be"（生存还是毁灭）是莎士比亚的《哈姆雷特》（Hamlet）中的经典独白。' },
+      { id: 'm54', title: '文化：食物', question: 'What is the traditional British meal "fish and chips" served with?', options: ['Rice', 'Fries (chips)', 'Pasta', 'Bread'], correctIndex: 1, explanation: 'Fish and Chips（炸鱼薯条）是英国传统美食，鱼和薯条（chips=炸薯条）一起搭配食用。' },
+    ],
+  },
+
+  // ─── 高中难度 (hard) ──────────────────────────────
+  hard: {
+    grammar: [
+      { id: 'h1', title: '虚拟语气', question: 'If I ___ you, I would accept the offer.', options: ['am', 'was', 'were', 'be'], correctIndex: 2, explanation: '与现在事实相反的虚拟语气，if 从句中 be 动词一律用 were，不论主语人称。' },
+      { id: 'h2', title: '过去完成时', question: 'By the time the police arrived, the thief ___ (escape).', options: ['escaped', 'had escaped', 'has escaped', 'was escaping'], correctIndex: 1, explanation: 'by the time + 过去时间点，主句表示「过去的过去」，须用过去完成时 had + 过去分词。' },
+      { id: 'h3', title: '非谓语动词', question: '___ (see) from the top of the mountain, the city looks beautiful.', options: ['Seeing', 'Seen', 'To see', 'Having seen'], correctIndex: 1, explanation: 'the city 与 see 是被动关系（城市被看），用过去分词 Seen 作状语。' },
+      { id: 'h4', title: '定语从句', question: 'This is the house ___ I was born.', options: ['which', 'that', 'where', 'when'], correctIndex: 2, explanation: '定语从句中缺少地点状语（in the house），用关系副词 where。' },
+      { id: 'h5', title: '倒装句', question: 'Not until the teacher came in ___ the noise.', options: ['the students stopped', 'did the students stop', 'the students did stop', 'stopped the students'], correctIndex: 1, explanation: 'Not until 置于句首时，主句须部分倒装，助动词 did 提前。' },
+      { id: 'h6', title: '名词性从句', question: '___ surprises me most is that he passed the exam without studying.', options: ['That', 'What', 'Which', 'It'], correctIndex: 1, explanation: 'What 引导主语从句，在从句中作主语，表示「…的事情」。' },
+      { id: 'h7', title: '时态综合', question: 'He ___ (work) in this company since he graduated from college.', options: ['worked', 'has been working', 'works', 'is working'], correctIndex: 1, explanation: 'since + 过去时间点，表示从过去持续到现在的动作，用现在完成进行时。' },
+      { id: 'h8', title: '情态动词+完成时', question: 'You ___ (tell) me earlier. I could have helped you.', options: ['should tell', 'should have told', 'must tell', 'need tell'], correctIndex: 1, explanation: 'should have + 过去分词表示「本应该做而没做」，表达对过去的遗憾。' },
+      { id: 'h9', title: '强调句', question: 'It was in the library ___ I met her for the first time.', options: ['where', 'that', 'which', 'when'], correctIndex: 1, explanation: '强调句型 It is/was... that...，强调地点状语时仍用 that。' },
+    ],
+    vocabulary: [
+      { id: 'h10', title: '高级词汇', question: 'The government has ___ new measures to control pollution.', options: ['implemented', 'made', 'did', 'put'], correctIndex: 0, explanation: 'implement measures 表示「实施措施」，是正式书面用语，比 make/put 更正式。' },
+      { id: 'h11', title: '词义辨析', question: 'The witness\'s testimony was ___ with the evidence found at the scene.', options: ['consistent', 'constant', 'continuous', 'convenient'], correctIndex: 0, explanation: 'consistent with 表示「与…一致」，constant 表示「持续的」，continuous 表示「连续的」。' },
+      { id: 'h12', title: '短语动词', question: 'The meeting has been ___ until next Monday due to the manager\'s illness.', options: ['put off', 'put away', 'put through', 'put down'], correctIndex: 0, explanation: 'put off 表示「推迟」，put away 表示「收起来」，put through 表示「接通电话」，put down 表示「放下/镇压」。' },
+      { id: 'h13', title: '形近词', question: 'The scientist made a significant ___ to the field of genetics.', options: ['contribution', 'distribution', 'attribution', 'retribution'], correctIndex: 0, explanation: 'contribution to 表示「对…的贡献」，distribution 表示「分配」，attribution 表示「归因」，retribution 表示「惩罚」。' },
+      { id: 'h14', title: '熟词僻义', question: 'The company plans to ___ a new product line next quarter.', options: ['launch', 'throw', 'drop', 'push'], correctIndex: 0, explanation: 'launch 除「发射」外还表示「推出（新产品）」，launch a product = 推出产品。' },
+      { id: 'h15', title: '搭配辨析', question: 'The new policy will come into ___ on January 1st.', options: ['effect', 'affect', 'effort', 'affair'], correctIndex: 0, explanation: 'come into effect 是固定搭配，表示「生效」。affect 是动词，effort 表示「努力」，affair 表示「事务」。' },
+      { id: 'h16', title: '学术词汇', question: 'The two theories are not mutually ___ ; they can coexist.', options: ['exclusive', 'inclusive', 'excessive', 'aggressive'], correctIndex: 0, explanation: 'mutually exclusive 表示「互斥的」，inclusive 表示「包容的」，excessive 表示「过度的」。' },
+      { id: 'h17', title: '动词短语', question: 'After years of hard work, her dream finally ___ .', options: ['came true', 'realized', 'achieved', 'completed'], correctIndex: 0, explanation: 'come true 表示梦想「实现」，是不及物用法；realize 是及物动词，需用被动语态 was realized。' },
+      { id: 'h18', title: '综合辨析', question: 'The professor ___ that the experiment be repeated under controlled conditions.', options: ['insisted', 'persisted', 'consisted', 'assisted'], correctIndex: 0, explanation: 'insist that... (should) do 表示「坚持要求…」，从句用虚拟语气。persist in doing 表示「坚持做」。' },
+    ],
+    reading: [
+      { id: 'h19', title: '短文：人工智能', passage: 'Artificial intelligence has made remarkable progress in recent years. From self-driving cars to medical diagnosis, AI systems are increasingly capable of performing tasks that once required human intelligence. However, concerns about job displacement and ethical implications have sparked heated debates among policymakers and the public alike.', question: 'What is one concern about AI mentioned in the passage?', options: ['It is too slow', 'Job displacement', 'It is too expensive', 'It cannot learn'], correctIndex: 1, explanation: '文中提到 "concerns about job displacement and ethical implications"。' },
+      { id: 'h20', title: '短文：气候变化', passage: 'Climate change is arguably the most pressing challenge of our time. Rising global temperatures have led to more frequent extreme weather events, melting ice caps, and rising sea levels. Scientists warn that without immediate and substantial reductions in greenhouse gas emissions, the consequences could be catastrophic for future generations.', question: 'What have rising temperatures NOT caused according to the passage?', options: ['Extreme weather', 'Melting ice caps', 'Rising sea levels', 'More forests'], correctIndex: 3, explanation: '文中列举了 extreme weather events, melting ice caps, rising sea levels，没有提到 more forests。' },
+      { id: 'h21', title: '短文：经济学', passage: 'The concept of supply and demand is fundamental to economics. When demand for a product exceeds its supply, prices tend to rise. Conversely, when supply exceeds demand, prices typically fall. This dynamic relationship serves as the invisible hand that guides market economies, as described by Adam Smith in his seminal work "The Wealth of Nations."', question: 'Who described the market mechanism as an "invisible hand"?', options: ['Karl Marx', 'John Keynes', 'Adam Smith', 'David Ricardo'], correctIndex: 2, explanation: '文中提到 "as described by Adam Smith in his seminal work \'The Wealth of Nations\'."' },
+      { id: 'h22', title: '短文：心理学', passage: 'Cognitive dissonance refers to the mental discomfort experienced when a person holds two or more contradictory beliefs, values, or attitudes simultaneously. To reduce this discomfort, individuals tend to either change their beliefs, acquire new information that supports their existing views, or minimize the importance of the conflicting cognition.', question: 'What is cognitive dissonance?', options: ['A type of memory loss', 'Mental discomfort from contradictory beliefs', 'A learning disorder', 'A form of intelligence'], correctIndex: 1, explanation: '文中定义为 "mental discomfort experienced when a person holds two or more contradictory beliefs"。' },
+      { id: 'h23', title: '短文：文学', passage: 'The Romantic movement, which flourished in Europe from the late 18th to mid-19th century, emphasized emotion, individualism, and the glorification of nature. Romantic poets such as Wordsworth and Keats rejected the rigid rationality of the Enlightenment, instead celebrating the sublime beauty of the natural world and the depth of human emotion.', question: 'What did Romantic poets reject?', options: ['Nature', 'Emotion', 'Enlightenment rationality', 'Poetry itself'], correctIndex: 2, explanation: '文中说 "rejected the rigid rationality of the Enlightenment"。' },
+      { id: 'h24', title: '短文：生物学', passage: 'CRISPR-Cas9 is a revolutionary gene-editing technology that allows scientists to modify DNA sequences with unprecedented precision. Derived from a natural defense mechanism found in bacteria, CRISPR has opened up new possibilities for treating genetic disorders, improving crop resilience, and even potentially eradicating certain diseases.', question: 'Where does CRISPR technology originally come from?', options: ['Plants', 'Animals', 'Bacteria', 'Viruses'], correctIndex: 2, explanation: '文中说 "Derived from a natural defense mechanism found in bacteria"。' },
+      { id: 'h25', title: '短文：哲学', passage: 'Existentialism posits that existence precedes essence—meaning that humans are not born with a predetermined purpose but must create their own meaning through choices and actions. Philosophers like Jean-Paul Sartre argued that this freedom comes with profound responsibility, as each individual\'s choices define not only themselves but also their vision of humanity.', question: 'According to existentialism, what precedes essence?', options: ['Freedom', 'Existence', 'Responsibility', 'Choice'], correctIndex: 1, explanation: '文中第一句说 "existence precedes essence"。' },
+      { id: 'h26', title: '短文：历史', passage: 'The Renaissance, meaning "rebirth," was a cultural movement that spanned roughly from the 14th to the 17th century. Beginning in Italy and spreading across Europe, it marked the transition from the medieval period to modernity. The movement was characterized by a revival of classical learning, groundbreaking developments in art and science, and the rise of humanism.', question: 'Where did the Renaissance begin?', options: ['France', 'England', 'Italy', 'Germany'], correctIndex: 2, explanation: '文中说 "Beginning in Italy and spreading across Europe"。' },
+      { id: 'h27', title: '短文：社会学', passage: 'Social stratification refers to the hierarchical arrangement of individuals in a society based on factors such as wealth, power, and prestige. Sociologists distinguish between open systems, where social mobility is possible through merit and achievement, and closed systems, where social position is largely determined by birth. Most modern societies are theoretically open but exhibit varying degrees of actual mobility.', question: 'What determines social position in a closed system?', options: ['Merit', 'Achievement', 'Birth', 'Education'], correctIndex: 2, explanation: '文中说 "closed systems, where social position is largely determined by birth"。' },
+    ],
+    cloze: [
+      { id: 'h28', title: '完形: 学术', passage: 'The scientific method is a systematic approach to inquiry that ___ (1) observation, hypothesis formation, experimentation, and conclusion. Scientists must remain objective and avoid letting personal biases ___ (2) their results.', question: '选择空格1的正确答案', options: ['involves', 'involve', 'involving', 'involved'], correctIndex: 0, explanation: '主语 the scientific method 是单数，一般现在时第三人称单数用 involves。' },
+      { id: 'h29', title: '完形: 经济', passage: 'Inflation occurs when the general price level of goods and services rises, ___ (1) the purchasing power of money. Central banks typically respond by ___ (2) interest rates to curb excessive inflation.', question: '选择空格2的正确答案', options: ['raise', 'raising', 'raised', 'raises'], correctIndex: 1, explanation: 'by 是介词，后接动名词 raising。by raising interest rates = 通过提高利率。' },
+      { id: 'h30', title: '完形: 文学', passage: 'Metaphor is a figure of speech that makes an implicit comparison between two ___ (1) things. Unlike similes, which use "like" or "as," metaphors directly state that one thing ___ (2) another.', question: '选择空格1的正确答案', options: ['similar', 'unrelated', 'identical', 'familiar'], correctIndex: 1, explanation: '隐喻是在两个无关（unrelated）事物之间进行隐含比较，similar 是明喻的特征。' },
+      { id: 'h31', title: '完形: 心理', passage: 'The placebo effect demonstrates the powerful influence of the mind on the body. Patients who believe they are receiving treatment often show improvement, even when the treatment has no ___ (1) value. This phenomenon highlights the importance of psychological factors in ___ (2) outcomes.', question: '选择空格1的正确答案', options: ['therapeutic', 'theoretical', 'technical', 'terminal'], correctIndex: 0, explanation: 'therapeutic value 表示「治疗价值」，即使没有治疗价值的安慰剂也能产生效果。' },
+      { id: 'h32', title: '完形: 环境', passage: 'Biodiversity refers to the variety of life on Earth at all levels. The ___ (1) rate of species extinction, largely caused by human activities such as deforestation and pollution, has raised alarm among scientists. Conservation efforts are ___ (2) to preserving ecosystems for future generations.', question: '选择空格2的正确答案', options: ['crucial', 'crucially', 'cruciality', 'crucify'], correctIndex: 0, explanation: 'be crucial to 表示「对…至关重要」，crucial 是形容词。' },
+      { id: 'h33', title: '完形: 科技', passage: 'Blockchain technology has the potential to revolutionize industries beyond finance. Its decentralized nature ___ (1) that no single entity controls the data, making it highly resistant to ___ (2).', question: '选择空格2的正确答案', options: ['tamper', 'tampering', 'tampered', 'tampers'], correctIndex: 1, explanation: 'resistant to 后接名词或动名词，resistant to tampering 表示「抵抗篡改」。' },
+      { id: 'h34', title: '完形: 医学', passage: 'Antibiotics have saved countless lives since their discovery, but their overuse has led to the emergence of antibiotic-resistant bacteria. These "superbugs" pose a ___ (1) threat to global health. Medical professionals are urged to ___ (2) antibiotics only when necessary.', question: '选择空格1的正确答案', options: ['significant', 'insignificant', 'significance', 'signify'], correctIndex: 0, explanation: '修饰名词 threat 需要形容词 significant（重大的）。' },
+      { id: 'h35', title: '完形: 政治', passage: 'Democracy is founded on the principle that citizens have the right to participate in decision-making. Free and fair elections are ___ (1) to this process. However, voter apathy and misinformation can ___ (2) the democratic process.', question: '选择空格2的正确答案', options: ['undermine', 'underline', 'undergo', 'undertake'], correctIndex: 0, explanation: 'undermine 表示「削弱、破坏」，选民冷漠和错误信息会削弱民主进程。' },
+      { id: 'h36', title: '完形: 哲学', passage: 'Ethical dilemmas arise when moral principles conflict, forcing individuals to choose between competing values. The trolley problem, a famous thought experiment, ___ (1) this tension by asking whether it is morally acceptable to sacrifice one person to save five. There is no universally ___ (2) answer.', question: '选择空格2的正确答案', options: ['accept', 'accepted', 'accepting', 'acceptable'], correctIndex: 1, explanation: 'universally accepted 表示「普遍接受的」，过去分词作定语修饰 answer。' },
+    ],
+    speaking: [
+      { id: 'h37', title: '学术讨论', question: 'In a seminar, you want to politely disagree with a point. You say:', options: ['You\'re wrong!', 'I see your point, but I tend to think differently because...', 'That\'s stupid.', 'Whatever.'], correctIndex: 1, explanation: '学术讨论中礼貌地表达不同意见应先用 "I see your point" 承认对方观点，再说明自己的看法。' },
+      { id: 'h38', title: '正式演讲', question: 'When giving a formal presentation, what should you do at the beginning?', options: ['Start talking immediately', 'Outline the structure of your talk', 'Apologize for being nervous', 'Tell a joke about the audience'], correctIndex: 1, explanation: '正式演讲开场应先概述演讲结构（outline），让听众了解内容框架。' },
+      { id: 'h39', title: '商务谈判', question: 'In a negotiation, you want to propose a compromise. You say:', options: ['Take it or leave it!', 'What if we meet halfway on this issue?', 'No way!', 'I don\'t care.'], correctIndex: 1, explanation: '"What if we meet halfway?" 是提议折中方案的委婉表达，meet halfway = 各让一步。' },
+      { id: 'h40', title: '面试技巧', question: 'The interviewer asks: "Where do you see yourself in five years?" You answer:', options: ['I don\'t know.', 'I hope to have grown professionally and taken on more responsibilities.', 'On a beach.', 'Somewhere else.'], correctIndex: 1, explanation: '面试中应展示职业规划和上进心，表达希望成长和承担更多责任是得体的回答。' },
+      { id: 'h41', title: '辩论用语', question: 'In a debate, you want to rebut the opponent\'s argument. You say:', options: ['That\'s nonsense!', 'I understand your argument, however, the evidence suggests otherwise...', 'You don\'t know anything.', 'Shut up.'], correctIndex: 1, explanation: '辩论中反驳应先承认对方论点（I understand your argument），再用证据反驳（however...）。' },
+      { id: 'h42', title: '会议主持', question: 'To keep a meeting on track, you say:', options: ['Let\'s talk about random things.', 'I suggest we focus on the main agenda items for now.', 'Who cares about time?', 'Let\'s end this meeting.'], correctIndex: 1, explanation: '会议偏离主题时，主持人应礼貌地引导回到议程：focus on the main agenda items。' },
+      { id: 'h43', title: '道歉信', question: 'In a formal apology email, you should begin with:', options: ['Hey, sorry!', 'I am writing to express my sincere apologies for...', 'Oops!', 'My bad.'], correctIndex: 1, explanation: '正式道歉信开头用 "I am writing to express my sincere apologies for..." 是得体的书面表达。' },
+      { id: 'h44', title: '即兴演讲', question: 'You are asked to give an impromptu speech. The best strategy is:', options: ['Panic and say nothing', 'Use the PREP method: Point, Reason, Example, Point', 'Make up random facts', 'Walk away'], correctIndex: 1, explanation: 'PREP 方法（Point-Reason-Example-Point）是即兴演讲的有效框架：先亮观点，说理由，举例，再重申观点。' },
+      { id: 'h45', title: '跨文化沟通', question: 'When communicating with someone from a different culture, you should:', options: ['Assume they think like you', 'Be aware of cultural differences and adapt your style', 'Insist they follow your customs', 'Avoid all communication'], correctIndex: 1, explanation: '跨文化沟通应意识到文化差异（be aware of cultural differences）并灵活调整沟通方式。' },
+    ],
+    fun: [
+      { id: 'h46', title: '文学：莎士比亚', question: 'How many sonnets did Shakespeare write?', options: ['100', '154', '200', '50'], correctIndex: 1, explanation: '莎士比亚共创作了154首十四行诗（sonnets），是英语文学中的瑰宝。' },
+      { id: 'h47', title: '成语：英语习语', question: 'What does "burn the midnight oil" mean?', options: ['烧油', '熬夜工作/学习', '点火', '晚上开车'], correctIndex: 1, explanation: '"burn the midnight oil" 是英语习语，指「熬夜工作或学习」，源自点油灯工作到深夜的意象。' },
+      { id: 'h48', title: '文化：历史', question: 'The Magna Carta was signed in which year?', options: ['1066', '1215', '1492', '1776'], correctIndex: 1, explanation: '《大宪章》（Magna Carta）于1215年签署，是英国宪政史上的重要文件，限制了王权。' },
+      { id: 'h49', title: '文学：名著', question: 'Who wrote "Pride and Prejudice"?', options: ['Charlotte Brontë', 'Jane Austen', 'Emily Dickinson', 'Virginia Woolf'], correctIndex: 1, explanation: '《傲慢与偏见》（Pride and Prejudice）是简·奥斯汀（Jane Austen）的代表作。' },
+      { id: 'h50', title: '成语：英语习语2', question: 'What does "bite the bullet" mean?', options: ['咬子弹', '勇敢面对困难', '吃东西', '开枪'], correctIndex: 1, explanation: '"bite the bullet" 表示「咬紧牙关、勇敢面对困难」，源自战场上士兵咬子弹忍痛做手术的典故。' },
+      { id: 'h51', title: '文化：诺贝尔奖', question: 'Which country has produced the most Nobel Prize winners in Literature?', options: ['USA', 'UK', 'France', 'Germany'], correctIndex: 2, explanation: '法国（France）是获得诺贝尔文学奖最多的国家，产生了众多文学巨匠。' },
+      { id: 'h52', title: '文学：诗歌', question: 'Who wrote the poem "The Road Not Taken"?', options: ['Walt Whitman', 'Robert Frost', 'Emily Dickinson', 'T.S. Eliot'], correctIndex: 1, explanation: '《未选择的路》（The Road Not Taken）是美国诗人罗伯特·弗罗斯特（Robert Frost）最著名的诗作。' },
+      { id: 'h53', title: '成语：英语习语3', question: 'What does "the ball is in your court" mean?', options: ['球在你院子里', '轮到你做决定了', '你在打网球', '球丢了'], correctIndex: 1, explanation: '"the ball is in your court" 表示「轮到你做决定/采取行动了」，源自网球等球类运动。' },
+      { id: 'h54', title: '文化：语言学', question: 'Approximately how many words does the English language have?', options: ['100,000', '170,000', '500,000', 'Over 1,000,000'], correctIndex: 3, explanation: '英语词汇量超过100万（包括专业术语、方言词汇等），是词汇量最丰富的语言之一。' },
+    ],
+  },
 };
 
 // ============================================================
@@ -377,7 +939,8 @@ camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+// 限制像素比，避免高DPI设备过载（移动端≤600px强制1倍）
+renderer.setPixelRatio(window.innerWidth <= 600 ? 1 : Math.min(window.devicePixelRatio, 1.5));
 renderer.shadowMap.enabled = true;
 
 // 灯光
@@ -400,17 +963,94 @@ controls.autoRotate = true;
 controls.autoRotateSpeed = 0.5;
 controls.target.set(0, 0, 0);
 
-// 粒子背景
-const particlesGeo = new THREE.BufferGeometry();
-const particlesCount = 200;
-const posArray = new Float32Array(particlesCount * 3);
-for (let i = 0; i < particlesCount * 3; i++) {
-  posArray[i] = (Math.random() - 0.5) * 20;
+// 粒子背景 - 使用 Sprite 纹理（80个，青紫渐变，柔和光晕）
+const particlesCount = 80;
+// 创建光晕纹理（Canvas 绘制径向渐变）
+const glowCanvas = document.createElement('canvas');
+glowCanvas.width = 32; glowCanvas.height = 32;
+const gctx = glowCanvas.getContext('2d');
+const gradient = gctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+gradient.addColorStop(0, 'rgba(255,255,255,0.9)');
+gradient.addColorStop(0.3, 'rgba(200,220,255,0.5)');
+gradient.addColorStop(1, 'rgba(0,0,0,0)');
+gctx.fillStyle = gradient;
+gctx.fillRect(0, 0, 32, 32);
+const glowTexture = new THREE.CanvasTexture(glowCanvas);
+glowTexture.minFilter = THREE.LinearFilter;
+
+const spriteGroup = new THREE.Group();
+const colors = [0x4ae6c9, 0xa29bfe, 0x48dbfb, 0x7c6ff7, 0x3dd6b5]; // 青紫渐变色
+for (let i = 0; i < particlesCount; i++) {
+  const spriteMat = new THREE.SpriteMaterial({
+    map: glowTexture,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    transparent: true,
+    opacity: 0.5 + Math.random() * 0.2, // 0.5~0.7
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const sprite = new THREE.Sprite(spriteMat);
+  sprite.position.set(
+    (Math.random() - 0.5) * 16, // ±8 范围
+    (Math.random() - 0.5) * 16,
+    (Math.random() - 0.5) * 16
+  );
+  sprite.scale.setScalar(0.15 + Math.random() * 0.2);
+  spriteGroup.add(sprite);
 }
-particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-const particlesMat = new THREE.PointsMaterial({ size: 0.02, color: 0x4ae6c9, transparent: true, opacity: 0.5 });
-const particles = new THREE.Points(particlesGeo, particlesMat);
-scene.add(particles);
+scene.add(spriteGroup);
+
+// ============================================================
+// 题型转换：根据题目位置自动分配题型
+// 题型规则：第1-3关→choice, 第4-6关→cloze, 第7-8关→wordbank, 第9关→grammar
+// ============================================================
+(function processQuestionTypes() {
+  for (const diff of ['easy', 'medium', 'hard']) {
+    for (const face of Object.keys(QUESTIONS[diff])) {
+      const qs = QUESTIONS[diff][face];
+      for (let i = 0; i < 9; i++) {
+        const q = qs[i];
+        if (i <= 2) {
+          q.type = 'choice';
+        } else if (i <= 5) {
+          // 转换为 cloze 格式
+          q.type = 'cloze';
+          if (!q.blanks) {
+            // 基于现有 question/options 构造 cloze 数据
+            q.blanks = [{ id: 1, options: q.options || [], correctIndex: q.correctIndex || 0 }];
+            if (q.passage) {
+              q.passage = q.passage + ' ___ (1) ___.';
+            }
+          }
+        } else if (i <= 7) {
+          // 转换为 wordbank 格式
+          q.type = 'wordbank';
+          if (!q.blanks) {
+            const correctWord = (q.options && q.correctIndex !== undefined) ? q.options[q.correctIndex] : (q.question || '').split(' ').pop();
+            q.blanks = [{ id: 1, correctWord: correctWord }];
+            q.wordBank = q.options ? [...q.options].sort(() => Math.random() - 0.5) : [correctWord, 'other'];
+            if (!q.passage) q.passage = q.question || '';
+            q.passage = q.passage.replace(correctWord, '____') + ' ____.';
+          }
+        } else {
+          // 转换为 grammar 格式
+          q.type = 'grammar';
+          if (!q.blanks) {
+            const correctAnswer = (q.options && q.correctIndex !== undefined) ? q.options[q.correctIndex] : '___';
+            q.blanks = [{ id: 1, correctAnswer: correctAnswer, hint: '(提示)' }];
+            if (!q.passage) q.passage = q.question || '';
+            q.passage = q.passage + ` ___ (1) ___.`;
+          }
+        }
+      }
+    }
+  }
+})();
+
+// ============================================================
+// 当前难度等级
+// ============================================================
+let currentDifficulty = 'medium';
 
 // ============================================================
 // 创建魔方
@@ -456,7 +1096,7 @@ function createCubie(x, y, z) {
 
   // 边框（禁用射线检测，避免干扰点击）
   const edges = new THREE.EdgesGeometry(geo);
-  const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 }));
+  const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x4ae6c9, transparent: true, opacity: 0.25 }));
   line.raycast = () => {};
   mesh.add(line);
 
@@ -479,6 +1119,127 @@ for (let x = -1; x <= 1; x++) {
 scene.add(cubieGroup);
 
 // ============================================================
+// 锁定状态：已移除 🔒 图标，改用颜色明暗区分三态
+//   - locked: 暗色 #1a1a2e（与魔方内部一致）
+//   - unlocked: 面颜色 50% 亮度（半透明，可见但偏暗）
+//   - completed: 面颜色 100% 鲜艳 + 发光
+// ============================================================
+
+// ============================================================
+// 动画系统：脉冲 + 完成动画
+// ============================================================
+const activeAnimations = [];
+
+function addPulseAnimation(mesh) {
+  // 移除同一 mesh 的旧动画
+  for (let i = activeAnimations.length - 1; i >= 0; i--) {
+    if (activeAnimations[i].mesh === mesh && activeAnimations[i].type === 'pulse') {
+      activeAnimations.splice(i, 1);
+    }
+  }
+
+  const anim = {
+    type: 'pulse',
+    mesh,
+    startTime: performance.now(),
+    duration: 300,
+    originalScale: mesh.scale.clone(),
+  };
+  activeAnimations.push(anim);
+}
+
+function addCompletionAnimation(mesh, materials, faceOrder, faceId, baseColor) {
+  // 移除同一 mesh 的旧完成动画
+  for (let i = activeAnimations.length - 1; i >= 0; i--) {
+    if (activeAnimations[i].mesh === mesh && activeAnimations[i].type === 'complete') {
+      activeAnimations.splice(i, 1);
+    }
+  }
+
+  const matIdx = faceOrder.indexOf(faceId === 'front' ? 'front' : faceId === 'back' ? 'back' : faceId === 'left' ? 'left' : faceId === 'right' ? 'right' : faceId === 'top' ? 'top' : 'bottom');
+  if (matIdx === -1) return;
+
+  const anim = {
+    type: 'complete',
+    mesh,
+    startTime: performance.now(),
+    duration: 500,
+    originalY: mesh.position.y,
+    materials,
+    matIdx,
+    targetColor: new THREE.Color(baseColor),
+    startColor: new THREE.Color(0x333344),
+  };
+  activeAnimations.push(anim);
+}
+
+function updateAnimations() {
+  const now = performance.now();
+  for (let i = activeAnimations.length - 1; i >= 0; i--) {
+    const anim = activeAnimations[i];
+    const elapsed = now - anim.startTime;
+    const t = Math.min(elapsed / anim.duration, 1);
+
+    if (anim.type === 'pulse') {
+      // 缓出脉冲
+      const scale = 1 + 0.08 * Math.sin(t * Math.PI) * (1 - t);
+      anim.mesh.scale.setScalar(scale);
+      if (t >= 1) {
+        anim.mesh.scale.copy(anim.originalScale);
+        activeAnimations.splice(i, 1);
+      }
+    } else if (anim.type === 'complete') {
+      // 颜色渐变 + 上浮
+      const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+      const color = new THREE.Color().lerpColors(anim.startColor, anim.targetColor, ease);
+      anim.materials[anim.matIdx].color.copy(color);
+      anim.materials[anim.matIdx].emissive.copy(color);
+      anim.materials[anim.matIdx].emissiveIntensity = 0.5 * ease;
+
+      // 上浮效果
+      const bounce = Math.sin(t * Math.PI) * 0.15 * (1 - t);
+      anim.mesh.position.y = anim.originalY + bounce;
+
+      if (t >= 1) {
+        anim.mesh.position.y = anim.originalY;
+        activeAnimations.splice(i, 1);
+      }
+    } else if (anim.type === 'shake') {
+      // 摇晃效果
+      const intensity = (1 - t) * 0.08;
+      const shakeX = Math.sin(t * 20) * intensity;
+      const shakeY = Math.cos(t * 17) * intensity;
+      anim.mesh.position.x = anim.originalPos.x + shakeX;
+      anim.mesh.position.y = anim.originalPos.y + shakeY;
+      if (t >= 1) {
+        anim.mesh.position.copy(anim.originalPos);
+        activeAnimations.splice(i, 1);
+      }
+    }
+  }
+}
+
+// 锁定格子摇晃动画
+function shakeLockedCubie(mesh) {
+  for (let i = activeAnimations.length - 1; i >= 0; i--) {
+    if (activeAnimations[i].mesh === mesh && activeAnimations[i].type === 'shake') {
+      activeAnimations.splice(i, 1);
+    }
+  }
+  const anim = {
+    type: 'shake',
+    mesh,
+    startTime: performance.now(),
+    duration: 400,
+    originalPos: mesh.position.clone(),
+  };
+  activeAnimations.push(anim);
+}
+
+// 更新 updateAnimations 添加 shake 类型
+// (在 updateAnimations 函数末尾添加 shake 处理)
+
+// ============================================================
 // 进度管理
 // ============================================================
 const STORAGE_KEY = 'cube_english_progress';
@@ -495,7 +1256,7 @@ function saveProgress(progress) {
 }
 
 function getCellKey(faceId, row, col) {
-  return `${faceId}_${row}_${col}`;
+  return `${currentDifficulty}_${faceId}_${row}_${col}`;
 }
 
 function getCellState(faceId, row, col) {
@@ -516,8 +1277,47 @@ function markCompleted(faceId, row, col) {
   const progress = loadProgress();
   progress[getCellKey(faceId, row, col)] = 'completed';
   saveProgress(progress);
-  updateAllCubieColors();
+  updateSingleCubieFace(faceId, row, col);
   updateHeaderStats();
+}
+
+// 将 hex 颜色转换为 50% 亮度版本（用于 unlocked 状态）
+function halfBrightness(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return '#' + [r, g, b].map(c => Math.round(c * 0.5).toString(16).padStart(2, '0')).join('');
+}
+
+// 局部更新单个 cubie 的单个面颜色（替代 updateAllCubieColors 全量遍历）
+function updateSingleCubieFace(faceId, row, col) {
+  const face = FACES[faceId];
+  const [nx, ny, nz] = face.normal;
+  for (const key in cubieMap) {
+    const [x, y, z] = key.split(',').map(Number);
+    const cell = getFaceCell(x, y, z, nx, ny, nz);
+    if (cell && cell.row === row && cell.col === col) {
+      const cubie = cubieMap[key];
+      const matIdx = cubie.faceOrder.indexOf(faceId);
+      if (matIdx === -1) return;
+      const state = getCellState(faceId, row, col);
+      const color = face.color;
+      if (state === 'completed') {
+        cubie.materials[matIdx].color.set(color);
+        cubie.materials[matIdx].emissive.set(color);
+        cubie.materials[matIdx].emissiveIntensity = 0.5;
+      } else if (state === 'locked') {
+        cubie.materials[matIdx].color.set(DARK_COLOR_DYNAMIC());
+        cubie.materials[matIdx].emissive.set(0x000000);
+        cubie.materials[matIdx].emissiveIntensity = 0;
+      } else {
+        cubie.materials[matIdx].color.set(halfBrightnessDynamic(color));
+        cubie.materials[matIdx].emissive.set(0x000000);
+        cubie.materials[matIdx].emissiveIntensity = 0;
+      }
+      return;
+    }
+  }
 }
 
 function getTotalCompleted() {
@@ -559,11 +1359,13 @@ function updateAllCubieColors() {
         materials[matIdx].emissive.set(baseColor);
         materials[matIdx].emissiveIntensity = 0.5;
       } else if (state === 'locked') {
-        materials[matIdx].color.set(0x333344);
+        // 锁定：统一暗色（与魔方内部一致，根据主题动态变化）
+        materials[matIdx].color.set(DARK_COLOR_DYNAMIC());
         materials[matIdx].emissive.set(0x000000);
         materials[matIdx].emissiveIntensity = 0;
       } else {
-        materials[matIdx].color.set(baseColor);
+        // 解锁未完成：面颜色可变亮度（根据主题动态变化）
+        materials[matIdx].color.set(halfBrightnessDynamic(baseColor));
         materials[matIdx].emissive.set(0x000000);
         materials[matIdx].emissiveIntensity = 0;
       }
@@ -575,23 +1377,44 @@ function updateAllCubieColors() {
 // 顶部统计
 // ============================================================
 function updateHeaderStats() {
-  document.getElementById('total-completed').textContent = getTotalCompleted();
+  const total = getTotalCompleted();
+  document.getElementById('total-completed').textContent = total;
 
-  const container = document.getElementById('face-progress');
-  container.innerHTML = '';
+  // 更新悬浮面板
+  const pct = Math.round((total / 54) * 100);
+  document.getElementById('panel-progress-text').textContent = `${total}/54`;
+  document.getElementById('panel-progress-fill').style.width = `${pct}%`;
+  document.getElementById('panel-percent').textContent = `${pct}%`;
 
-  for (const face of Object.values(FACES)) {
+  // 更新展开的面进度
+  const faceOrder = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+  const row1 = document.getElementById('panel-body-row1');
+  const row2 = document.getElementById('panel-body-row2');
+  row1.innerHTML = '';
+  row2.innerHTML = '';
+
+  for (let i = 0; i < faceOrder.length; i++) {
+    const face = FACES[faceOrder[i]];
     const completed = getFaceCompleted(face.id);
     const item = document.createElement('div');
-    item.className = 'face-progress-item';
-    item.innerHTML = `<span class="face-progress-dot" style="background:${face.color}"></span>${face.name} ${completed}/9`;
-    item.onclick = (e) => { e.stopPropagation(); faceCameraToFace(face.id); };
-    container.appendChild(item);
+    item.className = 'panel-body-item';
+    const resetBtn = `<button class="panel-reset-btn" data-face="${face.id}" title="重置「${face.name}」进度">↺</button>`;
+    item.innerHTML = `<span class="panel-body-dot" style="background:${face.color}"></span>${face.emoji} ${completed}/9 ${resetBtn}`;
+    item.onclick = (e) => {
+      if (e.target.classList.contains('panel-reset-btn')) {
+        e.stopPropagation();
+        showResetFaceConfirm(face);
+        return;
+      }
+      e.stopPropagation();
+      faceCameraToFace(face.id);
+    };
+    (i < 3 ? row1 : row2).appendChild(item);
   }
 }
 
 // 旋转视角到指定面
-function faceCameraToFace(faceId) {
+function faceCameraToFace(faceId, callback) {
   const face = FACES[faceId];
   const target = new THREE.Vector3(
     face.normal[0] * 5,
@@ -605,7 +1428,7 @@ function faceCameraToFace(faceId) {
   const startTime = performance.now();
   const duration = 800;
 
-  function animate(now) {
+  function anim(now) {
     const elapsed = now - startTime;
     const t = Math.min(elapsed / duration, 1);
     const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOutQuad
@@ -615,10 +1438,12 @@ function faceCameraToFace(faceId) {
     controls.update();
 
     if (t < 1) {
-      requestAnimationFrame(animate);
+      requestAnimationFrame(anim);
+    } else if (callback) {
+      callback();
     }
   }
-  requestAnimationFrame(animate);
+  requestAnimationFrame(anim);
 }
 
 // ============================================================
@@ -632,11 +1457,37 @@ let currentCell = null;
 let selectedOption = null;
 let answered = false;
 
-// 点击检测：监听 document 的 click 事件，绕过 OrbitControls 的 pointer 事件拦截
-document.addEventListener('click', (e) => {
-  // 只有点击在 canvas 上才处理
-  if (e.target !== canvas) return;
+// 指针事件：pointerdown + pointerup 替代 click，解决移动端拖拽误触和 300ms 延迟
+let pointerDownX = 0, pointerDownY = 0;
+let isDragging = false;
+
+canvas.addEventListener('pointerdown', (e) => {
+  pointerDownX = e.clientX;
+  pointerDownY = e.clientY;
+  isDragging = false;
+});
+
+canvas.addEventListener('pointermove', (e) => {
+  if (isDragging) return;
+  const dx = e.clientX - pointerDownX;
+  const dy = e.clientY - pointerDownY;
+  if (Math.sqrt(dx * dx + dy * dy) > 10) {
+    isDragging = true;
+    canvas.style.cursor = 'grabbing';
+  }
+});
+
+canvas.addEventListener('pointerup', (e) => {
+  canvas.style.cursor = 'grab';
+  if (isDragging) return;
   if (document.getElementById('modal-overlay').classList.contains('active')) return;
+
+  const dx = e.clientX - pointerDownX;
+  const dy = e.clientY - pointerDownY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+
+  // 移动超过 10px 视为拖拽，不触发点击
+  if (dist > 10) return;
 
   const rect = canvas.getBoundingClientRect();
   mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -644,8 +1495,6 @@ document.addEventListener('click', (e) => {
 
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(cubieMeshes);
-
-  console.log('click detected, intersects:', intersects.length);
 
   if (intersects.length > 0) {
     const intersect = intersects[0];
@@ -662,7 +1511,7 @@ document.addEventListener('click', (e) => {
         break;
       }
     }
-    if (!cubieData) { console.log('cubie not found'); return; }
+    if (!cubieData) return;
 
     const normal = intersect.face.normal.clone();
     normal.x = Math.round(normal.x);
@@ -676,7 +1525,13 @@ document.addEventListener('click', (e) => {
     if (!cell) return;
 
     const state = getCellState(faceId, cell.row, cell.col);
+
+    // 点击脉冲动画（无论是否锁定，都给视觉反馈）
+    addPulseAnimation(cubieData.mesh);
+
     if (state === 'locked') {
+      // 锁定格子摇晃动画
+      shakeLockedCubie(cubieData.mesh);
       showLockedModal(faceId, cell);
       return;
     }
@@ -705,30 +1560,49 @@ window.startFirstQuestion = function() {
       const col = order % 3;
       const state = getCellState(faceId, row, col);
       if (state !== 'locked') {
-        openQuestionModal(faceId, { row, col });
+        faceCameraToFace(faceId, () => {
+          openQuestionModal(faceId, { row, col });
+        });
         return;
       }
     }
   }
   // 全部完成
-  alert('🎉 恭喜！你已经完成了所有54个关卡！');
+  const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
+  alert(`🎉 恭喜！你已经完成了${diffLabels[currentDifficulty]}难度的所有54个关卡！`);
 };
 
 // ============================================================
-// 答题弹窗
+// 答题弹窗 - 多题型支持
 // ============================================================
+let clozeAnswers = {}; // { blankId: selectedIndex }
+let wordbankAnswers = {}; // { blankId: word }
+let grammarAnswers = {}; // { blankId: answer }
+let currentClozeBlank = 1; // 当前激活的完形填空空格
+let currentWordbankBlank = 1; // 当前激活的选词填空空格
+
+const TYPE_LABELS = { choice: '选择题', cloze: '完形填空', wordbank: '选词填空', grammar: '语法填空' };
+const TYPE_CLASSES = { choice: 'type-choice', cloze: 'type-cloze', wordbank: 'type-wordbank', grammar: 'type-grammar' };
+
 function openQuestionModal(faceId, cell) {
-  // 兼容面 ID (front/back/...) 和题库 ID (grammar/vocabulary/...)
+  // 先确保前一状态完全清理
+  closeModal();
+
   const isFaceKey = FACES[faceId] !== undefined;
   const qbId = isFaceKey ? FACE_TO_QB[faceId] : faceId;
   const faceKey = isFaceKey ? faceId : QB_TO_FACE[faceId];
   const face = FACES[faceKey];
-  const questions = QUESTIONS[qbId];
+  const questions = QUESTIONS[currentDifficulty][qbId];
 
   currentFaceId = faceKey;
   currentCell = cell;
   selectedOption = null;
   answered = false;
+  clozeAnswers = {};
+  wordbankAnswers = {};
+  grammarAnswers = {};
+  currentClozeBlank = 1;
+  currentWordbankBlank = 1;
 
   const qIndex = cell.row * 3 + cell.col;
   const q = questions[qIndex];
@@ -740,31 +1614,11 @@ function openQuestionModal(faceId, cell) {
   badge.style.background = face.color + '33';
   badge.style.color = face.color;
 
-  document.getElementById('modal-level').textContent = q.difficultyLabel;
-  document.getElementById('modal-title').textContent = `第${qIndex + 1}关：${q.title}`;
-
-  // 短文
-  const passageEl = document.getElementById('modal-passage');
-  if (q.passage) {
-    passageEl.style.display = 'block';
-    passageEl.textContent = q.passage;
-  } else {
-    passageEl.style.display = 'none';
-  }
-
-  document.getElementById('modal-question').textContent = q.question;
-
-  // 选项
-  const optionsList = document.getElementById('options-list');
-  optionsList.innerHTML = '';
-  const letters = ['A', 'B', 'C', 'D'];
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.innerHTML = `<span class="option-letter">${letters[i]}.</span> ${opt}`;
-    btn.onclick = () => selectOption(i, btn);
-    optionsList.appendChild(btn);
-  });
+  const diffLabels = { easy: '🌱 小学', medium: '📖 初中', hard: '🎯 高中' };
+  document.getElementById('modal-level').textContent = diffLabels[currentDifficulty];
+  const qType = q.type || 'choice';
+  const typeBadge = `<span class="question-type-badge ${TYPE_CLASSES[qType]}">${TYPE_LABELS[qType]}</span>`;
+  document.getElementById('modal-title').innerHTML = `第${qIndex + 1}关：${q.title}${typeBadge}`;
 
   // 重置反馈
   document.getElementById('feedback-area').classList.remove('show');
@@ -772,6 +1626,18 @@ function openQuestionModal(faceId, cell) {
   document.getElementById('btn-submit').disabled = true;
   document.getElementById('btn-next').style.display = 'none';
   document.getElementById('locked-tip').style.display = 'none';
+
+  // 根据题型渲染不同UI
+  document.getElementById('modal-passage').style.display = 'none';
+  document.getElementById('modal-question').textContent = '';
+  document.getElementById('options-list').innerHTML = '';
+
+  switch (qType) {
+    case 'cloze': renderClozeQuestion(q); break;
+    case 'wordbank': renderWordbankQuestion(q); break;
+    case 'grammar': renderGrammarQuestion(q); break;
+    default: renderChoiceQuestion(q); break;
+  }
 
   document.getElementById('modal-overlay').classList.add('active');
 }
@@ -798,7 +1664,26 @@ function showLockedModal(faceId, cell) {
   document.getElementById('modal-overlay').classList.add('active');
 }
 
-function selectOption(index, btn) {
+// ---- 选择题渲染 ----
+function renderChoiceQuestion(q) {
+  if (q.passage) {
+    const passageEl = document.getElementById('modal-passage');
+    passageEl.style.display = 'block';
+    passageEl.textContent = q.passage;
+  }
+  document.getElementById('modal-question').textContent = q.question || '';
+  const optionsList = document.getElementById('options-list');
+  const letters = ['A', 'B', 'C', 'D'];
+  (q.options || []).forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}.</span> ${opt}`;
+    btn.onclick = () => selectChoiceOption(i, btn);
+    optionsList.appendChild(btn);
+  });
+}
+
+function selectChoiceOption(index, btn) {
   if (answered) return;
   selectedOption = index;
   document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
@@ -806,42 +1691,351 @@ function selectOption(index, btn) {
   document.getElementById('btn-submit').disabled = false;
 }
 
-function submitAnswer() {
-  if (selectedOption === null || !currentQuestion || answered) return;
-  answered = true;
+// ---- 完形填空渲染 ----
+function renderClozeQuestion(q) {
+  const optionsList = document.getElementById('options-list');
+  // 显示短文
+  let passageHtml = q.passage;
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const placeholder = clozeAnswers[num] !== undefined ? (q.blanks[i].options[clozeAnswers[num]] || '___') : '___';
+    passageHtml = passageHtml.replace(`___ (${num})`, `<span class="cloze-blank" data-blank="${num}" id="cloze-blank-${num}">${placeholder}</span>`);
+  });
+  document.getElementById('modal-question').innerHTML = `<div class="cloze-passage">${passageHtml}</div>`;
 
+  // 显示每个空格选项
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const group = document.createElement('div');
+    group.className = 'cloze-options-group';
+    group.id = `cloze-options-${num}`;
+    group.innerHTML = `<div class="cloze-options-label">空格 ${num}：</div><div class="cloze-options-row"></div>`;
+    const row = group.querySelector('.cloze-options-row');
+    blank.options.forEach((opt, j) => {
+      const btn = document.createElement('button');
+      btn.className = 'cloze-option';
+      if (clozeAnswers[num] === j) btn.classList.add('selected-opt');
+      btn.textContent = opt;
+      btn.onclick = () => selectClozeOption(num, j, blank.options[j]);
+      row.appendChild(btn);
+    });
+    optionsList.appendChild(group);
+  });
+
+  // 点击空格切换
+  document.querySelectorAll('.cloze-blank').forEach(el => {
+    el.addEventListener('click', () => {
+      currentClozeBlank = parseInt(el.dataset.blank);
+      updateClozeBlankHighlight();
+    });
+  });
+  if (q.blanks && q.blanks.length > 0) currentClozeBlank = 1;
+  updateClozeBlankHighlight();
+  updateSubmitButtonState();
+}
+
+function selectClozeOption(blankId, index, text) {
+  if (answered) return;
+  clozeAnswers[blankId] = index;
+  const blankEl = document.getElementById(`cloze-blank-${blankId}`);
+  if (blankEl) { blankEl.textContent = text; blankEl.classList.add('filled'); }
+  // 更新选项高亮
+  const group = document.getElementById(`cloze-options-${blankId}`);
+  if (group) {
+    group.querySelectorAll('.cloze-option').forEach((b, i) => {
+      b.classList.toggle('selected-opt', i === index);
+    });
+  }
+  updateSubmitButtonState();
+}
+
+function updateClozeBlankHighlight() {
+  document.querySelectorAll('.cloze-blank').forEach(el => {
+    el.classList.toggle('current', parseInt(el.dataset.blank) === currentClozeBlank);
+  });
+}
+
+// ---- 选词填空渲染 ----
+function renderWordbankQuestion(q) {
+  // 显示短文
+  let passageHtml = q.passage;
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const word = wordbankAnswers[num] || '____';
+    passageHtml = passageHtml.replace('____', `<span class="wordbank-blank" data-blank="${num}" id="wb-blank-${num}">${word}</span>`);
+  });
+  document.getElementById('modal-question').innerHTML = `<div class="wordbank-passage">${passageHtml}</div>`;
+
+  // 词库
+  const optionsList = document.getElementById('options-list');
+  const tagsDiv = document.createElement('div');
+  tagsDiv.className = 'wordbank-tags';
+  tagsDiv.id = 'wordbank-tags';
+  (q.wordBank || []).forEach(word => {
+    const tag = document.createElement('span');
+    tag.className = 'wordbank-tag';
+    tag.textContent = word;
+    tag.onclick = () => fillWordbankBlank(word, tag);
+    if (Object.values(wordbankAnswers).includes(word)) tag.classList.add('used');
+    tagsDiv.appendChild(tag);
+  });
+  optionsList.appendChild(tagsDiv);
+
+  // 点击空格切换
+  document.querySelectorAll('.wordbank-blank').forEach(el => {
+    el.addEventListener('click', () => {
+      currentWordbankBlank = parseInt(el.dataset.blank);
+      updateWordbankBlankHighlight();
+    });
+  });
+  if (q.blanks && q.blanks.length > 0) currentWordbankBlank = 1;
+  updateWordbankBlankHighlight();
+  updateSubmitButtonState();
+}
+
+function fillWordbankBlank(word, tag) {
+  if (answered) return;
+  // 如果当前空格已有词，先释放旧词
+  const oldWord = wordbankAnswers[currentWordbankBlank];
+  if (oldWord) {
+    document.querySelectorAll('.wordbank-tag').forEach(t => {
+      if (t.textContent === oldWord) t.classList.remove('used');
+    });
+  }
+  wordbankAnswers[currentWordbankBlank] = word;
+  const blankEl = document.getElementById(`wb-blank-${currentWordbankBlank}`);
+  if (blankEl) { blankEl.textContent = word; blankEl.classList.add('filled'); }
+  tag.classList.add('used');
+  // 跳转到下一个空格
   const q = currentQuestion;
-  const isCorrect = selectedOption === q.correctIndex;
+  const nextBlank = currentWordbankBlank + 1;
+  if (q.blanks && nextBlank <= q.blanks.length) {
+    currentWordbankBlank = nextBlank;
+    updateWordbankBlankHighlight();
+  }
+  updateSubmitButtonState();
+}
+
+function updateWordbankBlankHighlight() {
+  document.querySelectorAll('.wordbank-blank').forEach(el => {
+    el.classList.toggle('current', parseInt(el.dataset.blank) === currentWordbankBlank);
+  });
+}
+
+// ---- 语法填空渲染 ----
+function renderGrammarQuestion(q) {
+  let passageHtml = q.passage;
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const hint = blank.hint || '';
+    passageHtml = passageHtml.replace(
+      `___ (${num})`,
+      `<input class="grammar-input" id="grammar-input-${num}" data-blank="${num}" placeholder="空格${num}" value="${grammarAnswers[num] || ''}"><span class="grammar-hint">${hint}</span>`
+    );
+  });
+  document.getElementById('modal-question').innerHTML = `<div class="grammar-passage">${passageHtml}</div>`;
+  document.getElementById('options-list').innerHTML = '';
+
+  // 绑定输入事件
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const input = document.getElementById(`grammar-input-${num}`);
+    if (input) {
+      input.addEventListener('input', () => {
+        grammarAnswers[num] = input.value.trim();
+        updateSubmitButtonState();
+      });
+    }
+  });
+  updateSubmitButtonState();
+}
+
+// ---- 提交按钮状态更新 ----
+function updateSubmitButtonState() {
+  const q = currentQuestion;
+  if (!q) return;
+  const qType = q.type || 'choice';
+  let allFilled = false;
+  switch (qType) {
+    case 'cloze':
+      allFilled = (q.blanks || []).every((_, i) => clozeAnswers[i + 1] !== undefined);
+      break;
+    case 'wordbank':
+      allFilled = (q.blanks || []).every((_, i) => wordbankAnswers[i + 1] !== undefined);
+      break;
+    case 'grammar':
+      allFilled = (q.blanks || []).every((_, i) => (grammarAnswers[i + 1] || '').trim() !== '');
+      break;
+    default:
+      allFilled = selectedOption !== null;
+  }
+  document.getElementById('btn-submit').disabled = !allFilled;
+}
+
+// ---- 提交答案 ----
+function submitAnswer() {
+  if (!currentQuestion || answered) return;
+  const q = currentQuestion;
+  const qType = q.type || 'choice';
+
+  // 检查是否全部填写
+  let allFilled = false;
+  if (qType === 'choice') allFilled = selectedOption !== null;
+  else if (qType === 'cloze') allFilled = (q.blanks || []).every((_, i) => clozeAnswers[i + 1] !== undefined);
+  else if (qType === 'wordbank') allFilled = (q.blanks || []).every((_, i) => wordbankAnswers[i + 1] !== undefined);
+  else if (qType === 'grammar') allFilled = (q.blanks || []).every((_, i) => (grammarAnswers[i + 1] || '').trim() !== '');
+  if (!allFilled) return;
+
+  answered = true;
   const feedbackArea = document.getElementById('feedback-area');
   const feedbackMsg = document.getElementById('feedback-message');
   const feedbackExp = document.getElementById('feedback-explanation');
-
   feedbackArea.classList.add('show');
 
-  // 高亮选项
+  let isCorrect = false;
+
+  switch (qType) {
+    case 'choice':
+      isCorrect = submitChoiceAnswer(q, feedbackMsg, feedbackExp);
+      break;
+    case 'cloze':
+      isCorrect = submitClozeAnswer(q, feedbackMsg, feedbackExp);
+      break;
+    case 'wordbank':
+      isCorrect = submitWordbankAnswer(q, feedbackMsg, feedbackExp);
+      break;
+    case 'grammar':
+      isCorrect = submitGrammarAnswer(q, feedbackMsg, feedbackExp);
+      break;
+  }
+
+  if (isCorrect) {
+    markCompleted(currentFaceId, currentCell.row, currentCell.col);
+    document.getElementById('btn-next').textContent = '▶ 下一关';
+    triggerCompletionAnimation(currentFaceId, currentCell.row, currentCell.col);
+    removeFromWrongBook(); // 答对后从错题本移除
+    checkDailyComplete(); // 检查每日挑战
+    checkCompletion(); // 检查是否通关
+  } else {
+    document.getElementById('btn-next').textContent = '关闭';
+    addWrongQuestion(q, qType);
+  }
+  lastAnswerCorrect = isCorrect;
+
+  document.getElementById('btn-submit').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'block';
+}
+
+function submitChoiceAnswer(q, feedbackMsg, feedbackExp) {
+  const isCorrect = selectedOption === q.correctIndex;
   const optionBtns = document.querySelectorAll('.option-btn');
   optionBtns.forEach((btn, i) => {
     btn.disabled = true;
     if (i === q.correctIndex) btn.classList.add('correct');
     if (i === selectedOption && !isCorrect) btn.classList.add('wrong');
   });
-
   if (isCorrect) {
     feedbackMsg.innerHTML = '<div class="feedback-correct">✅ 回答正确！</div>';
-    feedbackExp.textContent = q.explanation;
-    markCompleted(currentFaceId, currentCell.row, currentCell.col);
   } else {
     feedbackMsg.innerHTML = '<div class="feedback-wrong">❌ 回答错误</div>';
-    feedbackExp.textContent = q.explanation;
   }
-
-  document.getElementById('btn-submit').style.display = 'none';
-  document.getElementById('btn-next').style.display = 'block';
+  feedbackExp.textContent = q.explanation || '';
+  return isCorrect;
 }
 
+function submitClozeAnswer(q, feedbackMsg, feedbackExp) {
+  let allCorrect = true;
+  const results = [];
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const userIdx = clozeAnswers[num];
+    const isCorrect = userIdx === blank.correctIndex;
+    if (!isCorrect) allCorrect = false;
+    results.push({ num, isCorrect, userAnswer: blank.options[userIdx] || '未作答', correctAnswer: blank.options[blank.correctIndex] });
+    // 更新空格样式
+    const blankEl = document.getElementById(`cloze-blank-${num}`);
+    if (blankEl) blankEl.classList.add(isCorrect ? 'correct-blank' : 'wrong-blank');
+    // 更新选项高亮
+    const group = document.getElementById(`cloze-options-${num}`);
+    if (group) {
+      group.querySelectorAll('.cloze-option').forEach((btn, j) => {
+        btn.disabled = true;
+        if (j === blank.correctIndex) btn.classList.add('correct-opt');
+        if (j === userIdx && !isCorrect) btn.classList.add('wrong-opt');
+      });
+    }
+  });
+  if (allCorrect) {
+    feedbackMsg.innerHTML = '<div class="feedback-correct">✅ 全部正确！</div>';
+  } else {
+    const details = results.map(r => `空格${r.num}：${r.userAnswer} → ${r.correctAnswer} ${r.isCorrect ? '✅' : '❌'}`).join('<br>');
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">❌ 有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</div>`;
+    feedbackExp.innerHTML = details;
+    return false;
+  }
+  feedbackExp.textContent = q.explanation || '';
+  return true;
+}
+
+function submitWordbankAnswer(q, feedbackMsg, feedbackExp) {
+  let allCorrect = true;
+  const results = [];
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const userAnswer = wordbankAnswers[num] || '';
+    const isCorrect = userAnswer.toLowerCase().trim() === blank.correctWord.toLowerCase().trim();
+    if (!isCorrect) allCorrect = false;
+    results.push({ num, isCorrect, userAnswer, correctAnswer: blank.correctWord });
+    const blankEl = document.getElementById(`wb-blank-${num}`);
+    if (blankEl) blankEl.classList.add(isCorrect ? 'correct-blank' : 'wrong-blank');
+  });
+  if (allCorrect) {
+    feedbackMsg.innerHTML = '<div class="feedback-correct">✅ 全部正确！</div>';
+  } else {
+    const details = results.map(r => `空格${r.num}：${r.userAnswer || '未填'} → ${r.correctAnswer} ${r.isCorrect ? '✅' : '❌'}`).join('<br>');
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">❌ 有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</div>`;
+    feedbackExp.innerHTML = details;
+    return false;
+  }
+  feedbackExp.textContent = q.explanation || '';
+  return true;
+}
+
+function submitGrammarAnswer(q, feedbackMsg, feedbackExp) {
+  let allCorrect = true;
+  const results = [];
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const userAnswer = grammarAnswers[num] || '';
+    const isCorrect = userAnswer.toLowerCase().trim() === blank.correctAnswer.toLowerCase().trim();
+    if (!isCorrect) allCorrect = false;
+    results.push({ num, isCorrect, userAnswer, correctAnswer: blank.correctAnswer });
+    const input = document.getElementById(`grammar-input-${num}`);
+    if (input) { input.classList.add(isCorrect ? 'correct-input' : 'wrong-input'); input.disabled = true; }
+  });
+  if (allCorrect) {
+    feedbackMsg.innerHTML = '<div class="feedback-correct">✅ 全部正确！</div>';
+  } else {
+    const details = results.map(r => `空格${r.num}：${r.userAnswer || '未填'} → ${r.correctAnswer} ${r.isCorrect ? '✅' : '❌'}`).join('<br>');
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">❌ 有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</div>`;
+    feedbackExp.innerHTML = details;
+    return false;
+  }
+  feedbackExp.textContent = q.explanation || '';
+  return true;
+}
+
+let lastAnswerCorrect = false;
+
 function nextQuestion() {
+  // 如果答错，仅关闭弹窗
+  if (!answered || !lastAnswerCorrect) {
+    closeModal();
+    return;
+  }
+
   closeModal();
-  // 尝试打开下一关
+  // 自动跳转下一关
   if (currentFaceId && currentCell) {
     const nextOrder = currentCell.row * 3 + currentCell.col + 1;
     if (nextOrder < 9) {
@@ -849,18 +2043,60 @@ function nextQuestion() {
       const nextCol = nextOrder % 3;
       const state = getCellState(currentFaceId, nextRow, nextCol);
       if (state !== 'locked') {
-        openQuestionModal(currentFaceId, { row: nextRow, col: nextCol });
+        // 先旋转到当前面，再打开下一关
+        faceCameraToFace(currentFaceId, () => {
+          openQuestionModal(currentFaceId, { row: nextRow, col: nextCol });
+        });
         return;
       }
     }
+    // 当前面已完成，找下一个有未完成关卡的面
+    const faceOrder = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+    const currentIdx = faceOrder.indexOf(currentFaceId);
+    for (let i = 1; i <= faceOrder.length; i++) {
+      const nextIdx = (currentIdx + i) % faceOrder.length;
+      const nextFaceId = faceOrder[nextIdx];
+      for (let order = 0; order < 9; order++) {
+        const row = Math.floor(order / 3);
+        const col = order % 3;
+        const s = getCellState(nextFaceId, row, col);
+        if (s !== 'locked') {
+          faceCameraToFace(nextFaceId, () => {
+            openQuestionModal(nextFaceId, { row, col });
+          });
+          return;
+        }
+      }
+    }
+    // 全部完成
+    const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
+    alert(`🎉 恭喜！你已经完成了${diffLabels[currentDifficulty]}难度的所有54个关卡！`);
   }
 }
 
 function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('active');
+  // 清除定时器
+  if (window._modalTimer) {
+    clearTimeout(window._modalTimer);
+    window._modalTimer = null;
+  }
+  // 清空选项列表，释放 DOM 引用
+  const optionsList = document.getElementById('options-list');
+  if (optionsList) optionsList.innerHTML = '';
+  // 清除文段
+  document.getElementById('modal-passage').style.display = 'none';
+  document.getElementById('modal-passage').textContent = '';
+  document.getElementById('modal-question').innerHTML = '';
+  // 重置状态
   currentQuestion = null;
   selectedOption = null;
   answered = false;
+  clozeAnswers = {};
+  wordbankAnswers = {};
+  grammarAnswers = {};
+  // 隐藏弹窗
+  document.getElementById('modal-overlay').classList.remove('active');
+  document.getElementById('feedback-area').classList.remove('show');
 }
 
 // 点击遮罩关闭
@@ -874,23 +2110,137 @@ document.getElementById('modal-box').addEventListener('click', (e) => {
 });
 
 // ============================================================
+// 完成动画：找到对应 cubie 并播放点亮动画
+// ============================================================
+function triggerCompletionAnimation(faceId, row, col) {
+  const face = FACES[faceId];
+  const [nx, ny, nz] = face.normal;
+  for (const key in cubieMap) {
+    const [x, y, z] = key.split(',').map(Number);
+    const cell = getFaceCell(x, y, z, nx, ny, nz);
+    if (cell && cell.row === row && cell.col === col) {
+      const { mesh, materials, faceOrder } = cubieMap[key];
+      addCompletionAnimation(mesh, materials, faceOrder, faceId, face.color);
+      break;
+    }
+  }
+}
+
+// ============================================================
+// 重置进度功能
+// ============================================================
+function resetFaceProgress(faceId) {
+  const progress = loadProgress();
+  // 清除该面所有关卡的完成记录（当前难度）
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      delete progress[getCellKey(faceId, row, col)];
+    }
+  }
+  saveProgress(progress);
+  updateAllCubieColors();
+  updateHeaderStats();
+}
+
+function resetAllProgress() {
+  const progress = loadProgress();
+  // 清除所有当前难度的完成记录
+  for (const key in progress) {
+    if (key.startsWith(currentDifficulty + '_')) {
+      delete progress[key];
+    }
+  }
+  saveProgress(progress);
+  updateAllCubieColors();
+  updateHeaderStats();
+}
+
+// 确认对话框系统
+let confirmCallback = null;
+
+function showConfirmDialog(title, message, onConfirm) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-message').textContent = message;
+  document.getElementById('confirm-overlay').classList.add('active');
+  confirmCallback = onConfirm;
+}
+
+function hideConfirmDialog() {
+  document.getElementById('confirm-overlay').classList.remove('active');
+  confirmCallback = null;
+}
+
+document.getElementById('confirm-cancel').addEventListener('click', hideConfirmDialog);
+document.getElementById('confirm-overlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) hideConfirmDialog();
+});
+document.getElementById('confirm-ok').addEventListener('click', () => {
+  if (confirmCallback) confirmCallback();
+  hideConfirmDialog();
+});
+
+function showResetFaceConfirm(face) {
+  showConfirmDialog(
+    '重置面进度',
+    `确定要重置「${face.name}」的进度吗？\n此操作不可撤销。`,
+    () => resetFaceProgress(face.id)
+  );
+}
+
+// 重置全部进度按钮
+document.getElementById('panel-reset-all').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
+  showConfirmDialog(
+    '重置全部进度',
+    `确定要重置「${diffLabels[currentDifficulty]}」难度的全部54关进度吗？\n此操作不可撤销。`,
+    resetAllProgress
+  );
+});
+
+// ============================================================
 // 动画循环
 // ============================================================
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
-  particles.rotation.y += 0.0002;
+  updateAnimations();
+  spriteGroup.rotation.y += 0.0003;
   renderer.render(scene, camera);
 }
+
+// 页面不可见时暂停渲染，节省资源
+document.addEventListener('visibilitychange', () => {
+  controls.autoRotate = !document.hidden;
+});
 animate();
 
 // ============================================================
-// 窗口大小调整
+// 窗口大小调整 + 魔方动态适配
 // ============================================================
+function adjustCubeSize() {
+  const width = window.innerWidth;
+  let distance = 5.5;
+  if (width < 400) distance = 6.5;
+  else if (width < 600) distance = 5.5;
+  else if (width < 768) distance = 4.5;
+  else distance = 4.0;
+  camera.position.z = distance;
+  controls.update();
+}
+
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  // 动态调整像素比
+  renderer.setPixelRatio(window.innerWidth <= 600 ? 1 : Math.min(window.devicePixelRatio, 1.5));
+  adjustCubeSize();
+});
+
+// 屏幕旋转后重新适配
+window.addEventListener('orientationchange', () => {
+  setTimeout(adjustCubeSize, 300);
 });
 
 // ============================================================
@@ -909,18 +2259,459 @@ window.addEventListener('keydown', (e) => {
 document.getElementById('btn-close-modal').addEventListener('click', closeModal);
 document.getElementById('btn-submit').addEventListener('click', submitAnswer);
 document.getElementById('btn-next').addEventListener('click', nextQuestion);
+document.getElementById('locked-tip').addEventListener('click', closeModal);
+
+// ============================================================
+// 错题本
+// ============================================================
+function addWrongQuestion(q, qType) {
+  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
+  const qId = q.id || `${currentDifficulty}_${currentFaceId}_${currentCell.row}_${currentCell.col}`;
+  if (wrongQuestions.find(wq => wq.questionId === qId)) return;
+  wrongQuestions.push({
+    questionId: qId, faceId: currentFaceId, difficulty: currentDifficulty,
+    userAnswer: qType === 'choice' ? (q.options ? q.options[selectedOption] : '') : JSON.stringify(clozeAnswers || wordbankAnswers || grammarAnswers),
+    correctAnswer: qType === 'choice' ? (q.options ? q.options[q.correctIndex] : '') : ((q.blanks || []).map(b => b.correctIndex !== undefined ? b.options[b.correctIndex] : (b.correctWord || b.correctAnswer || '')).join(', ')),
+    explanation: q.explanation || '', question: q.question || q.passage || '', type: qType, timestamp: Date.now()
+  });
+  localStorage.setItem('cube_wrong_questions', JSON.stringify(wrongQuestions));
+}
+
+function showWrongBook() {
+  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
+  const content = document.getElementById('panel-content');
+  document.getElementById('panel-title').textContent = '📕 错题本';
+  if (wrongQuestions.length === 0) {
+    content.innerHTML = '<div style="text-align:center;color:#888;padding:30px">暂无错题，继续加油！🎉</div>';
+  } else {
+    let html = wrongQuestions.map((wq, i) => {
+      const face = FACES[wq.faceId] || { name: wq.faceId, color: '#888', emoji: '' };
+      const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
+      return `<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.06)">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+          <span style="background:${face.color}33;color:${face.color};padding:2px 8px;border-radius:6px;font-size:0.7rem">${face.emoji} ${face.name}</span>
+          <span style="font-size:0.7rem;color:#888">${diffLabels[wq.difficulty] || wq.difficulty}</span>
+          <span style="font-size:0.7rem;color:#888">${TYPE_LABELS[wq.type] || wq.type}</span>
+        </div>
+        <div style="font-size:0.85rem;color:#ccc;margin-bottom:6px">${wq.question}</div>
+        <div style="font-size:0.8rem;color:#e74c3c">你的答案：${wq.userAnswer}</div>
+        <div style="font-size:0.8rem;color:#27ae60">正确答案：${wq.correctAnswer}</div>
+        ${wq.explanation ? `<div style="font-size:0.75rem;color:#888;margin-top:4px">${wq.explanation}</div>` : ''}
+        <button class="confirm-btn" style="margin-top:8px;background:rgba(74,230,201,0.1);color:#4ae6c9;border:1px solid rgba(74,230,201,0.2);padding:4px 12px;font-size:0.75rem;width:auto" onclick="retryWrongQuestion('${wq.questionId}')">🔄 重新挑战</button>
+      </div>`;
+    }).join('');
+    html += `<button class="panel-reset-all" onclick="clearWrongBook()" style="margin-top:8px">🗑 清空所有错题</button>`;
+    content.innerHTML = html;
+  }
+  openPanelModal();
+}
+
+let retryQuestionData = null;
+
+window.retryWrongQuestion = function(questionId) {
+  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
+  const wq = wrongQuestions.find(w => w.questionId === questionId);
+  if (!wq) return;
+  retryQuestionData = wq;
+  if (wq.difficulty && wq.difficulty !== currentDifficulty) {
+    currentDifficulty = wq.difficulty;
+    localStorage.setItem('cube_english_difficulty', currentDifficulty);
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector(`.diff-btn[data-diff="${currentDifficulty}"]`);
+    if (btn) btn.classList.add('active');
+    updateAllCubieColors(); updateDifficultyBadge(); renderer.render(scene, camera);
+  }
+  faceCameraToFace(wq.faceId, () => {
+    const questions = QUESTIONS[currentDifficulty][FACE_TO_QB[wq.faceId]];
+    for (let i = 0; i < 9; i++) {
+      if (questions[i].id === questionId) {
+        openQuestionModal(wq.faceId, { row: Math.floor(i / 3), col: i % 3 });
+        return;
+      }
+    }
+  });
+  closePanelModal();
+};
+
+function clearWrongBook() {
+  showConfirmDialog('清空错题本', '确定要清空所有错题吗？此操作不可撤销。', () => {
+    localStorage.setItem('cube_wrong_questions', '[]');
+    showWrongBook();
+  });
+}
+
+function removeFromWrongBook() {
+  if (!retryQuestionData) return;
+  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
+  const filtered = wrongQuestions.filter(w => w.questionId !== retryQuestionData.questionId);
+  localStorage.setItem('cube_wrong_questions', JSON.stringify(filtered));
+  retryQuestionData = null;
+}
+
+// ============================================================
+// 数据统计看板
+// ============================================================
+function showStats() {
+  const stats = calculateStats();
+  const content = document.getElementById('panel-content');
+  document.getElementById('panel-title').textContent = '📊 数据统计';
+  const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
+  let html = `<div style="display:grid;gap:8px">
+    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
+      <div style="font-size:0.8rem;color:#aaa">总完成度</div><div style="font-size:1.2rem;font-weight:700;color:#4ae6c9">${stats.totalCompleted}/54</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
+      <div style="font-size:0.8rem;color:#aaa">总体正确率</div><div style="font-size:1.2rem;font-weight:700;color:#4ae6c9">${stats.accuracy}%</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px">
+      <div style="font-size:0.8rem;color:#aaa;margin-bottom:8px">各面完成率</div>
+      ${stats.faces.map(f => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:0.8rem;min-width:80px">${f.emoji} ${f.name}</span>
+        <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:100%;border-radius:3px;background:${f.color};width:${f.percent}%"></div></div>
+        <span style="font-size:0.75rem;color:#ccc;min-width:40px;text-align:right">${f.completed}/9</span>
+      </div>`).join('')}
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px">
+      <div style="font-size:0.8rem;color:#aaa;margin-bottom:8px">各难度完成情况</div>
+      ${(['easy','medium','hard']).map(d => { const c = stats.difficultyStats[d] || 0; return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:0.8rem;min-width:60px">${diffLabels[d]}</span>
+        <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:100%;border-radius:3px;background:#4ae6c9;width:${(c/54*100).toFixed(0)}%"></div></div>
+        <span style="font-size:0.75rem;color:#ccc;min-width:40px;text-align:right">${c}/54</span>
+      </div>`;}).join('')}
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
+      <div style="font-size:0.8rem;color:#aaa">学习时长</div><div style="font-size:1rem;font-weight:700;color:#e6c89a">${stats.studyTime}</div>
+    </div>
+  </div>`;
+  content.innerHTML = html;
+  openPanelModal();
+}
+
+function calculateStats() {
+  const progress = loadProgress();
+  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
+  let totalCompleted = 0, totalCorrect = 0, totalWrong = wrongQuestions.length;
+  const faceStats = {};
+  const difficultyStats = { easy: 0, medium: 0, hard: 0 };
+  for (const key in progress) {
+    const parts = key.split('_');
+    const diff = parts[0], faceId = parts[1];
+    if (diff === currentDifficulty) totalCompleted++;
+    if (difficultyStats[diff] !== undefined) difficultyStats[diff]++;
+    if (!faceStats[faceId]) faceStats[faceId] = { completed: 0 };
+    faceStats[faceId].completed++;
+    totalCorrect++;
+  }
+  totalCorrect = Math.max(totalCorrect - totalWrong, 0);
+  const accuracy = totalCompleted > 0 ? Math.round((totalCorrect / (totalCorrect + totalWrong)) * 100) : 100;
+  const faces = Object.keys(FACES).map(faceId => {
+    const face = FACES[faceId];
+    const s = faceStats[faceId] || { completed: 0 };
+    return { name: face.name, emoji: face.emoji, color: face.color, completed: s.completed, percent: Math.round((s.completed / 9) * 100) };
+  });
+  const firstOpen = localStorage.getItem('cube_first_open');
+  const now = Date.now();
+  if (!firstOpen) localStorage.setItem('cube_first_open', now);
+  const elapsed = now - parseInt(firstOpen || now);
+  const hours = Math.floor(elapsed / 3600000), minutes = Math.floor((elapsed % 3600000) / 60000);
+  const studyTime = hours > 0 ? `${hours}小时${minutes}分钟` : `${minutes}分钟`;
+  return { totalCompleted, accuracy, faces, difficultyStats, studyTime };
+}
+
+// ============================================================
+// 面板弹窗
+// ============================================================
+function openPanelModal() { document.getElementById('panel-overlay').classList.add('active'); }
+function closePanelModal() { document.getElementById('panel-overlay').classList.remove('active'); }
+document.getElementById('btn-panel-close').addEventListener('click', closePanelModal);
+document.getElementById('panel-overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closePanelModal(); });
+
+// ============================================================
+// 每日挑战
+// ============================================================
+function getTodayStr() { return new Date().toISOString().slice(0, 10); }
+
+function showDailyChallenge() {
+  const today = getTodayStr();
+  let daily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+  if (daily.date !== today) { daily = generateDailyChallenge(); localStorage.setItem('cube_daily_challenge', JSON.stringify(daily)); }
+  const content = document.getElementById('panel-content');
+  document.getElementById('panel-title').textContent = '🎯 今日挑战';
+  const completed = daily.completed || [];
+  const streak = getDailyStreak();
+  let html = `<div style="text-align:center;margin-bottom:16px">
+    <div style="font-size:0.85rem;color:#aaa">${today}</div>
+    <div style="font-size:1.2rem;font-weight:700;color:#4ae6c9">${completed.length}/5 已完成</div>
+    ${streak >= 7 ? '<div style="color:#feca57;font-size:0.85rem;margin-top:4px">🔥 连续7天成就达成！</div>' : `<div style="color:#aaa;font-size:0.8rem;margin-top:4px">🔥 连续 ${streak} 天</div>`}
+  </div>`;
+  (daily.questions || []).forEach((q, i) => {
+    const isCompleted = completed.includes(i);
+    html += `<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px;margin-bottom:8px;border:1px solid rgba(255,255,255,0.06)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:1.2rem">${isCompleted ? '✅' : '⬜'}</span><span style="font-size:0.8rem;color:#4ae6c9">第${i+1}题</span><span style="font-size:0.7rem;color:#888">${TYPE_LABELS[q.type] || '选择题'}</span></div>
+      <div style="font-size:0.8rem;color:#ccc">${q.question || q.passage || ''}</div>`;
+    if (!isCompleted) html += `<button class="confirm-btn" style="margin-top:6px;background:rgba(74,230,201,0.1);color:#4ae6c9;border:1px solid rgba(74,230,201,0.2);padding:4px 12px;font-size:0.75rem;width:auto" onclick="startDailyQuestion(${i})">▶ 开始答题</button>`;
+    html += `</div>`;
+  });
+  content.innerHTML = html;
+  openPanelModal();
+}
+
+function generateDailyChallenge() {
+  const allQuestions = [];
+  for (const diff of ['easy', 'medium', 'hard']) {
+    for (const face of Object.keys(QUESTIONS[diff])) {
+      const qs = QUESTIONS[diff][face];
+      for (let i = 0; i < 9; i++) allQuestions.push({ ...qs[i], difficulty: diff, faceId: QB_TO_FACE[face], cellIndex: i });
+    }
+  }
+  return { date: getTodayStr(), completed: [], questions: allQuestions.sort(() => Math.random() - 0.5).slice(0, 5), correctCount: 0 };
+}
+
+let dailyQuestionIndex = -1;
+
+window.startDailyQuestion = function(index) {
+  dailyQuestionIndex = index;
+  const daily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+  const q = daily.questions[index];
+  if (!q) return;
+  closePanelModal();
+  if (q.difficulty !== currentDifficulty) {
+    currentDifficulty = q.difficulty;
+    localStorage.setItem('cube_english_difficulty', currentDifficulty);
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector(`.diff-btn[data-diff="${currentDifficulty}"]`); if (btn) btn.classList.add('active');
+    updateAllCubieColors(); updateDifficultyBadge(); renderer.render(scene, camera);
+  }
+  faceCameraToFace(q.faceId, () => { openQuestionModal(q.faceId, { row: Math.floor(q.cellIndex / 3), col: q.cellIndex % 3 }); });
+};
+
+function getDailyStreak() {
+  let streak = 0;
+  const today = new Date();
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().slice(0, 10);
+    const daily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+    if (daily.date === dateStr && (daily.completed || []).length > 0) streak++;
+    else if (i > 0) break;
+  }
+  return streak;
+}
+
+function checkDailyComplete() {
+  if (dailyQuestionIndex < 0) return;
+  const daily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+  if (!daily.completed.includes(dailyQuestionIndex)) {
+    daily.completed.push(dailyQuestionIndex);
+    daily.correctCount = (daily.correctCount || 0) + 1;
+    localStorage.setItem('cube_daily_challenge', JSON.stringify(daily));
+  }
+  dailyQuestionIndex = -1;
+}
+
+// ============================================================
+// 通关庆祝
+// ============================================================
+function checkCompletion() {
+  if (getTotalCompleted() === 54) setTimeout(showCompletionCelebration, 500);
+}
+
+function showCompletionCelebration() {
+  createConfetti();
+  const faceOrder = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+  let faceIdx = 0;
+  function rotateNext() {
+    if (faceIdx >= faceOrder.length) { showCertificate(); return; }
+    faceCameraToFace(faceOrder[faceIdx], () => { faceIdx++; setTimeout(rotateNext, 1000); });
+  }
+  rotateNext();
+}
+
+function createConfetti() {
+  const colors = ['#ff6b6b','#feca57','#48dbfb','#4a9eff','#a29bfe','#fdcb6e','#4ae6c9'];
+  for (let i = 0; i < 60; i++) {
+    const confetti = document.createElement('div');
+    confetti.style.cssText = `position:fixed;top:-20px;left:${Math.random()*100}%;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>0.5?'50%':'2px'};z-index:9999;pointer-events:none;animation:confettiFall ${2+Math.random()*3}s ease-in forwards;animation-delay:${Math.random()*2}s`;
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 5000);
+  }
+  if (!document.getElementById('confetti-style')) {
+    const style = document.createElement('style');
+    style.id = 'confetti-style';
+    style.textContent = `@keyframes confettiFall { to { top:110vh; transform:rotate(720deg); opacity:0; } }`;
+    document.head.appendChild(style);
+  }
+}
+
+function showCertificate() {
+  const stats = calculateStats();
+  document.getElementById('cert-time').textContent = new Date().toLocaleString('zh-CN');
+  document.getElementById('cert-accuracy').textContent = stats.accuracy + '%';
+  document.getElementById('cert-faces').innerHTML = stats.faces.map(f => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:0.8rem;min-width:80px">${f.emoji} ${f.name}</span><div style="flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px"><div style="height:100%;border-radius:2px;background:${f.color};width:${f.percent}%"></div></div><span style="font-size:0.7rem;color:#ccc">${f.percent}%</span></div>`).join('');
+  document.getElementById('cert-overlay').classList.add('active');
+}
+document.getElementById('btn-cert-close').addEventListener('click', () => { document.getElementById('cert-overlay').classList.remove('active'); });
+document.getElementById('cert-overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) document.getElementById('cert-overlay').classList.remove('active'); });
+document.getElementById('btn-cert-share').addEventListener('click', shareApp);
+
+// ============================================================
+// 分享功能
+// ============================================================
+function shareApp() {
+  const shareData = { title: '🧩 魔方英语 - 边玩边学语法', text: '🎮 魔方闯关学英语！6个知识面，54个关卡，快来挑战吧！', url: window.location.href };
+  if (navigator.share) {
+    navigator.share(shareData).then(() => {
+      localStorage.setItem('cube_share_count', (parseInt(localStorage.getItem('cube_share_count') || '0') + 1));
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(window.location.href).then(() => { alert('链接已复制到剪贴板！'); }).catch(() => { prompt('复制以下链接分享：', window.location.href); });
+  }
+}
+
+// 按钮事件
+document.getElementById('btn-wrong-book').addEventListener('click', showWrongBook);
+document.getElementById('btn-stats').addEventListener('click', showStats);
+document.getElementById('btn-daily').addEventListener('click', showDailyChallenge);
+document.getElementById('btn-share').addEventListener('click', shareApp);
+
+// ============================================================
+// 难度选择器事件
+// ============================================================
+document.querySelectorAll('.diff-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentDifficulty = btn.dataset.diff;
+    localStorage.setItem('cube_english_difficulty', currentDifficulty);
+    updateAllCubieColors();
+    updateHeaderStats();
+    updateDifficultyBadge();
+    renderer.render(scene, camera); // 强制渲染确保颜色同步
+  });
+});
+
+// 更新难度徽章
+function updateDifficultyBadge() {
+  const labels = { easy: '🌱 小学', medium: '📖 初中', hard: '🎯 高中' };
+  document.getElementById('header-diff-badge').textContent = labels[currentDifficulty] || '';
+}
+
+// 加载保存的难度
+const savedDifficulty = localStorage.getItem('cube_english_difficulty');
+if (savedDifficulty && ['easy','medium','hard'].includes(savedDifficulty)) {
+  currentDifficulty = savedDifficulty;
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.diff-btn[data-diff="${currentDifficulty}"]`).classList.add('active');
+}
+
+// ============================================================
+// 悬浮进度面板折叠/展开
+// ============================================================
+const panel = document.getElementById('progress-panel');
+const panelToggle = document.getElementById('panel-toggle');
+const panelHeader = document.getElementById('panel-header');
+const panelBody = document.getElementById('panel-body');
+
+function togglePanel() {
+  const isOpen = panelBody.classList.contains('open');
+  if (isOpen) {
+    panelBody.classList.remove('open');
+    panelToggle.classList.remove('open');
+    panelToggle.textContent = '▶';
+  } else {
+    panelBody.classList.add('open');
+    panelToggle.classList.add('open');
+    panelToggle.textContent = '▼';
+  }
+  localStorage.setItem('cube_english_panel_expanded', !isOpen);
+}
+
+panelHeader.addEventListener('click', togglePanel);
+panelToggle.addEventListener('click', (e) => { e.stopPropagation(); togglePanel(); });
+
+// 加载面板折叠偏好
+const panelExpanded = localStorage.getItem('cube_english_panel_expanded');
+if (panelExpanded === 'true') {
+  panelBody.classList.add('open');
+  panelToggle.classList.add('open');
+  panelToggle.textContent = '▼';
+}
+
+// ============================================================
+// 亮色/暗色主题切换
+// ============================================================
+const themeToggle = document.getElementById('theme-toggle');
+const THEME_KEY = 'cube_english_theme';
+
+function getThemeLockColor() {
+  // 读取当前主题的锁定颜色，用于 Three.js 魔方渲染
+  const style = getComputedStyle(document.documentElement);
+  return style.getPropertyValue('--lock-color').trim() || '#1a1a2e';
+}
+
+function getThemeUnlockedAlpha() {
+  const style = getComputedStyle(document.documentElement);
+  return parseFloat(style.getPropertyValue('--lock-unlocked-alpha').trim()) || 0.5;
+}
+
+function getThemeCubieInner() {
+  const style = getComputedStyle(document.documentElement);
+  return style.getPropertyValue('--cubie-inner').trim() || '#1a1a2e';
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  themeToggle.textContent = theme === 'light' ? '☀️' : '🌙';
+  localStorage.setItem(THEME_KEY, theme);
+  // 更新魔方颜色（锁定/解锁状态的颜色随主题变化）
+  updateAllCubieColors();
+}
+
+function toggleTheme() {
+  const current = document.documentElement.dataset.theme || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+}
+
+themeToggle.addEventListener('click', toggleTheme);
+
+// 页面加载时恢复主题偏好
+const savedTheme = localStorage.getItem(THEME_KEY);
+if (savedTheme) {
+  applyTheme(savedTheme);
+} else {
+  // 默认暗色主题
+  themeToggle.textContent = '🌙';
+}
+
+// 更新 DARK_COLOR 为动态值（从 CSS 变量读取）
+const DARK_COLOR_DYNAMIC = () => {
+  const c = getThemeLockColor();
+  return parseInt(c.replace('#', ''), 16);
+};
+
+// 更新 halfBrightness 函数以支持可变 alpha
+function halfBrightnessDynamic(hex) {
+  const alpha = getThemeUnlockedAlpha();
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return '#' + [r, g, b].map(c => Math.round(c * alpha).toString(16).padStart(2, '0')).join('');
+}
 
 // ============================================================
 // 初始化
 // ============================================================
 updateAllCubieColors();
 updateHeaderStats();
+updateDifficultyBadge();
 
 console.log('🧩 魔方英语已就绪！');
-console.log('  - 6个面，54个关卡');
+console.log('  - 6个面，54个关卡 × 3个难度等级');
 console.log('  - 拖拽旋转魔方');
-console.log('  - 点击彩色格子（红色=语法，橙色=词汇…）开始答题');
-console.log('  - 完成进度自动保存');
+console.log('  - 点击彩色格子开始答题');
+console.log('  - 三个难度可选：小学 / 初中 / 高中');
+console.log('  - 完成进度自动保存（每个难度独立记录）');
 </script>
 </body>
 </html>
