@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>🧩 魔方英语 - Cube English</title>
+<title>魔方英语 - Cube English</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F0C84B' d='m12 1 10 5.2-10 5.2L2 6.2z'/%3E%3Cpath fill='%23E34850' d='m2 6.2 10 5.2V23L2 17.8z'/%3E%3Cpath fill='%233478D4' d='m12 11.4 10-5.2v11.6L12 23z'/%3E%3Cpath fill='none' stroke='%230d151f' stroke-width='.8' d='M2 6.2 12 1l10 5.2v11.6L12 23 2 17.8ZM12 11.4V23M2 6.2l10 5.2 10-5.2'/%3E%3C/svg%3E">
 <style>
 /* ============================================================
    全局样式
@@ -14,46 +15,54 @@
    CSS 变量 - 主题系统
    ============================================================ */
 :root {
-  --bg-primary: #0a0a1a;
-  --bg-secondary: #1a0a2e;
-  --bg-tertiary: #0d1b2a;
-  --bg-card: rgba(10,10,30,0.7);
-  --bg-card-solid: #1a1a2e;
-  --bg-panel: rgba(10,10,30,0.45);
+  --bg-primary: #080d14;
+  --bg-secondary: #111b29;
+  --bg-tertiary: #09141c;
+  --bg-card: rgba(12,20,31,0.82);
+  --bg-card-solid: #121d2a;
+  --bg-panel: rgba(10,18,28,0.72);
   --bg-passage: rgba(255,255,255,0.05);
   --bg-item: rgba(255,255,255,0.04);
   --border-color: rgba(255,255,255,0.1);
   --border-light: rgba(255,255,255,0.06);
-  --text-primary: #f0e6d3;
-  --text-secondary: #aaaacc;
-  --text-title: #fff;
-  --text-muted: #666;
-  --text-option: #ddd;
+  --text-primary: #f1f5f4;
+  --text-secondary: #aab9c3;
+  --text-title: #ffffff;
+  --text-muted: #71828d;
+  --text-option: #e5ecea;
+  --accent: #42dfc0;
+  --accent-strong: #24b99f;
+  --accent-soft: rgba(66,223,192,0.14);
+  --reward: #f0c56a;
+  --success: #48c78e;
+  --danger: #ff6b6b;
   --btn-bg: rgba(255,255,255,0.04);
-  --btn-text: #aaaacc;
-  --btn-active-bg: rgba(74,230,201,0.2);
+  --btn-text: #b2c0ca;
+  --btn-active-bg: rgba(66,223,192,0.18);
   --btn-active-text: #fff;
   --btn-hover-bg: rgba(255,255,255,0.1);
   --btn-hover-border: rgba(255,255,255,0.2);
-  --modal-bg: rgba(10,10,30,0.92);
-  --modal-border: rgba(74,230,201,0.15);
+  --modal-bg: rgba(14,23,35,0.96);
+  --overlay-bg: rgba(3,8,14,0.84);
+  --modal-border: rgba(66,223,192,0.2);
   --option-bg: rgba(255,255,255,0.06);
   --option-text: #ddd;
   --progress-bg: rgba(255,255,255,0.06);
   --hint-color: rgba(255,255,255,0.35);
   --header-bg: rgba(255,255,255,0.06);
-  --stat-text: #aaaacc;
-  --lock-color: #1a1a2e;
-  --lock-unlocked-alpha: 0.5;
-  --cubie-inner: #1a1a2e;
-  --confirm-bg: rgba(20,20,40,0.95);
+  --stat-text: #aab9c3;
+  --lock-color: #202e3b;
+  --lock-unlocked-alpha: 0.76;
+  --cubie-inner: #0d151f;
+  --cubie-edge: #566879;
+  --confirm-bg: rgba(14,23,35,0.98);
   --confirm-border: rgba(255,255,255,0.12);
 }
 
 [data-theme="light"] {
-  --bg-primary: #f5f0eb;
-  --bg-secondary: #faf0e6;
-  --bg-tertiary: #f0ebe3;
+  --bg-primary: #eef3f4;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e7eff1;
   --bg-card: rgba(255,255,255,0.85);
   --bg-card-solid: #ffffff;
   --bg-panel: rgba(255,255,255,0.7);
@@ -61,28 +70,36 @@
   --bg-item: rgba(0,0,0,0.04);
   --border-color: rgba(0,0,0,0.08);
   --border-light: rgba(0,0,0,0.04);
-  --text-primary: #2d2a24;
-  --text-secondary: #6b6a66;
-  --text-title: #1a1a2e;
-  --text-muted: #999;
-  --text-option: #2d2a24;
+  --text-primary: #18262d;
+  --text-secondary: #51656f;
+  --text-title: #102129;
+  --text-muted: #73858d;
+  --text-option: #203038;
+  --accent: #087f6d;
+  --accent-strong: #056555;
+  --accent-soft: rgba(8,127,109,0.1);
+  --reward: #9a6811;
+  --success: #197a50;
+  --danger: #c53e49;
   --btn-bg: rgba(0,0,0,0.04);
   --btn-text: #6b6a66;
-  --btn-active-bg: rgba(74,230,201,0.15);
-  --btn-active-text: #1a1a2e;
+  --btn-active-bg: rgba(8,127,109,0.12);
+  --btn-active-text: #102129;
   --btn-hover-bg: rgba(0,0,0,0.06);
   --btn-hover-border: rgba(0,0,0,0.15);
-  --modal-bg: rgba(255,252,248,0.95);
-  --modal-border: rgba(74,230,201,0.25);
+  --modal-bg: rgba(255,255,255,0.98);
+  --overlay-bg: rgba(20,35,45,0.34);
+  --modal-border: rgba(8,127,109,0.2);
   --option-bg: rgba(0,0,0,0.04);
   --option-text: #2d2a24;
   --progress-bg: rgba(0,0,0,0.08);
   --hint-color: rgba(0,0,0,0.25);
   --header-bg: rgba(0,0,0,0.04);
   --stat-text: #6b6a66;
-  --lock-color: #d5cfc7;
-  --lock-unlocked-alpha: 0.5;
-  --cubie-inner: #e8e0d8;
+  --lock-color: #c9d5d8;
+  --lock-unlocked-alpha: 0.72;
+  --cubie-inner: #dde6e8;
+  --cubie-edge: #7d9098;
   --confirm-bg: rgba(255,255,255,0.95);
   --confirm-border: rgba(0,0,0,0.12);
 }
@@ -96,8 +113,9 @@ body, .header, .progress-panel, .modal-overlay, .modal-box, .option-btn,
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: radial-gradient(ellipse at 50% 55%, rgba(74,230,201,0.06) 0%, transparent 70%),
+  font-family: "Avenir Next", "Trebuchet MS", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: radial-gradient(ellipse at 50% 58%, rgba(66,223,192,0.1) 0%, transparent 54%),
+              radial-gradient(circle at 80% 12%, rgba(240,197,106,0.055) 0%, transparent 28%),
               linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
   color: var(--text-primary);
   min-height: 100vh;
@@ -118,6 +136,9 @@ body {
   transition: all 0.3s ease; line-height: 1; padding: 0;
 }
 .theme-toggle:hover { background: var(--btn-hover-bg); transform: rotate(15deg); }
+.ui-icon, .lucide { width: 16px; height: 16px; stroke-width: 2; pointer-events: none; flex: 0 0 auto; }
+.theme-toggle .ui-icon, .theme-toggle .lucide { width: 17px; height: 17px; }
+.brand-cube { width: 25px; height: 25px; flex: 0 0 auto; filter: drop-shadow(0 3px 7px rgba(0,0,0,0.3)); }
 
 /* ============================================================
    顶部信息栏
@@ -136,51 +157,55 @@ body {
 }
 .header-top::after {
   content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(230,200,154,0.3), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--reward) 42%, transparent), transparent);
 }
 .header-title {
-  font-size: 1.2rem; font-weight: 700; color: #fff;
-  text-shadow: 0 0 30px rgba(138, 43, 226, 0.3), 0 0 10px rgba(138, 43, 226, 0.15);
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 1.2rem; font-weight: 700; color: var(--text-title);
+  letter-spacing: 0; text-shadow: 0 0 24px color-mix(in srgb, var(--accent) 28%, transparent);
   animation: titleBreath 3s ease-in-out infinite;
 }
 @keyframes titleBreath {
-  0%, 100% { text-shadow: 0 0 30px rgba(138,43,226,0.3), 0 0 10px rgba(138,43,226,0.15); }
-  50% { text-shadow: 0 0 40px rgba(138,43,226,0.5), 0 0 20px rgba(138,43,226,0.3); }
+  0%, 100% { text-shadow: 0 0 20px color-mix(in srgb, var(--accent) 22%, transparent); }
+  50% { text-shadow: 0 0 32px color-mix(in srgb, var(--accent) 42%, transparent); }
 }
-.header-stats { font-size: 0.75rem; color: var(--stat-text); background: var(--header-bg); padding: 4px 12px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid var(--border-light); }
-.header-stats span { color: #4ae6c9; font-weight: 700; }
+.header-stats { font-size: 0.75rem; color: var(--stat-text); background: var(--header-bg); padding: 4px 12px; border-radius: 8px; backdrop-filter: blur(10px); border: 1px solid var(--border-light); }
+.header-stats span { color: var(--reward); font-weight: 700; }
 .header-diff-badge {
-  font-size: 0.7rem; font-weight: 600; color: #e6c89a;
-  background: rgba(230,200,154,0.1); padding: 3px 10px; border-radius: 12px;
-  border: 1px solid rgba(230,200,154,0.15);
+  font-size: 0.7rem; font-weight: 600; color: var(--reward);
+  background: color-mix(in srgb, var(--reward) 10%, transparent); padding: 3px 10px; border-radius: 7px;
+  border: 1px solid color-mix(in srgb, var(--reward) 22%, transparent);
 }
 .header-action-btn {
   background: var(--header-bg); border: 1px solid var(--border-light);
-  border-radius: 8px; color: var(--text-secondary); font-size: 0.8rem; padding: 4px 8px;
+  border-radius: 8px; color: var(--text-secondary); font-size: 0.85rem;
+  width: 32px; height: 32px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
   cursor: pointer; transition: all 0.2s; line-height: 1;
 }
-.header-action-btn:hover { background: var(--btn-hover-bg); color: var(--text-title); }
+.header-action-btn:hover { background: var(--btn-hover-bg); color: var(--text-title); border-color: var(--btn-hover-border); transform: translateY(-1px); }
+.header-actions { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
 .difficulty-selector { display: flex; gap: 4px; margin-top: 0; }
 .diff-btn {
-  padding: 5px 16px; border-radius: 20px; border: 1px solid var(--border-color);
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 5px 16px; border-radius: 7px; border: 1px solid var(--border-color);
   background: var(--btn-bg); color: var(--btn-text); font-size: 0.82rem; font-weight: 600;
   cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .diff-btn:hover {
-  border-color: rgba(74,230,201,0.4); color: var(--text-title);
+  border-color: var(--accent); color: var(--text-title);
   transform: translateY(-1px);
 }
 .diff-btn.active {
-  background: linear-gradient(135deg, rgba(74,230,201,0.2), rgba(74,230,201,0.35));
-  border-color: #4ae6c9; color: var(--btn-active-text);
-  box-shadow: 0 0 20px rgba(74,230,201,0.25), 0 0 40px rgba(74,230,201,0.08);
+  background: var(--accent-soft); border-color: var(--accent); color: var(--btn-active-text);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 /* 悬浮迷你进度面板 - 顶部 */
 .progress-panel {
   position: relative; margin-top: 8px;
   background: var(--bg-panel); backdrop-filter: blur(10px);
-  border-radius: 12px; border: 1px solid var(--border-color);
+  border-radius: 8px; border: 1px solid var(--border-color);
   overflow: hidden; transition: all 0.35s ease;
   pointer-events: auto;
 }
@@ -190,6 +215,12 @@ body {
 }
 .panel-header:hover { background: var(--btn-hover-bg); }
 .panel-icon { font-size: 1.1rem; }
+.panel-icon { display: inline-flex; color: var(--accent); }
+#panel-title { display: inline-flex; align-items: center; gap: 8px; }
+.panel-reset-all { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.panel-reset-btn { display: inline-flex; align-items: center; justify-content: center; }
+.panel-reset-btn .lucide { width: 12px; height: 12px; }
+.panel-toggle { display: inline-flex; align-items: center; justify-content: center; }
 .panel-title { font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; }
 .panel-progress-text { font-size: 0.8rem; color: var(--text-title); font-weight: 700; white-space: nowrap; }
 .panel-progress-bar {
@@ -198,8 +229,8 @@ body {
 }
 .panel-progress-fill {
   height: 100%; border-radius: 3px;
-  background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1);
-  box-shadow: 0 0 12px rgba(72, 219, 251, 0.3);
+  background: linear-gradient(90deg, var(--accent-strong), var(--accent), var(--reward));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 30%, transparent);
   transition: width 0.4s ease;
 }
 .panel-percent { font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; min-width: 35px; text-align: right; }
@@ -215,19 +246,19 @@ body {
               opacity 0.35s ease,
               transform 0.35s ease,
               padding 0.3s ease;
-  padding: 0 14px; display: flex; flex-direction: column; gap: 6px;
+  padding: 0 14px; display: flex; flex-direction: column; gap: 2px;
 }
 .panel-body.open {
-  max-height: 100px; padding: 0 14px 10px;
+  max-height: 72px; overflow-y: auto; padding: 0 8px 5px;
   opacity: 1; transform: translateY(0);
 }
 .panel-body-row {
-  display: flex; gap: 12px;
+  display: flex; gap: 8px;
 }
 .panel-body-item {
-  flex: 1; display: flex; align-items: center; gap: 5px;
-  font-size: 0.78rem; color: var(--text-secondary); cursor: pointer;
-  padding: 4px 8px; border-radius: 8px; transition: background 0.2s;
+  flex: 1; display: flex; align-items: center; gap: 4px;
+  font-size: 0.65rem; color: var(--text-secondary); cursor: pointer;
+  padding: 3px 6px; border-radius: 8px; transition: background 0.2s;
   white-space: nowrap;
   opacity: 0; transform: translateY(-4px);
 }
@@ -241,7 +272,7 @@ body {
 .panel-body.open .panel-body-row:nth-child(2) .panel-body-item:nth-child(2) { transition: all 0.3s ease 200ms; }
 .panel-body.open .panel-body-row:nth-child(2) .panel-body-item:nth-child(3) { transition: all 0.3s ease 250ms; }
 .panel-body-item:hover { background: rgba(255,255,255,0.08); }
-.panel-body-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.panel-body-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; border: 1px solid var(--border-color); }
 
 /* ============================================================
    3D 画布
@@ -260,7 +291,7 @@ body {
    ============================================================ */
 .confirm-overlay {
   display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 200; background: rgba(10,10,30,0.8);
+  z-index: 200; background: var(--overlay-bg);
   backdrop-filter: blur(8px);
   justify-content: center; align-items: center;
 }
@@ -269,7 +300,7 @@ body {
   background: var(--confirm-bg);
   backdrop-filter: blur(20px);
   border: 1px solid var(--confirm-border);
-  border-radius: 16px; padding: 24px;
+  border-radius: 8px; padding: 24px;
   width: 90%; max-width: 360px;
   text-align: center;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
@@ -281,6 +312,7 @@ body {
 .confirm-btn {
   padding: 8px 24px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
   border: none; cursor: pointer; transition: all 0.2s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
 }
 .confirm-btn-cancel { background: var(--btn-bg); color: var(--text-secondary); border: 1px solid var(--border-color); }
 .confirm-btn-cancel:hover { background: var(--btn-hover-bg); }
@@ -316,6 +348,7 @@ body {
   text-align: center;
   padding-bottom: env(safe-area-inset-bottom, 0px);
   transition: opacity 0.5s ease;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
 }
 
 /* ============================================================
@@ -328,7 +361,7 @@ body {
    ============================================================ */
 .modal-overlay {
   display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 100; background: rgba(10,10,30,0.85);
+  z-index: 100; background: var(--overlay-bg);
   backdrop-filter: blur(8px);
   justify-content: center; align-items: flex-start;
   overflow-y: auto; padding: 20px 0;
@@ -336,21 +369,22 @@ body {
 .modal-overlay.active { display: flex; }
 .modal-box {
   background: var(--modal-bg);
+  color: var(--text-primary);
   backdrop-filter: blur(24px);
   border: 1px solid var(--modal-border);
-  border-radius: 16px; padding: 16px;
+  border-radius: 8px; padding: 16px;
   width: 96%; max-width: 480px; max-height: 85vh; overflow-y: auto;
   margin: auto;
   box-shadow: 0 0 40px rgba(74,230,201,0.06), 0 20px 60px rgba(0,0,0,0.5);
-  animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1), borderGlow 3s ease-in-out infinite;
+  animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1), borderGlow 0.9s ease-out 1;
 }
 @media (min-width: 480px) {
   .modal-box { width: 90%; padding: 24px; }
 }
 @keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes borderGlow {
-  0%, 100% { border-color: rgba(74,230,201,0.15); box-shadow: 0 0 20px rgba(74,230,201,0.05); }
-  50% { border-color: rgba(74,230,201,0.35); box-shadow: 0 0 40px rgba(74,230,201,0.15); }
+  0%, 100% { border-color: var(--modal-border); box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 5%, transparent); }
+  50% { border-color: color-mix(in srgb, var(--accent) 38%, transparent); box-shadow: 0 0 38px color-mix(in srgb, var(--accent) 14%, transparent); }
 }
 
 .modal-header {
@@ -373,15 +407,29 @@ body {
   background: var(--bg-passage); border-radius: 10px;
   padding: 12px 14px; font-size: 0.85rem; line-height: 1.7;
   color: var(--text-secondary); margin-bottom: 14px;
-  border-left: 3px solid rgba(138, 43, 226, 0.5);
+  border-left: 3px solid rgba(74,230,201,0.55);
 }
+
+[data-theme="light"] #panel-content [style*="background:rgba(255,255,255,0.04)"] {
+  background: var(--bg-item) !important;
+}
+[data-theme="light"] #panel-content [style*="border:1px solid rgba(255,255,255,0.06)"] {
+  border-color: var(--border-color) !important;
+}
+[data-theme="light"] #panel-content [style*="color:#fff"],
+[data-theme="light"] #cert-overlay [style*="color:#fff"] { color: var(--text-title) !important; }
+[data-theme="light"] #panel-content [style*="color:#ccc"],
+[data-theme="light"] #panel-content [style*="color:#aaa"],
+[data-theme="light"] #panel-content [style*="color:#888"],
+[data-theme="light"] #cert-overlay [style*="color:#ccc"],
+[data-theme="light"] #cert-overlay [style*="color:#aaa"] { color: var(--text-secondary) !important; }
 
 /* 选项 */
 .modal-question { font-size: 0.95rem; color: var(--text-primary); margin-bottom: 14px; line-height: 1.6; }
 .options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
 .option-btn {
   display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px; border-radius: 10px;
+  padding: 14px 16px; border-radius: 8px;
   background: var(--option-bg); border: 1px solid var(--border-color);
   color: var(--option-text); font-size: 1rem; cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); text-align: left; min-height: 44px;
@@ -390,9 +438,9 @@ body {
   background: var(--btn-hover-bg); border-color: var(--btn-hover-border);
   transform: translateY(-2px); box-shadow: 0 4px 15px rgba(74,230,201,0.1);
 }
-.option-btn.selected { border-color: #4ae6c9; background: rgba(74,230,201,0.15); color: #4ae6c9; }
-.option-btn.correct { border-color: #27ae60; background: rgba(39,174,96,0.2); color: #27ae60; animation: correctPop 0.4s ease; }
-.option-btn.wrong { border-color: #e74c3c; background: rgba(231,76,60,0.2); color: #e74c3c; animation: wrongShake 0.4s ease; }
+.option-btn.selected { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.option-btn.correct { border-color: var(--success); background: color-mix(in srgb, var(--success) 16%, transparent); color: var(--success); animation: correctPop 0.4s ease; }
+.option-btn.wrong { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 16%, transparent); color: var(--danger); animation: wrongShake 0.4s ease; }
 .option-btn:disabled { pointer-events: none; }
 .option-letter { font-weight: 700; font-size: 1rem; opacity: 0.6; min-width: 24px; }
 
@@ -402,10 +450,10 @@ body {
   padding: 2px 8px; border-radius: 8px; margin-left: 8px;
   vertical-align: middle;
 }
-.type-choice { background: rgba(74,230,201,0.15); color: #4ae6c9; }
-.type-cloze { background: rgba(162,155,254,0.15); color: #a29bfe; }
-.type-wordbank { background: rgba(253,203,110,0.15); color: #fdcb6e; }
-.type-grammar { background: rgba(255,107,107,0.15); color: #ff6b6b; }
+.type-choice { background: var(--accent-soft); color: var(--accent); }
+.type-cloze { background: rgba(86,156,214,0.14); color: #68aee5; }
+.type-wordbank { background: color-mix(in srgb, var(--reward) 14%, transparent); color: var(--reward); }
+.type-grammar { background: color-mix(in srgb, var(--danger) 14%, transparent); color: var(--danger); }
 
 /* 完形填空 - 短文中的空格 */
 .cloze-passage {
@@ -485,14 +533,15 @@ body {
 /* 反馈 */
 .feedback-area { display: none; margin-bottom: 16px; }
 .feedback-area.show { display: block; }
-.feedback-correct { color: #27ae60; font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; animation: correctPop 0.5s ease; }
-.feedback-wrong { color: #e74c3c; font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; animation: wrongShake 0.5s ease; }
+.feedback-correct { color: var(--success); font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; animation: correctPop 0.5s ease; }
+.feedback-wrong { color: var(--danger); font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; animation: wrongShake 0.5s ease; }
+.feedback-correct, .feedback-wrong, .countdown-hint { display: flex; align-items: center; justify-content: center; gap: 6px; }
 .feedback-explanation {
   background: var(--bg-passage); border-radius: 8px;
   padding: 10px 14px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;
 }
 .countdown-hint {
-  text-align: center; font-size: 0.78rem; color: #4ae6c9;
+  text-align: center; font-size: 0.78rem; color: var(--accent);
   margin-top: 8px; animation: fadeIn 0.3s ease;
 }
 
@@ -511,11 +560,17 @@ body {
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   padding: 10px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
-  border: none; cursor: pointer; transition: all 0.2s ease;
+  border: none; cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   width: 100%;
 }
-.btn-primary { background: linear-gradient(135deg, #4ae6c9, #3dd6b5); color: #0a1628; box-shadow: 0 4px 15px rgba(74,230,201,0.2); }
-.btn-primary:hover { background: linear-gradient(135deg, #7ff0da, #5ee6c9); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(74,230,201,0.3); }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-strong)); color: #071712; box-shadow: 0 4px 15px color-mix(in srgb, var(--accent) 22%, transparent); }
+.btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 32%, transparent); }
+.btn:disabled { cursor: not-allowed; opacity: 0.42; filter: saturate(0.35); box-shadow: none; transform: none; }
+.btn:focus-visible, .option-btn:focus-visible, .diff-btn:focus-visible,
+.header-action-btn:focus-visible, .theme-toggle:focus-visible {
+  outline: 2px solid var(--reward); outline-offset: 2px;
+}
 .btn-secondary { background: var(--btn-bg); color: var(--text-secondary); border: 1px solid var(--border-color); }
 .btn-secondary:hover { background: var(--btn-hover-bg); }
 .btn-close {
@@ -529,6 +584,7 @@ body {
   text-align: center; color: var(--text-muted); padding: 20px 0;
   font-size: 0.9rem; line-height: 1.6;
 }
+#locked-tip-msg .lucide { width: 24px; height: 24px; margin-bottom: 6px; color: var(--text-secondary); }
 .locked-tip-btn {
   margin-top: 16px;
   padding: 8px 24px;
@@ -546,11 +602,11 @@ body {
 .lock-hover-tooltip {
   position: fixed;
   pointer-events: none;
-  background: rgba(26, 26, 46, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 6px 12px;
-  color: #aaa;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   z-index: 1000;
   white-space: nowrap;
@@ -559,12 +615,24 @@ body {
 }
 .lock-hover-tooltip.show { opacity: 1; }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ============================================================
    响应式
    ============================================================ */
 @media (max-width: 480px) {
   .header { padding: 6px 10px; }
-  .header-title { font-size: 0.95rem; }
+  .header-top { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 6px 10px; }
+  .header-title { font-size: 1rem; white-space: nowrap; }
+  .difficulty-selector { justify-self: end; }
+  .header-actions { grid-column: 1 / -1; justify-content: flex-start; width: 100%; }
   .modal-box { padding: 18px; width: 94%; }
   .face-progress { gap: 2px; }
   .face-progress-item { font-size: 0.6rem; padding: 2px 6px; }
@@ -574,9 +642,18 @@ body {
   .panel-title { font-size: 0.65rem; }
   .panel-progress-text { font-size: 0.65rem; }
   .panel-percent { font-size: 0.6rem; min-width: 28px; }
-  .header-action-btn { font-size: 0.7rem; padding: 3px 6px; }
+  .header-action-btn { width: 30px; height: 30px; font-size: 0.8rem; }
   .header-diff-badge { font-size: 0.65rem; padding: 2px 8px; }
   .header-stats { font-size: 0.7rem; padding: 3px 8px; }
+
+  /* 进度面板移动端适配：保持3列布局，紧凑模式 */
+  .panel-body { gap: 2px; padding: 0 6px; }
+  .panel-body.open { max-height: 78px; padding: 0 6px 5px; }
+  .panel-body-row { gap: 4px; }
+  .panel-body-item { font-size: 0.6rem; padding: 2px 4px; }
+  .panel-body-dot { width: 6px; height: 6px; }
+  .panel-reset-btn { font-size: 0.6rem; padding: 1px 3px; }
+  .panel-reset-all { font-size: 0.65rem; padding: 4px 0; margin-top: 4px; }
 }
 </style>
 </head>
@@ -585,19 +662,30 @@ body {
   <!-- 顶部信息栏 -->
   <div class="header">
     <div class="header-top">
-      <div class="header-title">🧩 魔方英语</div>
-      <div class="difficulty-selector" id="difficulty-selector">
-        <button class="diff-btn" data-diff="easy">🌱 小学</button>
-        <button class="diff-btn active" data-diff="medium">📖 初中</button>
-        <button class="diff-btn" data-diff="hard">🎯 高中</button>
+      <div class="header-title">
+        <svg class="brand-cube" viewBox="0 0 24 24" role="img" aria-label="六色魔方">
+          <polygon points="12,1 22,6.2 12,11.4 2,6.2" fill="#F0C84B"/>
+          <polygon points="2,6.2 12,11.4 12,23 2,17.8" fill="#E34850"/>
+          <polygon points="12,11.4 22,6.2 22,17.8 12,23" fill="#3478D4"/>
+          <g fill="none" stroke="#0d151f" stroke-width="0.8" stroke-linejoin="round">
+            <path d="M2 6.2 12 1l10 5.2v11.6L12 23 2 17.8Z M12 11.4V23 M2 6.2l10 5.2 10-5.2"/>
+            <path d="m5.35 4.45 10 5.2M8.7 2.7l10 5.2M5.35 7.95v11.6M8.7 9.7v11.6M15.35 9.65v11.6M18.7 7.9v11.6"/>
+          </g>
+        </svg>
+        <span>魔方英语</span>
       </div>
-      <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
-        <button class="theme-toggle" id="theme-toggle" title="切换主题">🌙</button>
-        <button class="header-action-btn" id="btn-wrong-book" title="错题本">📕</button>
-        <button class="header-action-btn" id="btn-stats" title="统计">📊</button>
-        <button class="header-action-btn" id="btn-daily" title="今日挑战">🎯</button>
-        <button class="header-action-btn" id="btn-share" title="分享">📤</button>
-        <span class="header-diff-badge" id="header-diff-badge">📖 初中</span>
+      <div class="difficulty-selector" id="difficulty-selector">
+        <button class="diff-btn" data-diff="easy"><i data-lucide="sprout"></i><span>小学</span></button>
+        <button class="diff-btn active" data-diff="medium"><i data-lucide="book-open"></i><span>初中</span></button>
+        <button class="diff-btn" data-diff="hard"><i data-lucide="graduation-cap"></i><span>高中</span></button>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" title="切换为亮色主题" aria-label="切换为亮色主题"><i data-lucide="sun"></i></button>
+        <button class="header-action-btn" id="btn-wrong-book" title="错题本" aria-label="打开错题本"><i data-lucide="book-x"></i></button>
+        <button class="header-action-btn" id="btn-stats" title="学习统计" aria-label="打开学习统计"><i data-lucide="chart-bar"></i></button>
+        <button class="header-action-btn" id="btn-daily" title="今日挑战" aria-label="打开今日挑战"><i data-lucide="calendar-check-2"></i></button>
+        <button class="header-action-btn" id="btn-share" title="分享游戏" aria-label="分享游戏"><i data-lucide="share-2"></i></button>
+        <span class="header-diff-badge" id="header-diff-badge">初中</span>
         <div class="header-stats">已点亮 <span id="total-completed">0</span>/54 格</div>
       </div>
     </div>
@@ -605,19 +693,19 @@ body {
     <!-- 悬浮迷你进度面板 -->
     <div class="progress-panel" id="progress-panel">
       <div class="panel-header" id="panel-header">
-        <span class="panel-icon">📊</span>
+        <span class="panel-icon"><i data-lucide="chart-bar"></i></span>
         <span class="panel-title">总进度</span>
         <span class="panel-progress-text" id="panel-progress-text">0/54</span>
         <div class="panel-progress-bar">
           <div class="panel-progress-fill" id="panel-progress-fill" style="width:0%"></div>
         </div>
         <span class="panel-percent" id="panel-percent">0%</span>
-        <button class="panel-toggle" id="panel-toggle">▶</button>
+        <button class="panel-toggle" id="panel-toggle" title="展开进度详情" aria-label="展开进度详情"><i data-lucide="chevron-right"></i></button>
       </div>
       <div class="panel-body" id="panel-body">
         <div class="panel-body-row" id="panel-body-row1"></div>
         <div class="panel-body-row" id="panel-body-row2"></div>
-        <button class="panel-reset-all" id="panel-reset-all">↺ 重置全部进度</button>
+        <button class="panel-reset-all" id="panel-reset-all"><i data-lucide="rotate-ccw"></i>重置全部进度</button>
       </div>
     </div>
   </div>
@@ -626,7 +714,7 @@ body {
   <canvas id="cube-canvas"></canvas>
 
   <!-- 底部提示 -->
-  <div class="hint-bar" id="hint-bar">↺ 拖拽旋转 · 点击彩色格子开始答题 · 多难度可选</div>
+  <div class="hint-bar" id="hint-bar"><i data-lucide="mouse-pointer-2"></i>拖拽旋转 · 点击彩色格子开始答题 · 多难度可选</div>
 
   <!-- 确认对话框 -->
   <div class="confirm-overlay" id="confirm-overlay">
@@ -655,8 +743,8 @@ body {
   <div class="modal-overlay" id="panel-overlay">
     <div class="modal-box" id="panel-box" style="max-height:80vh;overflow-y:auto">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <span style="font-size:1.1rem;font-weight:700;color:#fff" id="panel-title">面板</span>
-        <button style="background:none;border:none;color:#888;font-size:1.2rem;cursor:pointer" id="btn-panel-close">✕</button>
+        <span style="font-size:1.1rem;font-weight:700;color:var(--text-title)" id="panel-title">面板</span>
+        <button class="btn-close" id="btn-panel-close" title="关闭" aria-label="关闭"><i data-lucide="x"></i></button>
       </div>
       <div id="panel-content"></div>
     </div>
@@ -665,16 +753,16 @@ body {
   <!-- 通关证书弹窗 -->
   <div class="modal-overlay" id="cert-overlay">
     <div class="modal-box" id="cert-box" style="text-align:center;border:2px solid rgba(230,200,154,0.3);box-shadow:0 0 60px rgba(230,200,154,0.15)">
-      <div style="font-size:3rem;margin-bottom:8px">🏆</div>
+      <div style="color:var(--reward);margin-bottom:8px"><i data-lucide="award" style="width:48px;height:48px"></i></div>
       <div style="font-size:1.3rem;font-weight:700;color:#e6c89a;margin-bottom:4px">语法大师 · 通关证书</div>
-      <div style="font-size:0.85rem;color:#aaa;margin-bottom:12px">🎉 恭喜完成全部 54 关！</div>
-      <input id="cert-name" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;padding:6px 12px;text-align:center;width:200px;margin-bottom:8px;font-size:0.9rem" value="探险家">
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:0.85rem;color:#aaa;margin-bottom:12px"><i data-lucide="sparkles"></i>恭喜完成全部 54 关！</div>
+      <input id="cert-name" style="background:var(--option-bg);border:1px solid var(--border-color);border-radius:8px;color:var(--text-title);padding:6px 12px;text-align:center;width:200px;margin-bottom:8px;font-size:0.9rem" value="探险家">
       <div style="font-size:0.8rem;color:#aaaacc;margin-bottom:4px">完成时间：<span id="cert-time" style="color:#4ae6c9">-</span></div>
       <div style="font-size:0.8rem;color:#aaaacc;margin-bottom:12px">总正确率：<span id="cert-accuracy" style="color:#4ae6c9">-</span></div>
       <div id="cert-faces" style="margin-bottom:16px;text-align:left"></div>
       <div style="display:flex;gap:8px;justify-content:center">
         <button class="confirm-btn" style="background:rgba(255,255,255,0.08);color:#ccc;border:1px solid rgba(255,255,255,0.15)" id="btn-cert-close">关闭</button>
-        <button class="confirm-btn confirm-btn-danger" id="btn-cert-share" style="background:linear-gradient(135deg,#4ae6c9,#3dd6b5);color:#0a1628">📤 分享</button>
+        <button class="confirm-btn confirm-btn-danger" id="btn-cert-share" style="background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#0a1628"><i data-lucide="share-2"></i>分享</button>
       </div>
     </div>
   </div>
@@ -683,10 +771,10 @@ body {
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal-box" id="modal-box">
       <div class="modal-header">
-        <div class="modal-face-badge" id="modal-face-badge">📝 语法核心</div>
+        <div class="modal-face-badge" id="modal-face-badge">语法核心</div>
         <div style="display:flex;align-items:center;gap:12px">
-          <span class="modal-level" id="modal-level">⭐小学</span>
-          <button class="btn-close" id="btn-close-modal">&times;</button>
+          <span class="modal-level" id="modal-level">小学</span>
+          <button class="btn-close" id="btn-close-modal" title="关闭" aria-label="关闭"><i data-lucide="x"></i></button>
         </div>
       </div>
       <div class="modal-title" id="modal-title">第1关：一般现在时</div>
@@ -719,11 +807,33 @@ body {
 }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 console.log('🧩 魔方英语 | Three.js v' + THREE.REVISION);
+
+function refreshIcons() {
+  if (window.lucide) window.lucide.createIcons({ attrs: { 'aria-hidden': 'true' } });
+}
+
+function iconMarkup(name) {
+  return `<i data-lucide="${name}"></i>`;
+}
+
+function setIconButton(button, iconName, label) {
+  button.innerHTML = iconMarkup(iconName);
+  button.title = label;
+  button.setAttribute('aria-label', label);
+  refreshIcons();
+}
+
+function setPanelTitle(iconName, text) {
+  document.getElementById('panel-title').innerHTML = `${iconMarkup(iconName)}<span>${text}</span>`;
+  refreshIcons();
+}
 
 // ============================================================
 // 面 ID 到题库 ID 的映射
@@ -733,12 +843,12 @@ const QB_TO_FACE = { grammar: 'front', vocabulary: 'back', reading: 'left', cloz
 // 面定义
 // ============================================================
 const FACES = {
-  front:  { id: 'front',  name: '语法核心', emoji: '📝', color: '#ff4757', axis: 'z', value: 1,  normal: [0,0,1] },
-  back:   { id: 'back',   name: '词汇辨析', emoji: '📖', color: '#ffc312', axis: 'z', value: -1, normal: [0,0,-1] },
-  left:   { id: 'left',   name: '阅读理解', emoji: '📚', color: '#1dd1a1', axis: 'x', value: -1, normal: [-1,0,0] },
-  right:  { id: 'right',  name: '完形填空', emoji: '✏️', color: '#3742fa', axis: 'x', value: 1,  normal: [1,0,0] },
-  top:    { id: 'top',    name: '口语表达', emoji: '🎤', color: '#6c5ce7', axis: 'y', value: 1,  normal: [0,1,0] },
-  bottom: { id: 'bottom', name: '趣味英语', emoji: '🎮', color: '#f9ca24', axis: 'y', value: -1, normal: [0,-1,0] },
+  front:  { id: 'front',  name: '语法核心', color: '#E34850', axis: 'z', value: 1,  normal: [0,0,1] },
+  back:   { id: 'back',   name: '词汇辨析', color: '#F08A35', axis: 'z', value: -1, normal: [0,0,-1] },
+  left:   { id: 'left',   name: '阅读理解', color: '#2DB67D', axis: 'x', value: -1, normal: [-1,0,0] },
+  right:  { id: 'right',  name: '完形填空', color: '#3478D4', axis: 'x', value: 1,  normal: [1,0,0] },
+  top:    { id: 'top',    name: '口语表达', color: '#F4F1E8', axis: 'y', value: 1,  normal: [0,1,0] },
+  bottom: { id: 'bottom', name: '趣味英语', color: '#F0C84B', axis: 'y', value: -1, normal: [0,-1,0] },
 };
 
 // 面到行列映射：给定 cubie 位置 (x,y,z) 和被点击面的法线，返回 {row, col}
@@ -994,34 +1104,39 @@ renderer.setPixelRatio(window.innerWidth <= 600 ? 1 : Math.min(window.devicePixe
 renderer.shadowMap.enabled = true;
 
 // 灯光
-const ambientLight = new THREE.AmbientLight(0x404060, 1.5);
+const ambientLight = new THREE.AmbientLight(0x8aa6b8, 1.8);
 scene.add(ambientLight);
 const dirLight = new THREE.DirectionalLight(0xffffff, 2);
 dirLight.position.set(5, 10, 5);
 scene.add(dirLight);
-const dirLight2 = new THREE.DirectionalLight(0x8899cc, 0.8);
+const dirLight2 = new THREE.DirectionalLight(0x68aee5, 0.65);
 dirLight2.position.set(-3, -1, -3);
 scene.add(dirLight2);
 
 // 轨道控制器
 const controls = new OrbitControls(camera, renderer.domElement);
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.minDistance = 4;
-controls.maxDistance = 10;
-controls.autoRotate = true;
+controls.maxDistance = 14;
+controls.autoRotate = !prefersReducedMotion.matches;
 controls.autoRotateSpeed = 0.5;
 controls.target.set(0, 0, 0);
 
+prefersReducedMotion.addEventListener('change', (event) => {
+  controls.autoRotate = !event.matches;
+});
+
 // 粒子背景 - 使用 Sprite 纹理（80个，青紫渐变，柔和光晕）
-const particlesCount = 80;
+const particlesCount = 48;
 // 创建光晕纹理（Canvas 绘制径向渐变）
 const glowCanvas = document.createElement('canvas');
 glowCanvas.width = 32; glowCanvas.height = 32;
 const gctx = glowCanvas.getContext('2d');
 const gradient = gctx.createRadialGradient(16, 16, 0, 16, 16, 16);
 gradient.addColorStop(0, 'rgba(255,255,255,0.9)');
-gradient.addColorStop(0.3, 'rgba(200,220,255,0.5)');
+gradient.addColorStop(0.3, 'rgba(205,234,231,0.5)');
 gradient.addColorStop(1, 'rgba(0,0,0,0)');
 gctx.fillStyle = gradient;
 gctx.fillRect(0, 0, 32, 32);
@@ -1029,13 +1144,13 @@ const glowTexture = new THREE.CanvasTexture(glowCanvas);
 glowTexture.minFilter = THREE.LinearFilter;
 
 const spriteGroup = new THREE.Group();
-const colors = [0x4ae6c9, 0xa29bfe, 0x48dbfb, 0x7c6ff7, 0x3dd6b5]; // 青紫渐变色
+const colors = [0x42dfc0, 0xf0c56a, 0x5a9bd8];
 for (let i = 0; i < particlesCount; i++) {
   const spriteMat = new THREE.SpriteMaterial({
     map: glowTexture,
     color: colors[Math.floor(Math.random() * colors.length)],
     transparent: true,
-    opacity: 0.5 + Math.random() * 0.2, // 0.5~0.7
+    opacity: 0.3 + Math.random() * 0.25,
     blending: THREE.AdditiveBlending,
     depthWrite: false
   });
@@ -1113,15 +1228,21 @@ const cubieMeshes = []; // for raycasting
 
 const DARK_COLOR = 0x1a1a2e;
 
-// 计算边框颜色：取面颜色的 70% 亮度，深色面自动变亮 30%
+// 计算边框颜色：取面颜色的 40%-70% 亮度，深色面自动变亮，亮色面加深
 function computeEdgeColor(hex) {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
   // 感知亮度 (luminance)
   const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-  // 深色（亮度 < 100）自动变亮 30%
-  const factor = lum < 100 ? 1.3 : 0.7;
+  let factor;
+  if (lum < 100) {
+    factor = 1.3; // 深色面：变亮 30%
+  } else if (lum > 200) {
+    factor = 0.4; // 亮色面（白/黄）：加深到 40%，确保边框可见
+  } else {
+    factor = 0.7; // 中等亮度：70%
+  }
   return [
     Math.min(255, Math.round(r * factor)),
     Math.min(255, Math.round(g * factor)),
@@ -1152,8 +1273,8 @@ function createCubie(x, y, z) {
 
   const materials = faceOrder.map(f => new THREE.MeshStandardMaterial({
     color: faceColors[f],
-    roughness: 0.3,
-    metalness: 0.1,
+    roughness: 0.45,
+    metalness: 0.02,
   }));
 
   const geo = new THREE.BoxGeometry(CUBIE_SIZE, CUBIE_SIZE, CUBIE_SIZE);
@@ -1162,17 +1283,8 @@ function createCubie(x, y, z) {
 
   // 边框：颜色根据面颜色动态计算，透明度根据主题
   const edges = new THREE.EdgesGeometry(geo);
-  const exposedFaceColors = faceOrder.filter(f => exposed[f]).map(f => FACES[f].color);
-  let edgeColor = 0x4ae6c9; // fallback
-  if (exposedFaceColors.length > 0) {
-    const edgeRGBs = exposedFaceColors.map(c => computeEdgeColor(c));
-    const avgR = Math.round(edgeRGBs.reduce((s, c) => s + c[0], 0) / edgeRGBs.length);
-    const avgG = Math.round(edgeRGBs.reduce((s, c) => s + c[1], 0) / edgeRGBs.length);
-    const avgB = Math.round(edgeRGBs.reduce((s, c) => s + c[2], 0) / edgeRGBs.length);
-    edgeColor = (avgR << 16) | (avgG << 8) | avgB;
-  }
   const edgeOpacity = getThemeEdgeOpacity();
-  const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: edgeColor, transparent: true, opacity: edgeOpacity }));
+  const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: getThemeEdgeColor(), transparent: true, opacity: edgeOpacity }));
   line.raycast = () => {};
   mesh.add(line);
 
@@ -1239,12 +1351,12 @@ function addCompletionAnimation(mesh, materials, faceOrder, faceId, baseColor) {
     type: 'complete',
     mesh,
     startTime: performance.now(),
-    duration: 500,
-    originalY: mesh.position.y,
+    duration: 650,
+    originalScale: mesh.scale.clone(),
     materials,
     matIdx,
     targetColor: new THREE.Color(baseColor),
-    startColor: new THREE.Color(0x333344),
+    startColor: new THREE.Color(halfBrightnessDynamic(baseColor)),
   };
   activeAnimations.push(anim);
 }
@@ -1265,19 +1377,20 @@ function updateAnimations() {
         activeAnimations.splice(i, 1);
       }
     } else if (anim.type === 'complete') {
-      // 颜色渐变 + 上浮
+      // 颜色渐变 + 柔和缩放，避免移动整个 cubie 破坏魔方结构
       const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
       const color = new THREE.Color().lerpColors(anim.startColor, anim.targetColor, ease);
       anim.materials[anim.matIdx].color.copy(color);
       anim.materials[anim.matIdx].emissive.copy(color);
       anim.materials[anim.matIdx].emissiveIntensity = 0.5 * ease;
-
-      // 上浮效果
-      const bounce = Math.sin(t * Math.PI) * 0.15 * (1 - t);
-      anim.mesh.position.y = anim.originalY + bounce;
+      const scale = 1 + Math.sin(t * Math.PI) * 0.07;
+      anim.mesh.scale.copy(anim.originalScale).multiplyScalar(scale);
 
       if (t >= 1) {
-        anim.mesh.position.y = anim.originalY;
+        anim.mesh.scale.copy(anim.originalScale);
+        anim.materials[anim.matIdx].color.copy(anim.targetColor);
+        anim.materials[anim.matIdx].emissive.copy(anim.targetColor);
+        anim.materials[anim.matIdx].emissiveIntensity = 0.5;
         activeAnimations.splice(i, 1);
       }
     } else if (anim.type === 'shake') {
@@ -1388,8 +1501,8 @@ function updateSingleCubieFace(faceId, row, col) {
         cubie.materials[matIdx].emissiveIntensity = 0;
       } else {
         cubie.materials[matIdx].color.set(halfBrightnessDynamic(color));
-        cubie.materials[matIdx].emissive.set(0x000000);
-        cubie.materials[matIdx].emissiveIntensity = 0;
+        cubie.materials[matIdx].emissive.set(color);
+        cubie.materials[matIdx].emissiveIntensity = 0.14;
       }
       return;
     }
@@ -1398,7 +1511,8 @@ function updateSingleCubieFace(faceId, row, col) {
 
 function getTotalCompleted() {
   const progress = loadProgress();
-  return Object.values(progress).filter(v => v === 'completed').length;
+  const difficultyPrefix = `${currentDifficulty}_`;
+  return Object.entries(progress).filter(([key, value]) => key.startsWith(difficultyPrefix) && value === 'completed').length;
 }
 
 function getFaceCompleted(faceId) {
@@ -1435,15 +1549,14 @@ function updateAllCubieColors() {
         materials[matIdx].emissive.set(baseColor);
         materials[matIdx].emissiveIntensity = 0.5;
       } else if (state === 'locked') {
-        // 锁定：统一暗色（与魔方内部一致，根据主题动态变化）
         materials[matIdx].color.set(DARK_COLOR_DYNAMIC());
         materials[matIdx].emissive.set(0x000000);
         materials[matIdx].emissiveIntensity = 0;
       } else {
         // 解锁未完成：面颜色可变亮度（根据主题动态变化）
         materials[matIdx].color.set(halfBrightnessDynamic(baseColor));
-        materials[matIdx].emissive.set(0x000000);
-        materials[matIdx].emissiveIntensity = 0;
+        materials[matIdx].emissive.set(baseColor);
+        materials[matIdx].emissiveIntensity = 0.14;
       }
     }
   }
@@ -1456,6 +1569,7 @@ function updateAllEdgeOpacity() {
     const cubie = cubieMap[key];
     if (cubie.line && cubie.line.material) {
       cubie.line.material.opacity = opacity;
+      cubie.line.material.color.set(getThemeEdgeColor());
     }
   }
 }
@@ -1485,10 +1599,10 @@ function updateHeaderStats() {
     const completed = getFaceCompleted(face.id);
     const item = document.createElement('div');
     item.className = 'panel-body-item';
-    const resetBtn = `<button class="panel-reset-btn" data-face="${face.id}" title="重置「${face.name}」进度">↺</button>`;
+    const resetBtn = `<button class="panel-reset-btn" data-face="${face.id}" title="重置「${face.name}」进度" aria-label="重置${face.name}进度">${iconMarkup('rotate-ccw')}</button>`;
     item.innerHTML = `<span class="panel-body-dot" style="background:${face.color}"></span>${face.name} ${completed}/9 ${resetBtn}`;
     item.onclick = (e) => {
-      if (e.target.classList.contains('panel-reset-btn')) {
+      if (e.target.closest('.panel-reset-btn')) {
         e.stopPropagation();
         showResetFaceConfirm(face);
         return;
@@ -1498,39 +1612,73 @@ function updateHeaderStats() {
     };
     (i < 3 ? row1 : row2).appendChild(item);
   }
+  refreshIcons();
 }
 
-// 旋转视角到指定面
-function faceCameraToFace(faceId, callback) {
+let cameraTransitionFrame = null;
+
+function getQuestionFocusDistance() {
+  if (window.innerWidth < 400) return 8.5;
+  if (window.innerWidth < 600) return 7.5;
+  return 6.5;
+}
+
+function findCubieForCell(faceId, cell) {
   const face = FACES[faceId];
-  const target = new THREE.Vector3(
-    face.normal[0] * 5,
-    face.normal[1] * 5,
-    face.normal[2] * 5
-  );
-  // 平滑动画
+  for (const key in cubieMap) {
+    const cubie = cubieMap[key];
+    if (!cubie.exposed[faceId]) continue;
+    const mappedCell = getFaceCell(cubie.x, cubie.y, cubie.z, ...face.normal);
+    if (mappedCell && mappedCell.row === cell.row && mappedCell.col === cell.col) return cubie;
+  }
+  return null;
+}
+
+function animateCameraTo(faceId, focusPoint, callback) {
+  const face = FACES[faceId];
+  const normal = new THREE.Vector3(...face.normal);
+  const targetPosition = focusPoint.clone().add(normal.multiplyScalar(getQuestionFocusDistance()));
   const start = camera.position.clone();
   const startTarget = controls.target.clone();
-  const endTarget = new THREE.Vector3(0, 0, 0);
   const startTime = performance.now();
-  const duration = 800;
+  const duration = 700;
+
+  if (cameraTransitionFrame !== null) cancelAnimationFrame(cameraTransitionFrame);
+  if (rotateRestoreTimer !== null) {
+    clearTimeout(rotateRestoreTimer);
+    rotateRestoreTimer = null;
+  }
+  controls.autoRotate = false;
+  controls.enabled = false;
 
   function anim(now) {
     const elapsed = now - startTime;
     const t = Math.min(elapsed / duration, 1);
-    const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // easeInOutQuad
+    const ease = t * t * (3 - 2 * t);
 
-    camera.position.lerpVectors(start, target, ease);
-    controls.target.lerpVectors(startTarget, endTarget, ease);
+    camera.position.lerpVectors(start, targetPosition, ease);
+    controls.target.lerpVectors(startTarget, focusPoint, ease);
     controls.update();
 
     if (t < 1) {
-      requestAnimationFrame(anim);
-    } else if (callback) {
-      callback();
+      cameraTransitionFrame = requestAnimationFrame(anim);
+    } else {
+      cameraTransitionFrame = null;
+      controls.enabled = true;
+      if (callback) callback();
     }
   }
-  requestAnimationFrame(anim);
+  cameraTransitionFrame = requestAnimationFrame(anim);
+}
+
+// 平滑定位到指定面或具体方块
+function faceCameraToFace(faceId, callback) {
+  animateCameraTo(faceId, new THREE.Vector3(0, 0, 0), callback);
+}
+
+function faceCameraToCell(faceId, cell, callback) {
+  const cubie = findCubieForCell(faceId, cell);
+  animateCameraTo(faceId, cubie ? cubie.mesh.position.clone() : new THREE.Vector3(0, 0, 0), callback);
 }
 
 // ============================================================
@@ -1584,7 +1732,7 @@ canvas.addEventListener('pointerup', (e) => {
 
   // 延迟 3 秒后恢复自动旋转（平滑过渡）
   rotateRestoreTimer = setTimeout(() => {
-    controls.autoRotate = true;
+    controls.autoRotate = !prefersReducedMotion.matches;
     // 平滑过渡：从 0 逐渐加速到目标速度
     const targetSpeed = 0.5;
     const rampDuration = 1000; // 1 秒过渡
@@ -1652,9 +1800,6 @@ canvas.addEventListener('pointerup', (e) => {
 
     const state = getCellState(faceId, cell.row, cell.col);
 
-    // 点击脉冲动画（无论是否锁定，都给视觉反馈）
-    addPulseAnimation(cubieData.mesh);
-
     if (state === 'locked') {
       // 锁定格子摇晃动画
       shakeLockedCubie(cubieData.mesh);
@@ -1662,7 +1807,10 @@ canvas.addEventListener('pointerup', (e) => {
       return;
     }
 
-    openQuestionModal(faceId, cell);
+    faceCameraToCell(faceId, cell, () => {
+      addPulseAnimation(cubieData.mesh);
+      openQuestionModal(faceId, cell);
+    });
   }
 });
 
@@ -1722,8 +1870,8 @@ window.startFirstQuestion = function() {
       const row = Math.floor(order / 3);
       const col = order % 3;
       const state = getCellState(faceId, row, col);
-      if (state !== 'locked') {
-        faceCameraToFace(faceId, () => {
+      if (state === 'unlocked') {
+        faceCameraToCell(faceId, { row, col }, () => {
           openQuestionModal(faceId, { row, col });
         });
         return;
@@ -1732,7 +1880,7 @@ window.startFirstQuestion = function() {
   }
   // 全部完成
   const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
-  alert(`🎉 恭喜！你已经完成了${diffLabels[currentDifficulty]}难度的所有54个关卡！`);
+  alert(`恭喜！你已经完成了${diffLabels[currentDifficulty]}难度的所有54个关卡！`);
 };
 
 // ============================================================
@@ -1775,9 +1923,9 @@ function openQuestionModal(faceId, cell) {
   const badge = document.getElementById('modal-face-badge');
   badge.textContent = `${face.name}`;
   badge.style.background = face.color + '33';
-  badge.style.color = face.color;
+  badge.style.color = getFaceUiColor(faceKey);
 
-  const diffLabels = { easy: '🌱 小学', medium: '📖 初中', hard: '🎯 高中' };
+  const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
   document.getElementById('modal-level').textContent = diffLabels[currentDifficulty];
   const qType = q.type || 'choice';
   const typeBadge = `<span class="question-type-badge ${TYPE_CLASSES[qType]}">${TYPE_LABELS[qType]}</span>`;
@@ -1812,7 +1960,7 @@ function showLockedModal(faceId, cell) {
   const badge = document.getElementById('modal-face-badge');
   badge.textContent = `${face.name}`;
   badge.style.background = face.color + '33';
-  badge.style.color = face.color;
+  badge.style.color = getFaceUiColor(faceId);
 
   const level = cell.row * 3 + cell.col + 1;
   const prevLevel = level - 1;
@@ -1826,10 +1974,11 @@ function showLockedModal(faceId, cell) {
   document.getElementById('btn-submit').style.display = 'none';
   document.getElementById('btn-next').style.display = 'none';
 
-  document.getElementById('locked-tip-msg').innerHTML = `🔒 这关还没解锁哦！<br>完成「<b style="color:${face.color}">${face.name}·第${prevLevel}关</b>」即可解锁 🚀`;
+  document.getElementById('locked-tip-msg').innerHTML = `${iconMarkup('lock-keyhole')}<br>这关还没解锁<br>完成「<b style="color:${getFaceUiColor(faceId)}">${face.name}·第${prevLevel}关</b>」即可解锁`;
   document.getElementById('locked-tip').style.display = 'block';
 
   document.getElementById('modal-overlay').classList.add('active');
+  refreshIcons();
 }
 
 // ---- 选择题渲染 ----
@@ -2079,7 +2228,6 @@ function submitAnswer() {
 
   if (isCorrect) {
     markCompleted(currentFaceId, currentCell.row, currentCell.col);
-    triggerCompletionAnimation(currentFaceId, currentCell.row, currentCell.col);
     removeFromWrongBook(); // 答对后从错题本移除
     checkDailyComplete(); // 检查每日挑战
     checkCompletion(); // 检查是否通关
@@ -2087,21 +2235,22 @@ function submitAnswer() {
     // 显示倒计时提示
     const countdownEl = document.createElement('div');
     countdownEl.className = 'countdown-hint';
-    countdownEl.textContent = '⏳ 即将进入下一关...';
+    countdownEl.innerHTML = `${iconMarkup('locate-fixed')}<span>当前方块已点亮，正在定位下一关...</span>`;
     feedbackArea.appendChild(countdownEl);
 
-    // 隐藏提交和下一关按钮，0.8秒后自动跳转
+    // 先让用户看清点亮结果，再移动到下一关
     document.getElementById('btn-submit').style.display = 'none';
     document.getElementById('btn-next').style.display = 'none';
     window._modalTimer = setTimeout(() => {
       nextQuestion();
-    }, 800);
+    }, 900);
   } else {
     document.getElementById('btn-next').textContent = '关闭';
     document.getElementById('btn-next').style.display = 'block';
     addWrongQuestion(q, qType);
   }
   lastAnswerCorrect = isCorrect;
+  refreshIcons();
 
   // 记录答题日志
   logAnswer(isCorrect);
@@ -2118,9 +2267,9 @@ function submitChoiceAnswer(q, feedbackMsg, feedbackExp) {
     if (i === selectedOption && !isCorrect) btn.classList.add('wrong');
   });
   if (isCorrect) {
-    feedbackMsg.innerHTML = '<div class="feedback-correct">✅ 回答正确！</div>';
+    feedbackMsg.innerHTML = `<div class="feedback-correct">${iconMarkup('circle-check')}<span>回答正确！</span></div>`;
   } else {
-    feedbackMsg.innerHTML = '<div class="feedback-wrong">❌ 回答错误</div>';
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">${iconMarkup('circle-x')}<span>回答错误</span></div>`;
   }
   feedbackExp.textContent = q.explanation || '';
   return isCorrect;
@@ -2149,10 +2298,10 @@ function submitClozeAnswer(q, feedbackMsg, feedbackExp) {
     }
   });
   if (allCorrect) {
-    feedbackMsg.innerHTML = '<div class="feedback-correct">✅ 全部正确！</div>';
+    feedbackMsg.innerHTML = `<div class="feedback-correct">${iconMarkup('circle-check')}<span>全部正确！</span></div>`;
   } else {
-    const details = results.map(r => `空格${r.num}：${r.userAnswer} → ${r.correctAnswer} ${r.isCorrect ? '✅' : '❌'}`).join('<br>');
-    feedbackMsg.innerHTML = `<div class="feedback-wrong">❌ 有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</div>`;
+    const details = results.map(r => `空格${r.num}：${r.userAnswer} → ${r.correctAnswer}（${r.isCorrect ? '正确' : '错误'}）`).join('<br>');
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">${iconMarkup('circle-x')}<span>有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</span></div>`;
     feedbackExp.innerHTML = details;
     return false;
   }
@@ -2173,10 +2322,10 @@ function submitWordbankAnswer(q, feedbackMsg, feedbackExp) {
     if (blankEl) blankEl.classList.add(isCorrect ? 'correct-blank' : 'wrong-blank');
   });
   if (allCorrect) {
-    feedbackMsg.innerHTML = '<div class="feedback-correct">✅ 全部正确！</div>';
+    feedbackMsg.innerHTML = `<div class="feedback-correct">${iconMarkup('circle-check')}<span>全部正确！</span></div>`;
   } else {
-    const details = results.map(r => `空格${r.num}：${r.userAnswer || '未填'} → ${r.correctAnswer} ${r.isCorrect ? '✅' : '❌'}`).join('<br>');
-    feedbackMsg.innerHTML = `<div class="feedback-wrong">❌ 有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</div>`;
+    const details = results.map(r => `空格${r.num}：${r.userAnswer || '未填'} → ${r.correctAnswer}（${r.isCorrect ? '正确' : '错误'}）`).join('<br>');
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">${iconMarkup('circle-x')}<span>有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</span></div>`;
     feedbackExp.innerHTML = details;
     return false;
   }
@@ -2197,10 +2346,10 @@ function submitGrammarAnswer(q, feedbackMsg, feedbackExp) {
     if (input) { input.classList.add(isCorrect ? 'correct-input' : 'wrong-input'); input.disabled = true; }
   });
   if (allCorrect) {
-    feedbackMsg.innerHTML = '<div class="feedback-correct">✅ 全部正确！</div>';
+    feedbackMsg.innerHTML = `<div class="feedback-correct">${iconMarkup('circle-check')}<span>全部正确！</span></div>`;
   } else {
-    const details = results.map(r => `空格${r.num}：${r.userAnswer || '未填'} → ${r.correctAnswer} ${r.isCorrect ? '✅' : '❌'}`).join('<br>');
-    feedbackMsg.innerHTML = `<div class="feedback-wrong">❌ 有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</div>`;
+    const details = results.map(r => `空格${r.num}：${r.userAnswer || '未填'} → ${r.correctAnswer}（${r.isCorrect ? '正确' : '错误'}）`).join('<br>');
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">${iconMarkup('circle-x')}<span>有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</span></div>`;
     feedbackExp.innerHTML = details;
     return false;
   }
@@ -2217,44 +2366,46 @@ function nextQuestion() {
     return;
   }
 
+  const completedFaceId = currentFaceId;
+  const completedCell = currentCell ? { ...currentCell } : null;
   closeModal();
-  // 自动跳转下一关
-  if (currentFaceId && currentCell) {
-    const nextOrder = currentCell.row * 3 + currentCell.col + 1;
-    if (nextOrder < 9) {
-      const nextRow = Math.floor(nextOrder / 3);
-      const nextCol = nextOrder % 3;
-      const state = getCellState(currentFaceId, nextRow, nextCol);
-      if (state !== 'locked') {
-        // 先旋转到当前面，再打开下一关
-        faceCameraToFace(currentFaceId, () => {
-          openQuestionModal(currentFaceId, { row: nextRow, col: nextCol });
-        });
+  if (!completedFaceId || !completedCell) return;
+
+  triggerCompletionAnimation(completedFaceId, completedCell.row, completedCell.col);
+  setTimeout(() => advanceToNextQuestion(completedFaceId, completedCell), 650);
+}
+
+function advanceToNextQuestion(completedFaceId, completedCell) {
+  const nextOrder = completedCell.row * 3 + completedCell.col + 1;
+  if (nextOrder < 9) {
+    const nextCell = { row: Math.floor(nextOrder / 3), col: nextOrder % 3 };
+    if (getCellState(completedFaceId, nextCell.row, nextCell.col) === 'unlocked') {
+      focusAndOpenQuestion(completedFaceId, nextCell);
+      return;
+    }
+  }
+
+  const faceOrder = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+  const currentIdx = faceOrder.indexOf(completedFaceId);
+  for (let i = 1; i <= faceOrder.length; i++) {
+    const nextFaceId = faceOrder[(currentIdx + i) % faceOrder.length];
+    for (let order = 0; order < 9; order++) {
+      const nextCell = { row: Math.floor(order / 3), col: order % 3 };
+      if (getCellState(nextFaceId, nextCell.row, nextCell.col) === 'unlocked') {
+        focusAndOpenQuestion(nextFaceId, nextCell);
         return;
       }
     }
-    // 当前面已完成，找下一个有未完成关卡的面
-    const faceOrder = ['front', 'back', 'left', 'right', 'top', 'bottom'];
-    const currentIdx = faceOrder.indexOf(currentFaceId);
-    for (let i = 1; i <= faceOrder.length; i++) {
-      const nextIdx = (currentIdx + i) % faceOrder.length;
-      const nextFaceId = faceOrder[nextIdx];
-      for (let order = 0; order < 9; order++) {
-        const row = Math.floor(order / 3);
-        const col = order % 3;
-        const s = getCellState(nextFaceId, row, col);
-        if (s !== 'locked') {
-          faceCameraToFace(nextFaceId, () => {
-            openQuestionModal(nextFaceId, { row, col });
-          });
-          return;
-        }
-      }
-    }
-    // 全部完成，触发通关庆祝
-    closeModal();
-    checkCompletion();
   }
+  checkCompletion();
+}
+
+function focusAndOpenQuestion(faceId, cell) {
+  faceCameraToCell(faceId, cell, () => {
+    const cubie = findCubieForCell(faceId, cell);
+    if (cubie) addPulseAnimation(cubie.mesh);
+    openQuestionModal(faceId, cell);
+  });
 }
 
 function closeModal() {
@@ -2486,14 +2637,15 @@ animate();
 // ============================================================
 function adjustCubeSize() {
   const width = window.innerWidth;
-  let distance = 5.5;
-  if (width < 400) distance = 6.5;
-  else if (width < 600) distance = 5.5;
-  else if (width < 768) distance = 4.5;
-  else distance = 4.0;
-  camera.position.z = distance;
+  let distance = 9;
+  if (width < 400) distance = 13;
+  else if (width < 600) distance = 11.5;
+  else if (width < 768) distance = 10;
+  camera.position.normalize().multiplyScalar(distance);
   controls.update();
 }
+
+adjustCubeSize();
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -2546,12 +2698,12 @@ function addWrongQuestion(q, qType) {
 function showWrongBook() {
   const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
   const content = document.getElementById('panel-content');
-  document.getElementById('panel-title').textContent = '📕 错题本';
+  setPanelTitle('book-x', '错题本');
   if (wrongQuestions.length === 0) {
-    content.innerHTML = '<div style="text-align:center;color:#888;padding:30px">暂无错题，继续加油！🎉</div>';
+    content.innerHTML = `<div style="text-align:center;color:var(--text-secondary);padding:30px">${iconMarkup('circle-check')}<div style="margin-top:8px">暂无错题，继续加油！</div></div>`;
   } else {
     let html = wrongQuestions.map((wq, i) => {
-      const face = FACES[wq.faceId] || { name: wq.faceId, color: '#888', emoji: '' };
+      const face = FACES[wq.faceId] || { name: wq.faceId, color: '#888' };
       const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
       return `<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.06)">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
@@ -2563,12 +2715,13 @@ function showWrongBook() {
         <div style="font-size:0.8rem;color:#e74c3c">你的答案：${wq.userAnswer}</div>
         <div style="font-size:0.8rem;color:#27ae60">正确答案：${wq.correctAnswer}</div>
         ${wq.explanation ? `<div style="font-size:0.75rem;color:#888;margin-top:4px">${wq.explanation}</div>` : ''}
-        <button class="confirm-btn" style="margin-top:8px;background:rgba(74,230,201,0.1);color:#4ae6c9;border:1px solid rgba(74,230,201,0.2);padding:4px 12px;font-size:0.75rem;width:auto" onclick="retryWrongQuestion('${wq.questionId}')">🔄 重新挑战</button>
+        <button class="confirm-btn" style="margin-top:8px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--modal-border);padding:4px 12px;font-size:0.75rem;width:auto" onclick="retryWrongQuestion('${wq.questionId}')">${iconMarkup('rotate-ccw')}重新挑战</button>
       </div>`;
     }).join('');
-    html += `<button class="panel-reset-all" onclick="clearWrongBook()" style="margin-top:8px">🗑 清空所有错题</button>`;
+    html += `<button class="panel-reset-all" onclick="clearWrongBook()" style="margin-top:8px">${iconMarkup('trash-2')}清空所有错题</button>`;
     content.innerHTML = html;
   }
+  refreshIcons();
   openPanelModal();
 }
 
@@ -2620,7 +2773,7 @@ function removeFromWrongBook() {
 function showStats() {
   const stats = calculateStats();
   const content = document.getElementById('panel-content');
-  document.getElementById('panel-title').textContent = '📊 数据统计';
+  setPanelTitle('chart-bar', '数据统计');
   const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
   let html = `<div style="display:grid;gap:8px">
     <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
@@ -2664,6 +2817,7 @@ function showStats() {
     </div>
   </div>`;
   content.innerHTML = html;
+  refreshIcons();
   openPanelModal();
 }
 
@@ -2685,25 +2839,22 @@ function logAnswer(isCorrect) {
 
 function calculateStats() {
   const progress = loadProgress();
-  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
-  let totalCompleted = 0, totalCorrect = 0, totalWrong = wrongQuestions.length;
+  let totalCompleted = 0;
   const faceStats = {};
   const difficultyStats = { easy: 0, medium: 0, hard: 0 };
   for (const key in progress) {
     const parts = key.split('_');
     const diff = parts[0], faceId = parts[1];
-    if (diff === currentDifficulty) totalCompleted++;
     if (difficultyStats[diff] !== undefined) difficultyStats[diff]++;
+    if (diff !== currentDifficulty) continue;
+    totalCompleted++;
     if (!faceStats[faceId]) faceStats[faceId] = { completed: 0 };
     faceStats[faceId].completed++;
-    totalCorrect++;
   }
-  totalCorrect = Math.max(totalCorrect - totalWrong, 0);
-  const accuracy = totalCompleted > 0 ? Math.round((totalCorrect / (totalCorrect + totalWrong)) * 100) : 100;
   const faces = Object.keys(FACES).map(faceId => {
     const face = FACES[faceId];
     const s = faceStats[faceId] || { completed: 0 };
-    return { name: face.name, emoji: face.emoji, color: face.color, completed: s.completed, percent: Math.round((s.completed / 9) * 100) };
+    return { name: face.name, color: face.color, completed: s.completed, percent: Math.round((s.completed / 9) * 100) };
   });
   const firstOpen = localStorage.getItem('cube_first_open');
   const now = Date.now();
@@ -2719,7 +2870,7 @@ function calculateStats() {
   const incorrectAnswers = totalAnswers - correctAnswers;
   const realAccuracy = totalAnswers > 0 ? Math.round((correctAnswers / totalAnswers) * 100) : 0;
 
-  return { totalCompleted, accuracy, faces, difficultyStats, studyTime, totalAnswers, correctAnswers, incorrectAnswers, realAccuracy };
+  return { totalCompleted, accuracy: realAccuracy, faces, difficultyStats, studyTime, totalAnswers, correctAnswers, incorrectAnswers, realAccuracy };
 }
 
 // ============================================================
@@ -2744,25 +2895,26 @@ function showDailyChallenge() {
     localStorage.setItem('cube_daily_challenge', JSON.stringify(daily));
   }
   const content = document.getElementById('panel-content');
-  const diffLabels = { easy: '🌱 小学', medium: '📖 初中', hard: '🎯 高中' };
-  document.getElementById('panel-title').textContent = `🎯 今日挑战 · ${diffLabels[currentDifficulty]}`;
+  const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
+  setPanelTitle('calendar-check-2', `今日挑战 · ${diffLabels[currentDifficulty]}`);
   const completed = daily.completed || [];
   const streak = getDailyStreak();
   let html = `<div style="text-align:center;margin-bottom:12px">
     <div style="font-size:0.85rem;color:#aaa">${today}</div>
     <div style="font-size:1.2rem;font-weight:700;color:#4ae6c9">${completed.length}/5 已完成</div>
-    ${streak >= 7 ? '<div style="color:#feca57;font-size:0.85rem;margin-top:4px">🔥 连续7天成就达成！</div>' : `<div style="color:#aaa;font-size:0.8rem;margin-top:4px">🔥 连续 ${streak} 天</div>`}
-    <button class="confirm-btn" style="margin-top:8px;background:rgba(74,230,201,0.1);color:#4ae6c9;border:1px solid rgba(74,230,201,0.2);padding:4px 12px;font-size:0.75rem;width:auto" onclick="regenerateDailyChallenge()">🔄 换一批</button>
+    <div style="display:flex;align-items:center;justify-content:center;gap:5px;color:${streak >= 7 ? 'var(--reward)' : 'var(--text-secondary)'};font-size:0.8rem;margin-top:4px">${iconMarkup('flame')}连续 ${streak} 天${streak >= 7 ? ' · 成就达成' : ''}</div>
+    <button class="confirm-btn" style="margin-top:8px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--modal-border);padding:4px 12px;font-size:0.75rem;width:auto" onclick="regenerateDailyChallenge()">${iconMarkup('refresh-cw')}换一批</button>
   </div>`;
   (daily.questions || []).forEach((q, i) => {
     const isCompleted = completed.includes(i);
     html += `<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px;margin-bottom:8px;border:1px solid rgba(255,255,255,0.06)">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:1.2rem">${isCompleted ? '✅' : '⬜'}</span><span style="font-size:0.8rem;color:#4ae6c9">第${i+1}题</span><span style="font-size:0.7rem;color:#888">${TYPE_LABELS[q.type] || '选择题'}</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="display:inline-flex;color:${isCompleted ? 'var(--success)' : 'var(--text-muted)'}">${iconMarkup(isCompleted ? 'circle-check' : 'circle')}</span><span style="font-size:0.8rem;color:var(--accent)">第${i+1}题</span><span style="font-size:0.7rem;color:var(--text-muted)">${TYPE_LABELS[q.type] || '选择题'}</span></div>
       <div style="font-size:0.8rem;color:#ccc">${q.question || q.passage || ''}</div>`;
-    if (!isCompleted) html += `<button class="confirm-btn" style="margin-top:6px;background:rgba(74,230,201,0.1);color:#4ae6c9;border:1px solid rgba(74,230,201,0.2);padding:4px 12px;font-size:0.75rem;width:auto" onclick="startDailyQuestion(${i})">▶ 开始答题</button>`;
+    if (!isCompleted) html += `<button class="confirm-btn" style="margin-top:6px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--modal-border);padding:4px 12px;font-size:0.75rem;width:auto" onclick="startDailyQuestion(${i})">${iconMarkup('play')}开始答题</button>`;
     html += `</div>`;
   });
   content.innerHTML = html;
+  refreshIcons();
   openPanelModal();
 }
 
@@ -2903,7 +3055,7 @@ document.querySelectorAll('.diff-btn').forEach(btn => {
 
 // 更新难度徽章
 function updateDifficultyBadge() {
-  const labels = { easy: '🌱 小学', medium: '📖 初中', hard: '🎯 高中' };
+  const labels = { easy: '小学', medium: '初中', hard: '高中' };
   document.getElementById('header-diff-badge').textContent = labels[currentDifficulty] || '';
 }
 
@@ -2928,11 +3080,11 @@ function togglePanel() {
   if (isOpen) {
     panelBody.classList.remove('open');
     panelToggle.classList.remove('open');
-    panelToggle.textContent = '▶';
+    setIconButton(panelToggle, 'chevron-right', '展开进度详情');
   } else {
     panelBody.classList.add('open');
     panelToggle.classList.add('open');
-    panelToggle.textContent = '▼';
+    setIconButton(panelToggle, 'chevron-down', '收起进度详情');
   }
   localStorage.setItem('cube_english_panel_expanded', !isOpen);
 }
@@ -2945,7 +3097,7 @@ const panelExpanded = localStorage.getItem('cube_english_panel_expanded');
 if (panelExpanded === 'true') {
   panelBody.classList.add('open');
   panelToggle.classList.add('open');
-  panelToggle.textContent = '▼';
+  setIconButton(panelToggle, 'chevron-down', '收起进度详情');
 }
 
 // ============================================================
@@ -2976,9 +3128,20 @@ function getThemeEdgeOpacity() {
   return theme === 'light' ? 0.15 : 0.25;
 }
 
+function getThemeEdgeColor() {
+  const style = getComputedStyle(document.documentElement);
+  return style.getPropertyValue('--cubie-edge').trim() || '#566879';
+}
+
+function getFaceUiColor(faceId) {
+  if (faceId === 'top') return document.documentElement.dataset.theme === 'light' ? '#52646d' : '#f4f1e8';
+  if (faceId === 'bottom') return document.documentElement.dataset.theme === 'light' ? '#8a5c08' : FACES[faceId].color;
+  return FACES[faceId].color;
+}
+
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  themeToggle.textContent = theme === 'light' ? '☀️' : '🌙';
+  setIconButton(themeToggle, theme === 'light' ? 'moon' : 'sun', theme === 'light' ? '切换为暗色主题' : '切换为亮色主题');
   localStorage.setItem(THEME_KEY, theme);
   // 更新魔方颜色（锁定/解锁状态的颜色随主题变化）
   updateAllCubieColors();
@@ -3000,7 +3163,7 @@ if (savedTheme) {
   applyTheme(savedTheme);
 } else {
   // 默认暗色主题
-  themeToggle.textContent = '🌙';
+  setIconButton(themeToggle, 'sun', '切换为亮色主题');
 }
 
 // 更新 DARK_COLOR 为动态值（从 CSS 变量读取）
@@ -3025,6 +3188,7 @@ function halfBrightnessDynamic(hex) {
 updateAllCubieColors();
 updateHeaderStats();
 updateDifficultyBadge();
+refreshIcons();
 
 console.log('🧩 魔方英语已就绪！');
 console.log('  - 6个面，54个关卡 × 3个难度等级');
