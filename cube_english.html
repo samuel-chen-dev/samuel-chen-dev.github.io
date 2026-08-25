@@ -1166,47 +1166,15 @@ for (let i = 0; i < particlesCount; i++) {
 scene.add(spriteGroup);
 
 // ============================================================
-// 题型转换：根据题目位置自动分配题型
-// 题型规则：第1-3关→choice, 第4-6关→cloze, 第7-8关→wordbank, 第9关→grammar
+// 未显式指定题型的题目按选择题渲染，保留题库自身定义的题型
 // ============================================================
 (function processQuestionTypes() {
+  const supportedTypes = new Set(['choice', 'cloze', 'wordbank', 'grammar']);
   for (const diff of ['easy', 'medium', 'hard']) {
     for (const face of Object.keys(QUESTIONS[diff])) {
       const qs = QUESTIONS[diff][face];
-      for (let i = 0; i < 9; i++) {
-        const q = qs[i];
-        if (i <= 2) {
-          q.type = 'choice';
-        } else if (i <= 5) {
-          // 转换为 cloze 格式
-          q.type = 'cloze';
-          if (!q.blanks) {
-            // 基于现有 question/options 构造 cloze 数据
-            q.blanks = [{ id: 1, options: q.options || [], correctIndex: q.correctIndex || 0 }];
-            if (q.passage) {
-              q.passage = q.passage + ' ___ (1) ___.';
-            }
-          }
-        } else if (i <= 7) {
-          // 转换为 wordbank 格式
-          q.type = 'wordbank';
-          if (!q.blanks) {
-            const correctWord = (q.options && q.correctIndex !== undefined) ? q.options[q.correctIndex] : (q.question || '').split(' ').pop();
-            q.blanks = [{ id: 1, correctWord: correctWord }];
-            q.wordBank = q.options ? [...q.options].sort(() => Math.random() - 0.5) : [correctWord, 'other'];
-            if (!q.passage) q.passage = q.question || '';
-            q.passage = q.passage.replace(correctWord, '____') + ' ____.';
-          }
-        } else {
-          // 转换为 grammar 格式
-          q.type = 'grammar';
-          if (!q.blanks) {
-            const correctAnswer = (q.options && q.correctIndex !== undefined) ? q.options[q.correctIndex] : '___';
-            q.blanks = [{ id: 1, correctAnswer: correctAnswer, hint: '(提示)' }];
-            if (!q.passage) q.passage = q.question || '';
-            q.passage = q.passage + ` ___ (1) ___.`;
-          }
-        }
+      for (const q of qs) {
+        if (!supportedTypes.has(q.type)) q.type = 'choice';
       }
     }
   }
@@ -1483,10 +1451,10 @@ function updateSingleCubieFace(faceId, row, col) {
   const face = FACES[faceId];
   const [nx, ny, nz] = face.normal;
   for (const key in cubieMap) {
-    const [x, y, z] = key.split(',').map(Number);
-    const cell = getFaceCell(x, y, z, nx, ny, nz);
+    const cubie = cubieMap[key];
+    if (!cubie.exposed[faceId]) continue;
+    const cell = getFaceCell(cubie.x, cubie.y, cubie.z, nx, ny, nz);
     if (cell && cell.row === row && cell.col === col) {
-      const cubie = cubieMap[key];
       const matIdx = cubie.faceOrder.indexOf(faceId);
       if (matIdx === -1) return;
       const state = getCellState(faceId, row, col);
@@ -1788,12 +1756,13 @@ canvas.addEventListener('pointerup', (e) => {
     if (!cubieData) return;
 
     const normal = intersect.face.normal.clone();
+    normal.transformDirection(hitObj.matrixWorld);
     normal.x = Math.round(normal.x);
     normal.y = Math.round(normal.y);
     normal.z = Math.round(normal.z);
 
     const faceId = getFaceFromNormal(normal.x, normal.y, normal.z);
-    if (!faceId) return;
+    if (!faceId || !cubieData.exposed[faceId]) return;
 
     const cell = getFaceCell(cubieData.x, cubieData.y, cubieData.z, normal.x, normal.y, normal.z);
     if (!cell) return;
@@ -2230,20 +2199,18 @@ function submitAnswer() {
     markCompleted(currentFaceId, currentCell.row, currentCell.col);
     removeFromWrongBook(); // 答对后从错题本移除
     checkDailyComplete(); // 检查每日挑战
-    checkCompletion(); // 检查是否通关
 
-    // 显示倒计时提示
+    // 保留解析，由用户决定何时进入下一关
     const countdownEl = document.createElement('div');
     countdownEl.className = 'countdown-hint';
-    countdownEl.innerHTML = `${iconMarkup('locate-fixed')}<span>当前方块已点亮，正在定位下一关...</span>`;
+    countdownEl.innerHTML = `${iconMarkup('circle-check')}<span>当前方块已点亮，可查看解析后继续</span>`;
     feedbackArea.appendChild(countdownEl);
 
-    // 先让用户看清点亮结果，再移动到下一关
     document.getElementById('btn-submit').style.display = 'none';
-    document.getElementById('btn-next').style.display = 'none';
-    window._modalTimer = setTimeout(() => {
-      nextQuestion();
-    }, 900);
+    const nextButton = document.getElementById('btn-next');
+    const currentOrder = currentCell.row * 3 + currentCell.col;
+    nextButton.textContent = currentOrder < 8 ? '下一关' : '完成本面';
+    nextButton.style.display = 'block';
   } else {
     document.getElementById('btn-next').textContent = '关闭';
     document.getElementById('btn-next').style.display = 'block';
@@ -2384,19 +2351,6 @@ function advanceToNextQuestion(completedFaceId, completedCell) {
       return;
     }
   }
-
-  const faceOrder = ['front', 'back', 'left', 'right', 'top', 'bottom'];
-  const currentIdx = faceOrder.indexOf(completedFaceId);
-  for (let i = 1; i <= faceOrder.length; i++) {
-    const nextFaceId = faceOrder[(currentIdx + i) % faceOrder.length];
-    for (let order = 0; order < 9; order++) {
-      const nextCell = { row: Math.floor(order / 3), col: order % 3 };
-      if (getCellState(nextFaceId, nextCell.row, nextCell.col) === 'unlocked') {
-        focusAndOpenQuestion(nextFaceId, nextCell);
-        return;
-      }
-    }
-  }
   checkCompletion();
 }
 
@@ -2454,10 +2408,11 @@ function triggerCompletionAnimation(faceId, row, col) {
   const face = FACES[faceId];
   const [nx, ny, nz] = face.normal;
   for (const key in cubieMap) {
-    const [x, y, z] = key.split(',').map(Number);
-    const cell = getFaceCell(x, y, z, nx, ny, nz);
+    const cubie = cubieMap[key];
+    if (!cubie.exposed[faceId]) continue;
+    const cell = getFaceCell(cubie.x, cubie.y, cubie.z, nx, ny, nz);
     if (cell && cell.row === row && cell.col === col) {
-      const { mesh, materials, faceOrder } = cubieMap[key];
+      const { mesh, materials, faceOrder } = cubie;
       addCompletionAnimation(mesh, materials, faceOrder, faceId, face.color);
       break;
     }
