@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>魔方英语 - Cube English</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F0C84B' d='m12 1 10 5.2-10 5.2L2 6.2z'/%3E%3Cpath fill='%23E34850' d='m2 6.2 10 5.2V23L2 17.8z'/%3E%3Cpath fill='%233478D4' d='m12 11.4 10-5.2v11.6L12 23z'/%3E%3Cpath fill='none' stroke='%230d151f' stroke-width='.8' d='M2 6.2 12 1l10 5.2v11.6L12 23 2 17.8ZM12 11.4V23M2 6.2l10 5.2 10-5.2'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="./cube-mark.svg?v=2">
 <style>
 /* ============================================================
    全局样式
@@ -399,14 +399,16 @@ body {
 .modal-level { font-size: 0.75rem; color: var(--text-secondary); }
 
 .modal-title {
-  font-size: 1.1rem; font-weight: 700; color: var(--text-title); margin-bottom: 12px;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  font-size: 0.82rem; font-weight: 600; color: var(--text-secondary);
+  line-height: 1.4; margin-bottom: 16px;
 }
 
 /* 题目类型：短文 */
 .modal-passage {
   background: var(--bg-passage); border-radius: 10px;
-  padding: 12px 14px; font-size: 0.85rem; line-height: 1.7;
-  color: var(--text-secondary); margin-bottom: 14px;
+  padding: 14px 16px; font-size: 0.9rem; line-height: 1.75;
+  color: var(--text-secondary); margin-bottom: 16px;
   border-left: 3px solid rgba(74,230,201,0.55);
 }
 
@@ -424,8 +426,11 @@ body {
 [data-theme="light"] #cert-overlay [style*="color:#ccc"],
 [data-theme="light"] #cert-overlay [style*="color:#aaa"] { color: var(--text-secondary) !important; }
 
-/* 选项 */
-.modal-question { font-size: 0.95rem; color: var(--text-primary); margin-bottom: 14px; line-height: 1.6; }
+/* 题目主体与选项 */
+.modal-question {
+  font-size: 1.2rem; font-weight: 650; color: var(--text-title);
+  margin-bottom: 20px; line-height: 1.55;
+}
 .options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
 .option-btn {
   display: flex; align-items: center; gap: 12px;
@@ -447,7 +452,7 @@ body {
 /* 题型标签 */
 .question-type-badge {
   display: inline-block; font-size: 0.65rem; font-weight: 600;
-  padding: 2px 8px; border-radius: 8px; margin-left: 8px;
+  padding: 2px 8px; border-radius: 8px;
   vertical-align: middle;
 }
 .type-choice { background: var(--accent-soft); color: var(--accent); }
@@ -458,8 +463,8 @@ body {
 /* 完形填空 - 短文中的空格 */
 .cloze-passage {
   background: var(--bg-passage); border-radius: 10px;
-  padding: 14px; font-size: 0.85rem; line-height: 2.2;
-  color: var(--text-secondary); margin-bottom: 14px;
+  padding: 16px; font-size: 1.05rem; font-weight: 500; line-height: 2;
+  color: var(--text-primary); margin-bottom: 16px;
 }
 .cloze-blank {
   display: inline-block; min-width: 80px; text-align: center;
@@ -487,8 +492,8 @@ body {
 /* 选词填空 */
 .wordbank-passage {
   background: var(--bg-passage); border-radius: 10px;
-  padding: 14px; font-size: 0.85rem; line-height: 2.2;
-  color: var(--text-secondary); margin-bottom: 14px;
+  padding: 16px; font-size: 1.05rem; font-weight: 500; line-height: 2;
+  color: var(--text-primary); margin-bottom: 16px;
 }
 .wordbank-blank {
   display: inline-block; min-width: 80px; text-align: center;
@@ -516,8 +521,8 @@ body {
 /* 语法填空 */
 .grammar-passage {
   background: var(--bg-passage); border-radius: 10px;
-  padding: 14px; font-size: 0.85rem; line-height: 2.2;
-  color: var(--text-secondary); margin-bottom: 14px;
+  padding: 16px; font-size: 1.05rem; font-weight: 500; line-height: 2;
+  color: var(--text-primary); margin-bottom: 16px;
 }
 .grammar-input {
   display: inline-block; width: 120px; padding: 4px 8px;
@@ -663,15 +668,7 @@ body {
   <div class="header">
     <div class="header-top">
       <div class="header-title">
-        <svg class="brand-cube" viewBox="0 0 24 24" role="img" aria-label="六色魔方">
-          <polygon points="12,1 22,6.2 12,11.4 2,6.2" fill="#F0C84B"/>
-          <polygon points="2,6.2 12,11.4 12,23 2,17.8" fill="#E34850"/>
-          <polygon points="12,11.4 22,6.2 22,17.8 12,23" fill="#3478D4"/>
-          <g fill="none" stroke="#0d151f" stroke-width="0.8" stroke-linejoin="round">
-            <path d="M2 6.2 12 1l10 5.2v11.6L12 23 2 17.8Z M12 11.4V23 M2 6.2l10 5.2 10-5.2"/>
-            <path d="m5.35 4.45 10 5.2M8.7 2.7l10 5.2M5.35 7.95v11.6M8.7 9.7v11.6M15.35 9.65v11.6M18.7 7.9v11.6"/>
-          </g>
-        </svg>
+        <img class="brand-cube" src="./cube-mark.svg?v=2" alt="六色魔方">
         <span>魔方英语</span>
       </div>
       <div class="difficulty-selector" id="difficulty-selector">
@@ -1277,7 +1274,7 @@ scene.add(cubieGroup);
 // ============================================================
 // 锁定状态：已移除 🔒 图标，改用颜色明暗区分三态
 //   - locked: 暗色 #1a1a2e（与魔方内部一致）
-//   - unlocked: 面颜色 50% 亮度（半透明，可见但偏暗）
+//   - unlocked: 低饱和度面色 + 柔和呼吸发光（提示下一关）
 //   - completed: 面颜色 100% 鲜艳 + 发光
 // ============================================================
 
@@ -1285,6 +1282,44 @@ scene.add(cubieGroup);
 // 动画系统：脉冲 + 完成动画
 // ============================================================
 const activeAnimations = [];
+const nextCellGuides = [];
+
+function getNextCellColor(baseColor) {
+  const color = new THREE.Color(baseColor);
+  const hsl = {};
+  color.getHSL(hsl);
+  color.setHSL(hsl.h, Math.min(hsl.s, 0.38), hsl.l * getThemeUnlockedAlpha());
+  return color;
+}
+
+function refreshNextCellGuides() {
+  nextCellGuides.length = 0;
+  for (const key in cubieMap) {
+    const cubie = cubieMap[key];
+    for (const faceId of Object.keys(FACES)) {
+      if (!cubie.exposed[faceId]) continue;
+      const cell = getFaceCell(cubie.x, cubie.y, cubie.z, ...FACES[faceId].normal);
+      if (!cell || getCellState(faceId, cell.row, cell.col) !== 'unlocked') continue;
+      const material = cubie.materials[cubie.faceOrder.indexOf(faceId)];
+      if (material) {
+        const color = new THREE.Color(FACES[faceId].color);
+        material.color.copy(getNextCellColor(FACES[faceId].color));
+        material.emissive.copy(color);
+        material.emissiveIntensity = 0.16;
+        nextCellGuides.push({ material, color });
+      }
+    }
+  }
+}
+
+function updateNextCellGuidance(now) {
+  const pulse = prefersReducedMotion.matches ? 1 : (Math.sin(now * Math.PI / 1200) + 1) / 2;
+  const intensity = 0.16 + pulse * 0.22;
+  for (const guide of nextCellGuides) {
+    guide.material.emissive.copy(guide.color);
+    guide.material.emissiveIntensity = intensity;
+  }
+}
 
 function addPulseAnimation(mesh) {
   // 移除同一 mesh 的旧动画
@@ -1435,6 +1470,7 @@ function markCompleted(faceId, row, col) {
   progress[getCellKey(faceId, row, col)] = 'completed';
   saveProgress(progress);
   updateSingleCubieFace(faceId, row, col);
+  refreshNextCellGuides();
   updateHeaderStats();
 }
 
@@ -1468,9 +1504,9 @@ function updateSingleCubieFace(faceId, row, col) {
         cubie.materials[matIdx].emissive.set(0x000000);
         cubie.materials[matIdx].emissiveIntensity = 0;
       } else {
-        cubie.materials[matIdx].color.set(halfBrightnessDynamic(color));
+        cubie.materials[matIdx].color.copy(getNextCellColor(color));
         cubie.materials[matIdx].emissive.set(color);
-        cubie.materials[matIdx].emissiveIntensity = 0.14;
+        cubie.materials[matIdx].emissiveIntensity = 0.16;
       }
       return;
     }
@@ -1521,13 +1557,14 @@ function updateAllCubieColors() {
         materials[matIdx].emissive.set(0x000000);
         materials[matIdx].emissiveIntensity = 0;
       } else {
-        // 解锁未完成：面颜色可变亮度（根据主题动态变化）
-        materials[matIdx].color.set(halfBrightnessDynamic(baseColor));
+        // 下一关：低饱和度底色配合柔和呼吸发光
+        materials[matIdx].color.copy(getNextCellColor(baseColor));
         materials[matIdx].emissive.set(baseColor);
-        materials[matIdx].emissiveIntensity = 0.14;
+        materials[matIdx].emissiveIntensity = 0.16;
       }
     }
   }
+  refreshNextCellGuides();
 }
 
 // 更新所有边框透明度（主题切换时调用）
@@ -2564,6 +2601,7 @@ function animate() {
   animationFrameId = requestAnimationFrame(animate);
   controls.update();
   updateAnimations();
+  updateNextCellGuidance(performance.now());
   spriteGroup.rotation.y += 0.0003;
   renderer.render(scene, camera);
 }
