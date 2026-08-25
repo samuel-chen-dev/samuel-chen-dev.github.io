@@ -2,9 +2,20 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d151f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>魔方英语 - Cube English</title>
-<link rel="icon" type="image/svg+xml" href="./cube-mark.svg?v=2">
+<link rel="icon" type="image/png" sizes="32x32" href="./cube-mark-32.png?v=3">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=3">
+<link rel="manifest" id="app-manifest">
+<script>
+  if (location.protocol !== 'file:') {
+    document.getElementById('app-manifest').href = new URL('./cube-manifest.webmanifest?v=3', location.href).href;
+  }
+</script>
 <style>
 /* ============================================================
    全局样式
@@ -208,6 +219,10 @@ body {
   border-radius: 8px; border: 1px solid var(--border-color);
   overflow: hidden; transition: all 0.35s ease;
   pointer-events: auto;
+}
+.cube-focused .progress-panel {
+  opacity: 0; transform: translateY(-10px);
+  pointer-events: none;
 }
 .panel-header {
   display: flex; align-items: center; gap: 10px; padding: 0 14px;
@@ -668,7 +683,7 @@ body {
   <div class="header">
     <div class="header-top">
       <div class="header-title">
-        <img class="brand-cube" src="./cube-mark.svg?v=2" alt="六色魔方">
+        <img class="brand-cube" src="./cube-mark-180.png?v=3" alt="六色魔方">
         <span>魔方英语</span>
       </div>
       <div class="difficulty-selector" id="difficulty-selector">
@@ -711,16 +726,16 @@ body {
   <canvas id="cube-canvas"></canvas>
 
   <!-- 底部提示 -->
-  <div class="hint-bar" id="hint-bar"><i data-lucide="mouse-pointer-2"></i>拖拽旋转 · 点击彩色格子开始答题 · 多难度可选</div>
+  <div class="hint-bar" id="hint-bar"><i data-lucide="hand"></i>拖动旋转 · 点击亮格答题</div>
 
   <!-- 确认对话框 -->
-  <div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-overlay" id="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
     <div class="confirm-box">
       <div class="confirm-title" id="confirm-title">确认操作</div>
       <div class="confirm-message" id="confirm-message"></div>
       <div class="confirm-checkbox" id="confirm-checkbox" style="display:none;margin-bottom:16px;">
-        <label style="display:flex;align-items:center;gap:8px;color:#aaa;font-size:0.8rem;cursor:pointer">
-          <input type="checkbox" id="confirm-checkbox-input" checked style="accent-color:#4ae6c9">
+        <label style="display:flex;align-items:center;gap:8px;color:var(--text-secondary);font-size:0.8rem;cursor:pointer">
+          <input type="checkbox" id="confirm-checkbox-input" checked style="accent-color:var(--accent)">
           <span id="confirm-checkbox-label">同时清空答题日志</span>
         </label>
       </div>
@@ -737,7 +752,7 @@ body {
   </div>
 
   <!-- 错题本 / 统计 / 每日挑战 通用弹窗 -->
-  <div class="modal-overlay" id="panel-overlay">
+  <div class="modal-overlay" id="panel-overlay" role="dialog" aria-modal="true" aria-labelledby="panel-title">
     <div class="modal-box" id="panel-box" style="max-height:80vh;overflow-y:auto">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <span style="font-size:1.1rem;font-weight:700;color:var(--text-title)" id="panel-title">面板</span>
@@ -748,24 +763,24 @@ body {
   </div>
 
   <!-- 通关证书弹窗 -->
-  <div class="modal-overlay" id="cert-overlay">
+  <div class="modal-overlay" id="cert-overlay" role="dialog" aria-modal="true" aria-labelledby="cert-title">
     <div class="modal-box" id="cert-box" style="text-align:center;border:2px solid rgba(230,200,154,0.3);box-shadow:0 0 60px rgba(230,200,154,0.15)">
       <div style="color:var(--reward);margin-bottom:8px"><i data-lucide="award" style="width:48px;height:48px"></i></div>
-      <div style="font-size:1.3rem;font-weight:700;color:#e6c89a;margin-bottom:4px">语法大师 · 通关证书</div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:0.85rem;color:#aaa;margin-bottom:12px"><i data-lucide="sparkles"></i>恭喜完成全部 54 关！</div>
+      <div id="cert-title" style="font-size:1.3rem;font-weight:700;color:var(--reward);margin-bottom:4px">语法大师 · 通关证书</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px"><i data-lucide="sparkles"></i>恭喜完成全部 54 关！</div>
       <input id="cert-name" style="background:var(--option-bg);border:1px solid var(--border-color);border-radius:8px;color:var(--text-title);padding:6px 12px;text-align:center;width:200px;margin-bottom:8px;font-size:0.9rem" value="探险家">
-      <div style="font-size:0.8rem;color:#aaaacc;margin-bottom:4px">完成时间：<span id="cert-time" style="color:#4ae6c9">-</span></div>
-      <div style="font-size:0.8rem;color:#aaaacc;margin-bottom:12px">总正确率：<span id="cert-accuracy" style="color:#4ae6c9">-</span></div>
+      <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px">完成时间：<span id="cert-time" style="color:var(--accent)">-</span></div>
+      <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px">总正确率：<span id="cert-accuracy" style="color:var(--accent)">-</span></div>
       <div id="cert-faces" style="margin-bottom:16px;text-align:left"></div>
       <div style="display:flex;gap:8px;justify-content:center">
-        <button class="confirm-btn" style="background:rgba(255,255,255,0.08);color:#ccc;border:1px solid rgba(255,255,255,0.15)" id="btn-cert-close">关闭</button>
+        <button class="confirm-btn" style="background:var(--btn-bg);color:var(--text-secondary);border:1px solid var(--border-color)" id="btn-cert-close">关闭</button>
         <button class="confirm-btn confirm-btn-danger" id="btn-cert-share" style="background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#0a1628"><i data-lucide="share-2"></i>分享</button>
       </div>
     </div>
   </div>
 
   <!-- 答题弹窗 -->
-  <div class="modal-overlay" id="modal-overlay">
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-box" id="modal-box">
       <div class="modal-header">
         <div class="modal-face-badge" id="modal-face-badge">语法核心</div>
@@ -954,7 +969,7 @@ const QUESTIONS = {
       { id: 'm5', title: '现在完成时', question: 'We ___ (already / finish) our homework.', options: ['already finish', 'already finished', 'have already finished', 'will finish'], correctIndex: 2, explanation: 'already 提示「已经完成」，须用现在完成时 have/has + 过去分词。' },
       { id: 'm6', title: '被动语态', question: 'The book ___ (write) by a famous author.', options: ['writes', 'wrote', 'is written', 'is writing'], correctIndex: 2, explanation: '书是被写的，主语是动作承受者，须用被动语态 be + 过去分词。' },
       { id: 'm7', title: '条件句', question: 'If it ___ (rain) tomorrow, we will stay at home.', options: ['rains', 'will rain', 'rained', 'is raining'], correctIndex: 0, explanation: 'if 引导的真实条件句中，从句用一般现在时表将来（主将从现），所以用 rains。' },
-      { id: 'm8', title: '宾语从句', question: 'Can you tell me where ___ (be) the nearest hospital?', options: ['is', 'be', 'are', 'being'], correctIndex: 0, explanation: '宾语从句中，where 后的从句用陈述句语序，主语 the nearest hospital 是单数，用 is。' },
+      { id: 'm8', title: '宾语从句', question: 'Can you tell me where the nearest hospital ___?', options: ['is', 'be', 'are', 'being'], correctIndex: 0, explanation: '宾语从句使用陈述句语序：where the nearest hospital is。主语 the nearest hospital 是单数，所以用 is。' },
       { id: 'm9', title: '综合时态', question: 'By the time he arrives, we ___ (wait) for two hours.', options: ['wait', 'waited', 'will have waited', 'are waiting'], correctIndex: 2, explanation: 'By the time 表示「到将来某个时间点为止」，须用将来完成时 will have + 过去分词。' },
     ],
     vocabulary: [
@@ -1115,6 +1130,11 @@ const controls = new OrbitControls(camera, renderer.domElement);
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
+controls.enablePan = false;
+controls.rotateSpeed = window.innerWidth <= 600 ? 1.25 : 0.9;
+controls.zoomSpeed = 0.85;
+controls.touches.ONE = THREE.TOUCH.ROTATE;
+controls.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
 controls.minDistance = 4;
 controls.maxDistance = 14;
 controls.autoRotate = !prefersReducedMotion.matches;
@@ -1656,6 +1676,15 @@ function animateCameraTo(faceId, focusPoint, callback) {
   controls.autoRotate = false;
   controls.enabled = false;
 
+  if (prefersReducedMotion.matches) {
+    camera.position.copy(targetPosition);
+    controls.target.copy(focusPoint);
+    controls.update();
+    controls.enabled = true;
+    if (callback) callback();
+    return;
+  }
+
   function anim(now) {
     const elapsed = now - startTime;
     const t = Math.min(elapsed / duration, 1);
@@ -1701,11 +1730,42 @@ let answered = false;
 let pointerDownX = 0, pointerDownY = 0;
 let isDragging = false;
 let rotateRestoreTimer = null;
+let cubeFocusTimer = null;
+const activePointers = new Set();
+let hadMultiplePointers = false;
+
+function setCubeFocused(focused, delay = 0) {
+  if (cubeFocusTimer !== null) clearTimeout(cubeFocusTimer);
+  if (focused) {
+    document.body.classList.add('cube-focused');
+    cubeFocusTimer = null;
+    return;
+  }
+  if (delay <= 0) {
+    document.body.classList.remove('cube-focused');
+    cubeFocusTimer = null;
+    return;
+  }
+  cubeFocusTimer = setTimeout(() => {
+    document.body.classList.remove('cube-focused');
+    cubeFocusTimer = null;
+  }, delay);
+}
+
+function hideLockTooltip() {
+  document.getElementById('lock-hover-tooltip').classList.remove('show');
+}
 
 canvas.addEventListener('pointerdown', (e) => {
+  activePointers.add(e.pointerId);
+  if (activePointers.size > 1) hadMultiplePointers = true;
+  if (!e.isPrimary) return;
+  canvas.setPointerCapture(e.pointerId);
   pointerDownX = e.clientX;
   pointerDownY = e.clientY;
   isDragging = false;
+  setCubeFocused(true);
+  hideLockTooltip();
 
   // 用户开始交互，立即暂停自动旋转
   controls.autoRotate = false;
@@ -1717,6 +1777,7 @@ canvas.addEventListener('pointerdown', (e) => {
 });
 
 canvas.addEventListener('pointermove', (e) => {
+  if (!e.isPrimary) return;
   if (isDragging) return;
   const dx = e.clientX - pointerDownX;
   const dy = e.clientY - pointerDownY;
@@ -1727,7 +1788,13 @@ canvas.addEventListener('pointermove', (e) => {
 });
 
 canvas.addEventListener('pointerup', (e) => {
+  activePointers.delete(e.pointerId);
+  const suppressClick = hadMultiplePointers;
+  if (activePointers.size === 0) hadMultiplePointers = false;
+  if (!e.isPrimary) return;
   canvas.style.cursor = 'grab';
+  setCubeFocused(false, 800);
+  hideLockTooltip();
 
   // 清除之前的恢复计时器（防重复）
   if (rotateRestoreTimer !== null) {
@@ -1758,7 +1825,7 @@ canvas.addEventListener('pointerup', (e) => {
     rotateRestoreTimer = null;
   }, 3000);
 
-  if (isDragging) return;
+  if (isDragging || suppressClick) return;
   if (document.getElementById('modal-overlay').classList.contains('active')) return;
 
   const dx = e.clientX - pointerDownX;
@@ -1819,6 +1886,17 @@ canvas.addEventListener('pointerup', (e) => {
     });
   }
 });
+
+canvas.addEventListener('pointercancel', (e) => {
+  activePointers.delete(e.pointerId);
+  if (activePointers.size === 0) hadMultiplePointers = false;
+  if (!e.isPrimary) return;
+  isDragging = false;
+  canvas.style.cursor = 'grab';
+  hideLockTooltip();
+  setCubeFocused(false, 200);
+});
+canvas.addEventListener('mouseleave', hideLockTooltip);
 
 // 鼠标悬停时改变光标，锁定格子显示 tooltip
 canvas.addEventListener('mousemove', (event) => {
@@ -1904,6 +1982,7 @@ const TYPE_CLASSES = { choice: 'type-choice', cloze: 'type-cloze', wordbank: 'ty
 function openQuestionModal(faceId, cell) {
   // 先确保前一状态完全清理
   closeModal();
+  hideLockTooltip();
 
   const isFaceKey = FACES[faceId] !== undefined;
   const qbId = isFaceKey ? FACE_TO_QB[faceId] : faceId;
@@ -1960,6 +2039,7 @@ function openQuestionModal(faceId, cell) {
 }
 
 function showLockedModal(faceId, cell) {
+  hideLockTooltip();
   currentFaceId = faceId;
   currentCell = cell;
   const face = FACES[faceId];
@@ -2412,6 +2492,9 @@ function closeModal() {
   document.getElementById('modal-passage').style.display = 'none';
   document.getElementById('modal-passage').textContent = '';
   document.getElementById('modal-question').innerHTML = '';
+  document.getElementById('locked-tip').style.display = 'none';
+  hideLockTooltip();
+  setCubeFocused(false);
   // 重置状态
   currentQuestion = null;
   selectedOption = null;
@@ -2618,8 +2701,8 @@ document.addEventListener('visibilitychange', () => {
     console.log('页面不可见，暂停渲染');
   } else {
     // 页面可见：恢复动画循环和自动旋转
-    controls.autoRotate = true;
-    animate();
+    controls.autoRotate = !prefersReducedMotion.matches;
+    if (animationFrameId === null) animate();
     console.log('页面可见，恢复渲染');
   }
 });
@@ -2631,9 +2714,10 @@ animate();
 function adjustCubeSize() {
   const width = window.innerWidth;
   let distance = 9;
-  if (width < 400) distance = 13;
-  else if (width < 600) distance = 11.5;
+  if (width < 400) distance = 11.4;
+  else if (width < 600) distance = 10.8;
   else if (width < 768) distance = 10;
+  controls.rotateSpeed = width <= 600 ? 1.25 : 0.9;
   camera.position.normalize().multiplyScalar(distance);
   controls.update();
 }
@@ -2704,7 +2788,7 @@ function showWrongBook() {
           <span style="font-size:0.7rem;color:#888">${diffLabels[wq.difficulty] || wq.difficulty}</span>
           <span style="font-size:0.7rem;color:#888">${TYPE_LABELS[wq.type] || wq.type}</span>
         </div>
-        <div style="font-size:0.85rem;color:#ccc;margin-bottom:6px">${wq.question}</div>
+        <div style="font-size:0.85rem;color:var(--text-primary);margin-bottom:6px">${wq.question}</div>
         <div style="font-size:0.8rem;color:#e74c3c">你的答案：${wq.userAnswer}</div>
         <div style="font-size:0.8rem;color:#27ae60">正确答案：${wq.correctAnswer}</div>
         ${wq.explanation ? `<div style="font-size:0.75rem;color:#888;margin-top:4px">${wq.explanation}</div>` : ''}
@@ -2770,43 +2854,43 @@ function showStats() {
   const diffLabels = { easy: '小学', medium: '初中', hard: '高中' };
   let html = `<div style="display:grid;gap:8px">
     <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
-      <div style="font-size:0.8rem;color:#aaa">总完成度</div><div style="font-size:1.2rem;font-weight:700;color:#4ae6c9">${stats.totalCompleted}/54</div>
+      <div style="font-size:0.8rem;color:var(--text-secondary)">总完成度</div><div style="font-size:1.2rem;font-weight:700;color:var(--accent)">${stats.totalCompleted}/54</div>
     </div>
     <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
-      <div style="font-size:0.8rem;color:#aaa">真实正确率</div><div style="font-size:1.2rem;font-weight:700;color:#4ae6c9">${stats.realAccuracy}%</div>
+      <div style="font-size:0.8rem;color:var(--text-secondary)">真实正确率</div><div style="font-size:1.2rem;font-weight:700;color:var(--accent)">${stats.realAccuracy}%</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
       <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:0.8rem;color:#aaa">总答题次数</div><div style="font-size:1.1rem;font-weight:700;color:#fff">${stats.totalAnswers}</div>
+        <div style="font-size:0.8rem;color:var(--text-secondary)">总答题次数</div><div style="font-size:1.1rem;font-weight:700;color:var(--text-title)">${stats.totalAnswers}</div>
       </div>
       <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:0.8rem;color:#aaa">正确次数</div><div style="font-size:1.1rem;font-weight:700;color:#4ae6c9">${stats.correctAnswers}</div>
+        <div style="font-size:0.8rem;color:var(--text-secondary)">正确次数</div><div style="font-size:1.1rem;font-weight:700;color:var(--success)">${stats.correctAnswers}</div>
       </div>
       <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:0.8rem;color:#aaa">错误次数</div><div style="font-size:1.1rem;font-weight:700;color:#e74c3c">${stats.incorrectAnswers}</div>
+        <div style="font-size:0.8rem;color:var(--text-secondary)">错误次数</div><div style="font-size:1.1rem;font-weight:700;color:var(--danger)">${stats.incorrectAnswers}</div>
       </div>
       <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:0.8rem;color:#aaa">总体正确率</div><div style="font-size:1.1rem;font-weight:700;color:#4ae6c9">${stats.accuracy}%</div>
+        <div style="font-size:0.8rem;color:var(--text-secondary)">总体正确率</div><div style="font-size:1.1rem;font-weight:700;color:var(--accent)">${stats.accuracy}%</div>
       </div>
     </div>
     <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px">
-      <div style="font-size:0.8rem;color:#aaa;margin-bottom:8px">各面完成率</div>
+      <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:8px">各面完成率</div>
       ${stats.faces.map(f => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
         <span style="font-size:0.8rem;min-width:80px">${f.name}</span>
         <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:100%;border-radius:3px;background:${f.color};width:${f.percent}%"></div></div>
-        <span style="font-size:0.75rem;color:#ccc;min-width:40px;text-align:right">${f.completed}/9</span>
+        <span style="font-size:0.75rem;color:var(--text-secondary);min-width:40px;text-align:right">${f.completed}/9</span>
       </div>`).join('')}
     </div>
     <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px">
-      <div style="font-size:0.8rem;color:#aaa;margin-bottom:8px">各难度完成情况</div>
+      <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:8px">各难度完成情况</div>
       ${(['easy','medium','hard']).map(d => { const c = stats.difficultyStats[d] || 0; return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
         <span style="font-size:0.8rem;min-width:60px">${diffLabels[d]}</span>
         <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:100%;border-radius:3px;background:#4ae6c9;width:${(c/54*100).toFixed(0)}%"></div></div>
-        <span style="font-size:0.75rem;color:#ccc;min-width:40px;text-align:right">${c}/54</span>
+        <span style="font-size:0.75rem;color:var(--text-secondary);min-width:40px;text-align:right">${c}/54</span>
       </div>`;}).join('')}
     </div>
     <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
-      <div style="font-size:0.8rem;color:#aaa">学习时长</div><div style="font-size:1rem;font-weight:700;color:#e6c89a">${stats.studyTime}</div>
+      <div style="font-size:0.8rem;color:var(--text-secondary)">学习时长</div><div style="font-size:1rem;font-weight:700;color:var(--reward)">${stats.studyTime}</div>
     </div>
   </div>`;
   content.innerHTML = html;
@@ -2877,11 +2961,27 @@ document.getElementById('panel-overlay').addEventListener('click', (e) => { if (
 // ============================================================
 // 每日挑战
 // ============================================================
-function getTodayStr() { return new Date().toISOString().slice(0, 10); }
+function getLocalDateStr(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getTodayStr() { return getLocalDateStr(); }
 
 function showDailyChallenge() {
   const today = getTodayStr();
   let daily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+  if (daily.date === today && !daily.difficulty && Array.isArray(daily.questions)) {
+    daily.difficulty = daily.questions[0]?.difficulty || currentDifficulty;
+    localStorage.setItem('cube_daily_challenge', JSON.stringify(daily));
+  }
+  if (daily.date && (daily.completed || []).length > 0) {
+    const history = JSON.parse(localStorage.getItem('cube_daily_history') || '{}');
+    history[daily.date] = true;
+    localStorage.setItem('cube_daily_history', JSON.stringify(history));
+  }
   // 如果日期不同或难度不同，重新生成
   if (daily.date !== today || daily.difficulty !== currentDifficulty) {
     daily = generateDailyChallenge();
@@ -2893,8 +2993,8 @@ function showDailyChallenge() {
   const completed = daily.completed || [];
   const streak = getDailyStreak();
   let html = `<div style="text-align:center;margin-bottom:12px">
-    <div style="font-size:0.85rem;color:#aaa">${today}</div>
-    <div style="font-size:1.2rem;font-weight:700;color:#4ae6c9">${completed.length}/5 已完成</div>
+    <div style="font-size:0.85rem;color:var(--text-secondary)">${today}</div>
+    <div style="font-size:1.2rem;font-weight:700;color:var(--accent)">${completed.length}/5 已完成</div>
     <div style="display:flex;align-items:center;justify-content:center;gap:5px;color:${streak >= 7 ? 'var(--reward)' : 'var(--text-secondary)'};font-size:0.8rem;margin-top:4px">${iconMarkup('flame')}连续 ${streak} 天${streak >= 7 ? ' · 成就达成' : ''}</div>
     <button class="confirm-btn" style="margin-top:8px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--modal-border);padding:4px 12px;font-size:0.75rem;width:auto" onclick="regenerateDailyChallenge()">${iconMarkup('refresh-cw')}换一批</button>
   </div>`;
@@ -2902,7 +3002,7 @@ function showDailyChallenge() {
     const isCompleted = completed.includes(i);
     html += `<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px;margin-bottom:8px;border:1px solid rgba(255,255,255,0.06)">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="display:inline-flex;color:${isCompleted ? 'var(--success)' : 'var(--text-muted)'}">${iconMarkup(isCompleted ? 'circle-check' : 'circle')}</span><span style="font-size:0.8rem;color:var(--accent)">第${i+1}题</span><span style="font-size:0.7rem;color:var(--text-muted)">${TYPE_LABELS[q.type] || '选择题'}</span></div>
-      <div style="font-size:0.8rem;color:#ccc">${q.question || q.passage || ''}</div>`;
+      <div style="font-size:0.8rem;color:var(--text-primary)">${q.question || q.passage || ''}</div>`;
     if (!isCompleted) html += `<button class="confirm-btn" style="margin-top:6px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--modal-border);padding:4px 12px;font-size:0.75rem;width:auto" onclick="startDailyQuestion(${i})">${iconMarkup('play')}开始答题</button>`;
     html += `</div>`;
   });
@@ -2944,11 +3044,16 @@ window.startDailyQuestion = function(index) {
 function getDailyStreak() {
   let streak = 0;
   const today = new Date();
+  const history = JSON.parse(localStorage.getItem('cube_daily_history') || '{}');
+  const currentDaily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+  if (currentDaily.date && (currentDaily.completed || []).length > 0) {
+    history[currentDaily.date] = true;
+    localStorage.setItem('cube_daily_history', JSON.stringify(history));
+  }
   for (let i = 0; i < 365; i++) {
     const d = new Date(today); d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().slice(0, 10);
-    const daily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
-    if (daily.date === dateStr && (daily.completed || []).length > 0) streak++;
+    const dateStr = getLocalDateStr(d);
+    if (history[dateStr]) streak++;
     else if (i > 0) break;
   }
   return streak;
@@ -2957,10 +3062,14 @@ function getDailyStreak() {
 function checkDailyComplete() {
   if (dailyQuestionIndex < 0) return;
   const daily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+  if (!Array.isArray(daily.completed)) daily.completed = [];
   if (!daily.completed.includes(dailyQuestionIndex)) {
     daily.completed.push(dailyQuestionIndex);
     daily.correctCount = (daily.correctCount || 0) + 1;
     localStorage.setItem('cube_daily_challenge', JSON.stringify(daily));
+    const history = JSON.parse(localStorage.getItem('cube_daily_history') || '{}');
+    history[daily.date || getTodayStr()] = true;
+    localStorage.setItem('cube_daily_history', JSON.stringify(history));
   }
   dailyQuestionIndex = -1;
 }
@@ -3003,7 +3112,7 @@ function showCertificate() {
   const stats = calculateStats();
   document.getElementById('cert-time').textContent = new Date().toLocaleString('zh-CN');
   document.getElementById('cert-accuracy').textContent = stats.accuracy + '%';
-  document.getElementById('cert-faces').innerHTML = stats.faces.map(f => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:0.8rem;min-width:80px">${f.name}</span><div style="flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px"><div style="height:100%;border-radius:2px;background:${f.color};width:${f.percent}%"></div></div><span style="font-size:0.7rem;color:#ccc">${f.percent}%</span></div>`).join('');
+  document.getElementById('cert-faces').innerHTML = stats.faces.map(f => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:0.8rem;min-width:80px">${f.name}</span><div style="flex:1;height:4px;background:var(--progress-bg);border-radius:2px"><div style="height:100%;border-radius:2px;background:${f.color};width:${f.percent}%"></div></div><span style="font-size:0.7rem;color:var(--text-secondary)">${f.percent}%</span></div>`).join('');
   document.getElementById('cert-overlay').classList.add('active');
 }
 document.getElementById('btn-cert-close').addEventListener('click', () => { document.getElementById('cert-overlay').classList.remove('active'); });
@@ -3134,6 +3243,7 @@ function getFaceUiColor(faceId) {
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
+  document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#eef3f4' : '#0d151f';
   setIconButton(themeToggle, theme === 'light' ? 'moon' : 'sun', theme === 'light' ? '切换为暗色主题' : '切换为亮色主题');
   localStorage.setItem(THEME_KEY, theme);
   // 更新魔方颜色（锁定/解锁状态的颜色随主题变化）
