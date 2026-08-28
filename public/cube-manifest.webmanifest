@@ -1,0 +1,25 @@
+{
+  "name": "魔方英语 - Cube English",
+  "short_name": "魔方英语",
+  "description": "通过六面魔方关卡练习英语",
+  "lang": "zh-CN",
+  "start_url": "./cube_english.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080d14",
+  "theme_color": "#0d151f",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

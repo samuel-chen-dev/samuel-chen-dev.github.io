@@ -8,8 +8,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>魔方英语 - Cube English</title>
-<link rel="icon" type="image/png" sizes="32x32" href="./assets/cube-mark-32-xsuCr4iI.png?v=4">
-<link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon-Ds5evYai.png?v=4">
+<link rel="icon" type="image/png" sizes="32x32" href="./cube-mark-32.png?v=4">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=4">
 <link rel="manifest" id="app-manifest">
 <script>
   if (location.protocol !== 'file:') {
@@ -619,6 +619,17 @@ body {
 }
 .btn-secondary { background: var(--btn-bg); color: var(--text-secondary); border: 1px solid var(--border-color); }
 .btn-secondary:hover { background: var(--btn-hover-bg); }
+.question-actions { display: grid; gap: 10px; margin-top: 4px; }
+.question-actions .btn { min-height: 46px; padding: 12px 20px; font-size: 0.92rem; }
+.auto-advance-control {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  min-height: 44px; padding: 9px 12px; border: 1px solid var(--border-color);
+  border-radius: 8px; background: var(--bg-passage); color: var(--text-secondary);
+  font-size: 0.78rem; cursor: pointer; user-select: none;
+}
+.auto-advance-control span { line-height: 1.35; }
+.auto-advance-control input { width: 18px; height: 18px; flex: 0 0 auto; accent-color: var(--accent); cursor: pointer; }
+.auto-advance-control:focus-within { outline: 2px solid var(--reward); outline-offset: 2px; }
 .btn-close {
   background: none; border: none; color: var(--text-secondary); font-size: 1.3rem; cursor: pointer;
   padding: 4px 8px; line-height: 1;
@@ -684,6 +695,9 @@ body {
   }
   .header-actions { grid-column: 1 / -1; justify-content: flex-start; width: 100%; }
   .modal-box { padding: 18px; width: 94%; }
+  .question-actions { gap: 12px; }
+  .question-actions .btn { min-height: 48px; }
+  .auto-advance-control { padding: 10px 12px; }
   .face-progress { gap: 2px; }
   .face-progress-item { font-size: 0.6rem; padding: 2px 6px; }
   .diff-btn { padding: 2px 8px; font-size: 0.65rem; }
@@ -706,7 +720,6 @@ body {
   .panel-reset-all { font-size: 0.65rem; padding: 4px 0; margin-top: 4px; }
 }
 </style>
-  <script type="module" crossorigin src="./assets/cubeEnglish-CiNyLGEa.js"></script>
 </head>
 <body>
 <div id="app">
@@ -714,7 +727,7 @@ body {
   <div class="header">
     <div class="header-top">
       <div class="header-title">
-        <img class="brand-cube" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAn2SURBVHhe7d1Na1znGcbxfIFikkaJbRk7sipHlhVLshVbsRzbeiFyHLsY0oULdQN1vEgb4hRS6nbRrLxJaAkECsWbZlNRcKB4EwhNIZhCDaXdhCxKV+2my36Dp1xqn1a9npF1zsx53u5zLX4bWTNzbuvvGUvn1pzHvjJ2yIlY8Rh/QKRmClpMUdBiioIWUxS0mKKgxRQFLaYoaDFFQYspClpMUdBiioIWUxS0mKKgxRQFLaYoaDFFQYspClpMUdBiioIWUxS0mKKgxRQFLaYoaDFFQYspClpMUdBiioIWUxS0mKKgE5k8Mhl8TLqnoCM7euxr7u6dZffPP7ziPrl7wZ0/Ox18jnRHQUeCZ2QfMvv1By+6pdPPBreR0SnojiHkn/5oyf3jwaUgZIaw8QzO9yHDU9AdGZ847N699XyjkBmeyRV2NxT0iHzIf/vtxSDUNvAPAc/s+uZxNAp6SGP7n3Fvv37C/eWTjSDOUfiw8Q+FH1N2p6CH8N1vL3QeMsMzPp75FXY7CrqF71ybc1/cfymILyaEffuNk1uvCHw8ElLQDXzjynPuj/fWg9hSwisC/oujsB9NQT8CQv79r9aCuHLCKwReKfhY5d8U9AAvrc5sndXjmEqCsL/16vHg2PtOQW+Ds3elh8zwCoJXEp6lrxT0f0LGWTuOpSa/+2h165WFZ+ubXgeNs3MfvXc2iKNmeIXpc9i9DPpRi0NW9HUBqldBt1kcsgJhLywcCf4urOpF0Djbdued070KmfVlAcp00F0tDllifQHKZNCxFoessLzZZy5ohdycxQUoM0HnWByywtICVPVB4yyZQu6GhQWoaoMucXHICoRd6wJUdUHXsDhkRY0LUNUEjfezUMh51LQAVXzQFhaHrEDYpe+JFBv0U+PPuPd+uBT8pUp+mz970R05WubPsIsN2tOP48qBH++V/lOQ4oP2UvymtQxW0wmYaoIGndJOq8b3CCku6In9u2+EIWwtHcXTZtdjz4GyvkksLui/bnzd3VlYbhT2KO8nJ4M1XTPds3fKHVx5y534/sPgz3IqLui/X7y65cv1K+723JLbv2/3l7s+Lu53rek7ofqQ5289cIu3v9jCn5NTsUFz2E8+NRF8LkPYH777QvDFkp21+VWtA2duuLk3P/tvyAq6AQ7a+/PaK+57s4uNwt7+rvkyWJurCexbvDYwZAXdAIfMEPbNoyeD2w2is4yhNr8VjpBnb94PAmZ8u5yqC9p7uHrJXZ9eCG4/CML+zc/PB1/cPmmzj/H08ctu9sa9INyd8O1zqjZo79NzG+7qVLONsD5u6uEsa9OQx2Y23Mxrm0Gwu+H7yan6oLeH/fJksy/clY1j5nep27yp49j0ipv+5t0g1Kb4/nIyE7T38fK6Wzt8LLjfQSz+koD/rROedZAnJk6NFLKCboADHdbmmVV36lCz7+ItLEC1WRxCyFOvfhCEOSy+/5zMBu39cmmlVdi17Ym0WRx6/OC8m7x8JwhyVPw4OZkP2vvw+XPu2fGp4PFYLQtQOCuKd4NqEjL2LRDyiR/8KYixC/x4OfUmaO/9xbON9kRKXYBquzg0sfHjrX0LjrBL/Lg59S5oGGYBqoSwcfazUch7p9yhtXeih+zx4+fUy6A9hF3DAhTew3rYxaEU+Dhy6nXQXtvNvlQLUF0sDqXAx5KTgt6mlAUonM1sGvL46evZQvb4mHJS0AO0WYDCm4l3tQAVY3EoBT62nBT0I7RdgBo27NaLQ4WE7PEx5qSgG/j8wsUoC1C4Om2bkIdZHEqBjzUnBd1CmwUohL3TnkjKxaEU+JhzUtBDGHYBqs3i0FenlosP2eNjz0lBjwBhN90TmZufck9mWBxKgWfISUF3oM0C1E5iLQ6lwLPkpKA79ItT53dcgHpi7+BnZx9yrMWhFHimnBR0BNjs4z2RsfH/fwZPtTiUAn8Nc1LQkfgFKJ4PUi4OpcDz5aSgI+P5gIOoHc+Xk4KOjOcDDqJ2PF9OCjoyng84iNrxfDkp6Mh4PuAgasfz5aSgI+P5gIOoHc+Xk4KOjOcDDqJ2PF9OCjoyng84iNrxfDkp6Mh4PuAgasfz5aSgI+P5gIOoHc+Xk4KOjOcDDqJ2PF9OCjoyng84iNrxfDkp6Mh4PuAgasfz5aSgI+P5gIOoHc+Xk4KOjOcDDqJ2PF9OCjoyng84iNrxfDkp6Mh4PuAgasfz5aSgI+P5gIOoHc+Xk4KOjOcDDqJ2PF9OCjoyng84iNrxfDkp6Mh4PuAgasfz5aSgI+P5gIOoHc+Xk4KOjOcDDqJ2PF9OCjoyng84iNrxfDkp6Mh4PuAgasfz5aSgI+P5gIOoHc+Xk4KOjOcDDqJ2PF9OCjoyng84iNrxfDkp6Mh4PuAgasfz5aSgI+P5gIOoHc+Xk4KOjOcDDqJ2PF9OCjoyng84iNrxfDkp6Mh4PuAgasfz5aSgI+P5gIOoHc+XU3FB41rbuDQxh1Erng84iFrhKgS4rAbPl1NxQQMuHm8lbJ4NOIza4AJHuNARrhPDs+VWZNDe/n2H3e25Jffl+pUglFrwTMCB1AQh48pdPFMpig7aQ9g/mX9h60I8HEzpeBbgSGqAi4HioqA8S2mqCNrDpdJwZamawuYZgGMpGS7PXEPIXlVBewgb1wLkeErExw4cTYkQ8tj0SnDspasyaA9XbS09bD5m4HhKMvPapnv6+OXgmGtRddAerrON621zTCXgYwWOqASzN+5VHbJnImgPYX+8vB5ElRMfI3BMOc3evO/2LV4LjrFWpoL21g4fKyZsPjbgqHKYe/MzUyF7JoP2Xp58zn16biOILCU+JuC4UkLIB87cCI7JCtNBe1enjrvPL1wMYkuBjwU4shTmbz1wB1fecnv2TgXHY0kvgvauTy+4h6uXguhi4mMAji0m7Fv0IWSvV0F7N4+eTLYnwo8NHF0MfnGoxH2LmHoZNKRagOLHBY6vSyUvDqXQ26A9hB1zAYofDzjCLviQS14cSqH3QXt+s6/rPRF+HOAYR1XL4lAKCpp0vQDF9w8c5LBqWxxKQUHvAGG/v3g2CLQtvl/gMNuqdXEoBQW9i1EXoPj+gANtCotDYzMbwf3J/yjohoZdgOL7AQ51N7VvwKWkoFtC2JtnVoNwd8K3Bw52J9YWh1JQ0ENqugDFtwMOl1ldHEpBQY9otwUo/nzggLeHbHlxKAUF3REsQA0Kmz8POGS/OMSfJ+0p6I7xAhT/OfiQ+7Y4lIKCjgRhY0+EPw59XRxKQUFHhD0R/hgo5HgUtJiioMUUBS2mKGgxRUGLKQpaTFHQYoqCFlMUtJiioMUUBS2mKGgxRUGLKQpaTFHQYoqCFlMUtJiioMUUBS2mKGgxRUGLKQpaTFHQYoqCFlMUtJiioMUUBS2mKGgxRUGLKQpaTPkXgM2dxMzCUpMAAAAASUVORK5CYII=" alt="魔方英语">
+        <img class="brand-cube" src="./cube-mark-180.png?v=4" alt="魔方英语">
         <span>魔方英语</span>
       </div>
       <div class="difficulty-selector" id="difficulty-selector">
@@ -831,8 +844,14 @@ body {
         <div id="feedback-message"></div>
         <div class="feedback-explanation" id="feedback-explanation"></div>
       </div>
-      <button class="btn btn-primary" id="btn-submit">提交答案</button>
-      <button class="btn btn-primary" id="btn-next" style="display:none">下一关</button>
+      <div class="question-actions" id="question-actions">
+        <button class="btn btn-primary" id="btn-submit">提交答案</button>
+        <button class="btn btn-primary" id="btn-next" style="display:none">下一题</button>
+        <label class="auto-advance-control" for="auto-advance-input">
+          <span>自动进入下一题/关（展示答案 2 秒）</span>
+          <input type="checkbox" id="auto-advance-input" checked>
+        </label>
+      </div>
       <div class="locked-tip" id="locked-tip" style="display:none">
         <div id="locked-tip-msg"></div>
         <button class="locked-tip-btn" id="locked-tip-btn">知道了</button>
@@ -844,5 +863,3027 @@ body {
 <!-- 锁定魔方格悬停提示 -->
 <div class="lock-hover-tooltip" id="lock-hover-tooltip">完成前一关解锁</div>
 
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GRADE8_GRAMMAR_QUESTIONS } from './src/data/grade8GrammarQuestions.js';
+import { GRADE8_VOCABULARY_QUESTIONS } from './src/data/grade8VocabularyQuestions.js';
+import { GRADE8_READING_QUESTIONS } from './src/data/grade8ReadingQuestions.js';
+import { GRADE8_CLOZE_QUESTIONS } from './src/data/grade8ClozeQuestions.js';
+import { GRADE8_SPEAKING_QUESTIONS } from './src/data/grade8SpeakingQuestions.js';
+import { GRADE8_FUN_QUESTIONS } from './src/data/grade8FunQuestions.js';
+import {
+  PRIMARY1_GRAMMAR_QUESTIONS, PRIMARY1_VOCABULARY_QUESTIONS,
+  PRIMARY1_READING_QUESTIONS, PRIMARY1_CLOZE_QUESTIONS,
+  PRIMARY1_SPEAKING_QUESTIONS, PRIMARY1_FUN_QUESTIONS,
+} from './src/data/primary1QuestionBanks.js';
+import {
+  PRIMARY2_GRAMMAR_QUESTIONS, PRIMARY2_VOCABULARY_QUESTIONS,
+} from './src/data/primary2QuestionBanks.js';
+import {
+  PRIMARY2_READING_QUESTIONS, PRIMARY2_CLOZE_QUESTIONS,
+} from './src/data/primary2ReadingClozeQuestions.js';
+import {
+  PRIMARY2_SPEAKING_QUESTIONS, PRIMARY2_FUN_QUESTIONS,
+} from './src/data/primary2SpeakingFunQuestions.js';
+import {
+  GRADE7_GRAMMAR_QUESTIONS, GRADE7_VOCABULARY_QUESTIONS,
+} from './src/data/grade7CoreQuestions.js';
+import {
+  GRADE7_READING_QUESTIONS, GRADE7_CLOZE_QUESTIONS,
+} from './src/data/grade7ReadingClozeQuestions.js';
+import {
+  GRADE7_SPEAKING_QUESTIONS, GRADE7_FUN_QUESTIONS,
+} from './src/data/grade7SpeakingFunQuestions.js';
+import {
+  ZHONGKAO_GRAMMAR_QUESTIONS, ZHONGKAO_VOCABULARY_QUESTIONS,
+} from './src/data/zhongkaoCoreQuestions.js';
+import {
+  ZHONGKAO_READING_QUESTIONS, ZHONGKAO_CLOZE_QUESTIONS,
+} from './src/data/zhongkaoReadingClozeQuestions.js';
+import {
+  ZHONGKAO_SPEAKING_QUESTIONS, ZHONGKAO_FUN_QUESTIONS,
+} from './src/data/zhongkaoSpeakingFunQuestions.js';
+import {
+  SENIOR_GRAMMAR_QUESTIONS, SENIOR_VOCABULARY_QUESTIONS,
+} from './src/data/seniorCoreQuestions.js';
+import {
+  SENIOR_READING_QUESTIONS, SENIOR_CLOZE_QUESTIONS,
+} from './src/data/seniorReadingClozeQuestions.js';
+import {
+  SENIOR_SPEAKING_QUESTIONS, SENIOR_FUN_QUESTIONS,
+} from './src/data/seniorSpeakingFunQuestions.js';
+import {
+  Award, BookOpen, BookX, CalendarCheck2, ChartBar, ChevronDown,
+  ChevronRight, Circle, CircleCheck, CircleX, Flame, GraduationCap,
+  Hand, LockKeyhole, Moon, Play, RefreshCw, RotateCcw, Share2,
+  Sparkles, Sprout, Sun, Trash2, X, createIcons,
+} from 'lucide';
+
+const icons = {
+  Award, BookOpen, BookX, CalendarCheck2, ChartBar, ChevronDown,
+  ChevronRight, Circle, CircleCheck, CircleX, Flame, GraduationCap,
+  Hand, LockKeyhole, Moon, Play, RefreshCw, RotateCcw, Share2,
+  Sparkles, Sprout, Sun, Trash2, X,
+};
+
+console.log('🧩 魔方英语 | Three.js v' + THREE.REVISION);
+
+function refreshIcons() {
+  createIcons({ icons, attrs: { 'aria-hidden': 'true' } });
+}
+
+function iconMarkup(name) {
+  return `<i data-lucide="${name}"></i>`;
+}
+
+function setIconButton(button, iconName, label) {
+  button.innerHTML = iconMarkup(iconName);
+  button.title = label;
+  button.setAttribute('aria-label', label);
+  refreshIcons();
+}
+
+function setPanelTitle(iconName, text) {
+  document.getElementById('panel-title').innerHTML = `${iconMarkup(iconName)}<span>${text}</span>`;
+  refreshIcons();
+}
+
+// ============================================================
+// 面 ID 到题库 ID 的映射
+const FACE_TO_QB = { front: 'grammar', back: 'vocabulary', left: 'reading', right: 'cloze', top: 'speaking', bottom: 'fun' };
+const QB_TO_FACE = { grammar: 'front', vocabulary: 'back', reading: 'left', cloze: 'right', speaking: 'top', fun: 'bottom' };
+
+// 面定义
+// ============================================================
+const FACES = {
+  front:  { id: 'front',  name: '语法核心', color: '#E34850', axis: 'z', value: 1,  normal: [0,0,1] },
+  back:   { id: 'back',   name: '词汇辨析', color: '#F08A35', axis: 'z', value: -1, normal: [0,0,-1] },
+  left:   { id: 'left',   name: '阅读理解', color: '#2DB67D', axis: 'x', value: -1, normal: [-1,0,0] },
+  right:  { id: 'right',  name: '完形填空', color: '#3478D4', axis: 'x', value: 1,  normal: [1,0,0] },
+  top:    { id: 'top',    name: '口语表达', color: '#F4F1E8', axis: 'y', value: 1,  normal: [0,1,0] },
+  bottom: { id: 'bottom', name: '趣味英语', color: '#F0C84B', axis: 'y', value: -1, normal: [0,-1,0] },
+};
+
+// 面到行列映射：给定 cubie 位置 (x,y,z) 和被点击面的法线，返回 {row, col}
+function getFaceCell(x, y, z, nx, ny, nz) {
+  if (nz === 1)    return { row: 1 - y, col: x + 1 };       // front
+  if (nz === -1)   return { row: 1 - y, col: 1 - x };       // back
+  if (nx === -1)   return { row: 1 - y, col: 1 - z };       // left
+  if (nx === 1)    return { row: 1 - y, col: z + 1 };       // right
+  if (ny === 1)    return { row: 1 - z, col: x + 1 };       // top
+  if (ny === -1)   return { row: z + 1, col: x + 1 };       // bottom
+  return null;
+}
+
+// 根据法线获取面 ID
+function getFaceFromNormal(nx, ny, nz) {
+  if (nz === 1)  return 'front';
+  if (nz === -1) return 'back';
+  if (nx === -1) return 'left';
+  if (nx === 1)  return 'right';
+  if (ny === 1)  return 'top';
+  if (ny === -1) return 'bottom';
+  return null;
+}
+
+// ============================================================
+// 旧题库种子：用于生成六档关卡及待替换的占位题
+// ============================================================
+const LEGACY_QUESTIONS = {
+  // ─── 小学难度 (easy) ──────────────────────────────
+  easy: {
+    grammar: [
+      { id: 'e1', title: 'be动词', question: 'I ___ a student.', options: ['am', 'is', 'are', 'be'], correctIndex: 0, explanation: '主语 I 与 be 动词 am 搭配：I am, you are, he/she/it is。' },
+      { id: 'e2', title: '名词复数', question: 'There are three ___ on the desk.', options: ['book', 'books', 'bookes', 'bookies'], correctIndex: 1, explanation: '大多数名词复数直接加 -s，book 的复数是 books。' },
+      { id: 'e3', title: '人称代词', question: '___ is my friend. ___ name is Tom.', options: ['He, His', 'He, He', 'His, He', 'His, His'], correctIndex: 0, explanation: '作主语用主格 He，作定语修饰 name 用形容词性物主代词 His。' },
+      { id: 'e4', title: '祈使句', question: '___ the window, please. It\'s hot.', options: ['Open', 'Opens', 'Opening', 'Opened'], correctIndex: 0, explanation: '祈使句以动词原形开头，表示命令或请求。Open the window = 请开窗。' },
+      { id: 'e5', title: '一般现在时', question: 'My mother ___ breakfast every morning.', options: ['make', 'makes', 'making', 'made'], correctIndex: 1, explanation: 'every morning 表示经常性动作，主语 My mother 是第三人称单数，用 makes。' },
+      { id: 'e6', title: '现在进行时', question: 'Listen! The girl ___ a song.', options: ['sings', 'sing', 'is singing', 'sang'], correctIndex: 2, explanation: 'Listen! 提示动作正在发生，用现在进行时 is singing。' },
+      { id: 'e7', title: '冠词', question: 'I have ___ apple and ___ banana.', options: ['a, a', 'an, a', 'a, an', 'an, an'], correctIndex: 1, explanation: 'apple 以元音音素开头用 an，banana 以辅音音素开头用 a。' },
+      { id: 'e8', title: '一般过去时', question: 'They ___ to the park yesterday.', options: ['go', 'goes', 'went', 'going'], correctIndex: 2, explanation: 'yesterday 是过去时间，go 的过去式是 went。' },
+      { id: 'e9', title: '疑问句', question: '___ you like ice cream?', options: ['Are', 'Do', 'Is', 'Does'], correctIndex: 1, explanation: '一般现在时的一般疑问句，主语是 you，用助动词 Do 开头。' },
+    ],
+    vocabulary: [
+      { id: 'e10', title: '颜色', question: 'The sky is ___.', options: ['red', 'blue', 'green', 'yellow'], correctIndex: 1, explanation: '天空是蓝色的，blue 是基础颜色词汇。' },
+      { id: 'e11', title: '数字', question: 'There are ___ days in a week.', options: ['five', 'six', 'seven', 'eight'], correctIndex: 2, explanation: '一周有七天：Monday 到 Sunday，seven days。' },
+      { id: 'e12', title: '家庭成员', question: 'Your mother\'s sister is your ___.', options: ['aunt', 'uncle', 'cousin', 'sister'], correctIndex: 0, explanation: '妈妈的姐妹是阿姨/姨妈，英文是 aunt。' },
+      { id: 'e13', title: '动物', question: 'A ___ says "meow".', options: ['dog', 'cat', 'bird', 'fish'], correctIndex: 1, explanation: '猫叫 "meow"（喵喵），dog 叫 "woof"，bird 叫 "tweet"。' },
+      { id: 'e14', title: '身体部位', question: 'We use our ___ to see.', options: ['ears', 'eyes', 'nose', 'mouth'], correctIndex: 1, explanation: '眼睛（eyes）用来看东西，耳朵（ears）用来听，鼻子（nose）用来闻。' },
+      { id: 'e15', title: '水果', question: 'Which of these is a fruit?', options: ['Carrot', 'Potato', 'Apple', 'Onion'], correctIndex: 2, explanation: 'Apple（苹果）是水果，carrot/potato/onion 都是蔬菜。' },
+      { id: 'e16', title: '反义词', question: 'The opposite of "big" is ___.', options: ['tall', 'small', 'long', 'short'], correctIndex: 1, explanation: 'big（大的）的反义词是 small（小的），tall↔short（高↔矮），long↔short（长↔短）。' },
+      { id: 'e17', title: '交通工具', question: 'I go to school by ___.', options: ['bus', 'desk', 'chair', 'book'], correctIndex: 0, explanation: 'by bus 表示乘公交车，是常见的交通工具表达。desk/chair/book 不是交通工具。' },
+      { id: 'e18', title: '天气', question: 'It\'s raining. Take your ___.', options: ['hat', 'umbrella', 'bag', 'watch'], correctIndex: 1, explanation: '下雨了要带伞（umbrella）。hat 是帽子，不能挡雨。' },
+    ],
+    reading: [
+      { id: 'e19', title: '小故事：上学', passage: 'Lucy is a student. She is eight years old. She goes to school at 7:30 every morning. She likes her teacher very much.', question: 'How old is Lucy?', options: ['Six', 'Seven', 'Eight', 'Nine'], correctIndex: 2, explanation: '文中明确说 "She is eight years old."' },
+      { id: 'e20', title: '小故事：宠物', passage: 'I have a dog. His name is Max. Max is brown. He likes to run and play with a ball. He is my best friend.', question: 'What is the dog\'s name?', options: ['Tom', 'Max', 'Jack', 'Sam'], correctIndex: 1, explanation: '文中说 "His name is Max."' },
+      { id: 'e21', title: '小故事：季节', passage: 'Spring is coming. The flowers are blooming. The birds are singing. Children are flying kites in the park. Everyone is happy.', question: 'What are children doing in the park?', options: ['Running', 'Flying kites', 'Swimming', 'Reading'], correctIndex: 1, explanation: '文中说 "Children are flying kites in the park."' },
+      { id: 'e22', title: '小故事：早餐', passage: 'Tom eats breakfast at 7 o\'clock. He likes milk and bread. Sometimes he eats an egg. His mother says breakfast is very important.', question: 'What time does Tom eat breakfast?', options: ['6 o\'clock', '7 o\'clock', '8 o\'clock', '9 o\'clock'], correctIndex: 1, explanation: '文中说 "Tom eats breakfast at 7 o\'clock."' },
+      { id: 'e23', title: '小故事：朋友', passage: 'Amy and Kate are good friends. They sit together in class. After school, they play in the playground. They share their toys.', question: 'Who are good friends?', options: ['Amy and Tom', 'Amy and Kate', 'Kate and Tom', 'Amy and Lily'], correctIndex: 1, explanation: '文中第一句说 "Amy and Kate are good friends."' },
+      { id: 'e24', title: '小故事：购物', passage: 'Mom goes to the market. She buys apples, bananas, and oranges. She also buys some milk and bread. She spends 30 yuan.', question: 'How much does Mom spend?', options: ['20 yuan', '30 yuan', '40 yuan', '50 yuan'], correctIndex: 1, explanation: '文中说 "She spends 30 yuan."' },
+      { id: 'e25', title: '小故事：天气', passage: 'It is a sunny day. The sun is bright. There are no clouds in the sky. A gentle wind is blowing. It feels warm and nice.', question: 'What is the weather like?', options: ['Rainy', 'Cloudy', 'Sunny', 'Snowy'], correctIndex: 2, explanation: '文中第一句说 "It is a sunny day."' },
+      { id: 'e26', title: '小故事：家庭', passage: 'My family has four people: my father, my mother, my sister, and me. We live in a small house. We eat dinner together every evening.', question: 'How many people are in the family?', options: ['Three', 'Four', 'Five', 'Six'], correctIndex: 1, explanation: '文中说 "My family has four people."' },
+      { id: 'e27', title: '小故事：学校', passage: 'I like my school very much. My classroom is big and clean. There are twenty desks in the room. The teacher is very kind.', question: 'How many desks are in the classroom?', options: ['Ten', 'Fifteen', 'Twenty', 'Thirty'], correctIndex: 2, explanation: '文中说 "There are twenty desks in the room."' },
+    ],
+    cloze: [
+      { id: 'e28', title: '完形: 日常', passage: 'Tom is a boy. He ___ (1) ten years old. He ___ (2) to school every day.', question: '选择空格1的正确答案', options: ['am', 'is', 'are', 'be'], correctIndex: 1, explanation: 'He 后面用 is，He is ten years old = 他十岁了。' },
+      { id: 'e29', title: '完形: 颜色', passage: 'I have a red ___ (1). It is very nice. I like to ___ (2) it to school.', question: '选择空格1的正确答案', options: ['bag', 'book', 'pen', 'ruler'], correctIndex: 0, explanation: '根据上下文，可以背去学校的物品，red bag 是合理的搭配。' },
+      { id: 'e30', title: '完形: 食物', passage: 'I am hungry. I want to ___ (1) some rice. I also want ___ (2) water.', question: '选择空格1的正确答案', options: ['eat', 'drink', 'see', 'go'], correctIndex: 0, explanation: '饿了想吃东西，eat some rice = 吃一些米饭。' },
+      { id: 'e31', title: '完形: 天气', passage: 'It is ___ (1) outside. I need to wear a coat. I don\'t like ___ (2) weather.', question: '选择空格1的正确答案', options: ['hot', 'cold', 'warm', 'cool'], correctIndex: 1, explanation: '根据后文 "wear a coat"，说明外面很冷（cold）。' },
+      { id: 'e32', title: '完形: 动物', passage: 'Look! There is a ___ (1) in the tree. It can ___ (2) very well.', question: '选择空格1的正确答案', options: ['fish', 'bird', 'dog', 'cat'], correctIndex: 1, explanation: '在树上的是鸟（bird），鸟会飞（fly）。' },
+      { id: 'e33', title: '完形: 时间', passage: 'I get up ___ (1) six o\'clock every morning. Then I ___ (2) my face.', question: '选择空格1的正确答案', options: ['at', 'on', 'in', 'to'], correctIndex: 0, explanation: '具体时间点前用介词 at：at six o\'clock。' },
+      { id: 'e34', title: '完形: 教室', passage: 'We are in the ___ (1). The teacher is writing on the ___ (2).', question: '选择空格2的正确答案', options: ['desk', 'chair', 'blackboard', 'door'], correctIndex: 2, explanation: '老师在黑板上写字，blackboard = 黑板。' },
+      { id: 'e35', title: '完形: 星期', passage: 'Today is ___ (1). Tomorrow will be Saturday. I am very ___ (2).', question: '选择空格1的正确答案', options: ['Sunday', 'Monday', 'Friday', 'Thursday'], correctIndex: 2, explanation: '明天是周六，所以今天是周五（Friday）。' },
+      { id: 'e36', title: '完形: 运动', passage: 'I like ___ (1) basketball. I play it ___ (2) my friends after school.', question: '选择空格2的正确答案', options: ['and', 'with', 'or', 'but'], correctIndex: 1, explanation: 'play with my friends = 和朋友一起玩，with 表示「和…一起」。' },
+    ],
+    speaking: [
+      { id: 'e37', title: '打招呼', question: 'When you meet someone in the morning, you say:', options: ['Good afternoon', 'Good morning', 'Good evening', 'Good night'], correctIndex: 1, explanation: '早上见面说 Good morning，下午说 Good afternoon，晚上说 Good evening。' },
+      { id: 'e38', title: '自我介绍', question: 'What do you say when you first meet someone?', options: ['Goodbye', 'Hello, my name is...', 'I\'m hungry', 'See you later'], correctIndex: 1, explanation: '初次见面要说 "Hello, my name is..." 来介绍自己。' },
+      { id: 'e39', title: '感谢', question: 'Someone gives you a gift. You say:', options: ['I\'m sorry', 'Excuse me', 'Thank you', 'Goodbye'], correctIndex: 2, explanation: '收到礼物要说 Thank you（谢谢）表示感谢。' },
+      { id: 'e40', title: '道别', question: 'When you leave school, you say to your teacher:', options: ['Hello', 'Goodbye', 'Thank you', 'I\'m sorry'], correctIndex: 1, explanation: '离开时说 Goodbye（再见）是基本的道别用语。' },
+      { id: 'e41', title: '询问名字', question: 'You want to know someone\'s name. You ask:', options: ['How are you?', 'What\'s your name?', 'Where are you?', 'Who is that?'], correctIndex: 1, explanation: '想知道对方名字，问 "What\'s your name?"（你叫什么名字？）。' },
+      { id: 'e42', title: '道歉', question: 'You are late for class. You say:', options: ['Hello!', 'Goodbye!', 'I\'m sorry I\'m late.', 'How are you?'], correctIndex: 2, explanation: '迟到要说 "I\'m sorry I\'m late."（对不起我迟到了）。' },
+      { id: 'e43', title: '请求帮助', question: 'You need help with homework. You say:', options: ['Go away!', 'Can you help me, please?', 'I don\'t care.', 'Leave me alone.'], correctIndex: 1, explanation: '请求帮助要说 "Can you help me, please?"（请帮帮我好吗？）。' },
+      { id: 'e44', title: '问候', question: 'What do you say when you see a friend?', options: ['How are you?', 'What is this?', 'Where is it?', 'Who are you?'], correctIndex: 0, explanation: '见到朋友问候 "How are you?"（你好吗？）是最常见的问候语。' },
+      { id: 'e45', title: '电话', question: 'You answer the phone. You say:', options: ['Who are you?', 'Hello?', 'What?', 'Speak!'], correctIndex: 1, explanation: '接电话最基本的说法是 "Hello?"（喂？）。' },
+    ],
+    fun: [
+      { id: 'e46', title: '谜语：字母', question: 'What letter is the ocean?', options: ['C (sea)', 'O (ocean)', 'W (water)', 'S (sea)'], correctIndex: 0, explanation: '字母 C 的发音与 sea（大海）相同，所以 C 就是大海！' },
+      { id: 'e47', title: '常识：颜色', question: 'What color are bananas?', options: ['Red', 'Blue', 'Yellow', 'Green'], correctIndex: 2, explanation: '成熟的香蕉是黄色的（yellow）。' },
+      { id: 'e48', title: '谜语：动物', question: 'What animal is the king of the jungle?', options: ['Tiger', 'Elephant', 'Lion', 'Bear'], correctIndex: 2, explanation: '狮子（lion）被称为"丛林之王"（king of the jungle）。' },
+      { id: 'e49', title: '常识：节日', question: 'On which holiday do children get red envelopes in China?', options: ['Mid-Autumn Festival', 'Spring Festival', 'Dragon Boat Festival', 'Lantern Festival'], correctIndex: 1, explanation: '春节（Spring Festival）时孩子们会收到红包（red envelopes）。' },
+      { id: 'e50', title: '谜语：数字', question: 'I am an odd number. Take away a letter and I become even. What number am I?', options: ['Three', 'Five', 'Seven', 'Nine'], correctIndex: 2, explanation: 'Seven 去掉字母 s 变成 even（偶数），这是一个经典英语字谜！' },
+      { id: 'e51', title: '常识：动物', question: 'How many legs does a spider have?', options: ['Six', 'Seven', 'Eight', 'Ten'], correctIndex: 2, explanation: '蜘蛛有八条腿（eight legs）。' },
+      { id: 'e52', title: '谜语：水果', question: 'What fruit is always sad?', options: ['Apple', 'Banana', 'Blueberry', 'Orange'], correctIndex: 2, explanation: 'Blueberry 里有 "blue"（忧郁的），所以它总是 sad（伤心的），这是一个双关语。' },
+      { id: 'e53', title: '常识：国旗', question: 'What colors are on the Chinese flag?', options: ['Red and blue', 'Red and yellow', 'Red and white', 'Yellow and green'], correctIndex: 1, explanation: '中国国旗是红色底加黄色五角星（red and yellow）。' },
+      { id: 'e54', title: '谜语：物品', question: 'What has hands but can\'t clap?', options: ['A person', 'A clock', 'A dog', 'A tree'], correctIndex: 1, explanation: '钟表（clock）有指针（hands），但不会拍手（clap），这是一个经典谜语。' },
+    ],
+  },
+
+  // ─── 初中难度 (medium) ──────────────────────────────
+  medium: {
+    grammar: [
+      { id: 'm1', title: '一般现在时', question: 'She ___ (go) to school every day.', options: ['go', 'goes', 'going', 'went'], correctIndex: 1, explanation: '主语 She 是第三人称单数，一般现在时动词需加 -s/-es，所以用 goes。' },
+      { id: 'm2', title: '现在进行时', question: 'Look! The children ___ (play) in the park.', options: ['play', 'plays', 'are playing', 'played'], correctIndex: 2, explanation: 'Look! 提示动作正在发生，须用现在进行时 be + V-ing，主语 children 是复数，用 are playing。' },
+      { id: 'm3', title: '一般过去时', question: 'He ___ (visit) his grandparents last weekend.', options: ['visit', 'visits', 'visited', 'will visit'], correctIndex: 2, explanation: 'last weekend 是明确的过去时间状语，须用一般过去时 visited。' },
+      { id: 'm4', title: '一般将来时', question: 'I think it ___ (rain) tomorrow.', options: ['rains', 'rained', 'will rain', 'is raining'], correctIndex: 2, explanation: 'tomorrow 表示将来时间，须用 will + 动词原形。' },
+      { id: 'm5', title: '现在完成时', question: 'We ___ (already / finish) our homework.', options: ['already finish', 'already finished', 'have already finished', 'will finish'], correctIndex: 2, explanation: 'already 提示「已经完成」，须用现在完成时 have/has + 过去分词。' },
+      { id: 'm6', title: '被动语态', question: 'The book ___ (write) by a famous author.', options: ['writes', 'wrote', 'is written', 'is writing'], correctIndex: 2, explanation: '书是被写的，主语是动作承受者，须用被动语态 be + 过去分词。' },
+      { id: 'm7', title: '条件句', question: 'If it ___ (rain) tomorrow, we will stay at home.', options: ['rains', 'will rain', 'rained', 'is raining'], correctIndex: 0, explanation: 'if 引导的真实条件句中，从句用一般现在时表将来（主将从现），所以用 rains。' },
+      { id: 'm8', title: '宾语从句', question: 'Can you tell me where the nearest hospital ___?', options: ['is', 'be', 'are', 'being'], correctIndex: 0, explanation: '宾语从句使用陈述句语序：where the nearest hospital is。主语 the nearest hospital 是单数，所以用 is。' },
+      { id: 'm9', title: '综合时态', question: 'By the time he arrives, we ___ (wait) for two hours.', options: ['wait', 'waited', 'will have waited', 'are waiting'], correctIndex: 2, explanation: 'By the time 表示「到将来某个时间点为止」，须用将来完成时 will have + 过去分词。' },
+    ],
+    vocabulary: [
+      { id: 'm10', title: 'look / see / watch', question: 'Please ___ at the blackboard.', options: ['look', 'see', 'watch', 'read'], correctIndex: 0, explanation: 'look at 表示「看」的动作，强调有意识地看；see 强调「看到」的结果；watch 表示「观看（动态的东西）」。' },
+      { id: 'm11', title: 'say / tell / speak', question: 'Can you ___ me a story?', options: ['say', 'tell', 'speak', 'talk'], correctIndex: 1, explanation: 'tell sb. sth. 是固定搭配，tell me a story = 给我讲个故事。say 强调说话内容，speak 强调说话能力或语言。' },
+      { id: 'm12', title: 'borrow / lend', question: 'Can I ___ your pen? I forgot mine.', options: ['borrow', 'lend', 'give', 'take'], correctIndex: 0, explanation: 'borrow 表示「借入」（从别人那里借来），lend 表示「借出」（把东西借给别人）。这里是向别人借笔，用 borrow。' },
+      { id: 'm13', title: 'interested / interesting', question: 'The movie was so ___ that everyone loved it.', options: ['interested', 'interesting', 'interest', 'interests'], correctIndex: 1, explanation: 'interesting 修饰事物（令人感兴趣的），interested 修饰人（感到有兴趣的）。电影是事物，用 interesting。' },
+      { id: 'm14', title: '固定搭配', question: 'I\'m looking forward ___ hearing from you.', options: ['at', 'to', 'for', 'on'], correctIndex: 1, explanation: 'look forward to 是固定搭配，其中 to 是介词，后接名词或动名词。' },
+      { id: 'm15', title: '词性转换', question: 'He runs very ___ (quick).', options: ['quick', 'quicker', 'quickly', 'quickest'], correctIndex: 2, explanation: '修饰动词 runs 需要用副词，quick 的副词形式是 quickly。' },
+      { id: 'm16', title: '近义词辨析', question: 'The news ___ quickly across the campus.', options: ['spread', 'extended', 'expanded', 'stretched'], correctIndex: 0, explanation: 'spread 表示消息、新闻的「传播」；extend 表示时间或空间的延长；expand 表示体积的膨胀；stretch 表示拉伸。' },
+      { id: 'm17', title: '固定搭配2', question: 'He succeeded ___ passing the exam.', options: ['at', 'to', 'in', 'on'], correctIndex: 2, explanation: 'succeed in doing sth. 是固定搭配，表示「成功做某事」。' },
+      { id: 'm18', title: '综合词汇', question: 'The professor ___ a new theory at the conference.', options: ['put forward', 'put off', 'put out', 'put up'], correctIndex: 0, explanation: 'put forward 表示「提出（建议、理论）」，put off 表示「推迟」，put out 表示「扑灭」，put up 表示「搭建/张贴」。' },
+    ],
+    reading: [
+      { id: 'm19', title: '小故事：猫咪', passage: 'Tom has a cat named Mimi. Mimi is white and very cute. Every morning, Mimi sits by the window and watches the birds outside.', question: 'What color is Mimi?', options: ['Black', 'White', 'Brown', 'Gray'], correctIndex: 1, explanation: '文中明确说 "Mimi is white"，所以答案是 White。' },
+      { id: 'm20', title: '小故事：生日', passage: 'It is Lily\'s birthday today. She is ten years old. Her mother makes a big cake for her. Lily and her friends sing and dance happily.', question: 'How old is Lily?', options: ['Nine', 'Ten', 'Eleven', 'Eight'], correctIndex: 1, explanation: '文中明确说 "She is ten years old."' },
+      { id: 'm21', title: '小故事：动物园', passage: 'Last Sunday, Jack went to the zoo with his family. They saw many animals. Jack\'s favorite animal was the panda. The panda was eating bamboo.', question: 'What was Jack\'s favorite animal?', options: ['Monkey', 'Lion', 'Panda', 'Elephant'], correctIndex: 2, explanation: '文中说 "Jack\'s favorite animal was the panda."' },
+      { id: 'm22', title: '短文：环保', passage: 'More and more people are paying attention to environmental protection. They use reusable bags, turn off lights when leaving rooms, and take public transportation. These small actions can make a big difference.', question: 'What is the main idea of this passage?', options: ['Traveling', 'Shopping', 'Environmental protection', 'Cooking'], correctIndex: 2, explanation: '文章主题是环保，提到了使用环保袋、随手关灯、乘坐公共交通等环保行为。' },
+      { id: 'm23', title: '短文：运动', passage: 'Running is one of the most popular sports. It doesn\'t need special equipment and can be done almost anywhere. Studies show that running for 30 minutes a day can improve your health greatly.', question: 'How long should you run each day according to the passage?', options: ['10 minutes', '20 minutes', '30 minutes', '60 minutes'], correctIndex: 2, explanation: '文中明确提到 "running for 30 minutes a day"。' },
+      { id: 'm24', title: '短文：科技', passage: 'Smartphones have changed our lives in many ways. We can now communicate with anyone, anywhere, at any time. However, spending too much time on phones can be harmful to our eyes and social skills.', question: 'What is one disadvantage of smartphones mentioned in the passage?', options: ['They are expensive', 'They are slow', 'They can harm our eyes', 'They are hard to use'], correctIndex: 2, explanation: '文中提到 "spending too much time on phones can be harmful to our eyes"。' },
+      { id: 'm25', title: '短文：历史', passage: 'The Silk Road was not a single road but a network of trade routes connecting China with the West. It began during the Han Dynasty and lasted for over 1,500 years. Silk, tea, and spices were transported from East to West, while gold, glass, and new ideas traveled from West to East.', question: 'When did the Silk Road begin?', options: ['The Tang Dynasty', 'The Song Dynasty', 'The Han Dynasty', 'The Ming Dynasty'], correctIndex: 2, explanation: '文中明确提到 "It began during the Han Dynasty"。' },
+      { id: 'm26', title: '短文：心理', passage: 'A growth mindset is the belief that abilities can be developed through hard work and dedication. People with a growth mindset see challenges as opportunities to learn. In contrast, a fixed mindset assumes that intelligence is static and cannot be changed.', question: 'What do people with a growth mindset think about challenges?', options: ['They avoid them', 'They see them as opportunities', 'They ignore them', 'They fear them'], correctIndex: 1, explanation: '文中说 "People with a growth mindset see challenges as opportunities to learn"。' },
+      { id: 'm27', title: '短文：科学', passage: 'Photosynthesis is the process by which plants convert sunlight into energy. During this process, plants take in carbon dioxide and water, and release oxygen as a byproduct. This process is essential for life on Earth as it provides the oxygen we breathe.', question: 'What do plants release during photosynthesis?', options: ['Carbon dioxide', 'Nitrogen', 'Oxygen', 'Hydrogen'], correctIndex: 2, explanation: '文中说 "release oxygen as a byproduct"。' },
+    ],
+    cloze: [
+      { id: 'm28', title: '完形: 日常', passage: 'Mike gets up at 7:00 every morning. He ___ (1) his teeth and then has breakfast. He usually ___ (2) to school by bike.', question: '选择空格1的正确答案', options: ['brush', 'brushes', 'brushing', 'brushed'], correctIndex: 1, explanation: '主语 He 是第三人称单数，一般现在时动词加 -es。' },
+      { id: 'm29', title: '完形: 天气', passage: 'It was a ___ (1) day. The sun was shining and the birds were singing. Amy ___ (2) to the park with her dog.', question: '选择空格1的正确答案', options: ['sunny', 'rain', 'cloud', 'wind'], correctIndex: 0, explanation: '根据后文 "The sun was shining" 可知是晴天，形容词 sunny 修饰 day。' },
+      { id: 'm30', title: '完形: 购物', passage: 'Mom went to the supermarket. She bought some ___ (1) and vegetables. She also got a ___ (2) of milk for breakfast.', question: '选择空格2的正确答案', options: ['bottle', 'piece', 'loaf', 'pair'], correctIndex: 0, explanation: 'a bottle of milk 是固定搭配，表示一瓶牛奶。' },
+      { id: 'm31', title: '完形: 旅行', passage: 'Last summer, my family ___ (1) to Beijing. We visited the Great Wall and the Forbidden City. The trip was ___ (2) and we all had a great time.', question: '选择空格1的正确答案', options: ['go', 'goes', 'went', 'will go'], correctIndex: 2, explanation: 'Last summer 是过去时间，须用一般过去时 went。' },
+      { id: 'm32', title: '完形: 友谊', passage: 'A true friend is someone who always ___ (1) by your side. When you are sad, they ___ (2) you up. When you succeed, they are happy for you.', question: '选择空格2的正确答案', options: ['cheer', 'cheers', 'cheering', 'cheered'], correctIndex: 0, explanation: '助动词 do 后用动词原形，they cheer you up。cheer up 是固定搭配，表示「使振作」。' },
+      { id: 'm33', title: '完形: 健康', passage: 'Getting enough sleep is very important for teenagers. Research shows that teenagers ___ (1) at least 8 hours of sleep each night. Lack of sleep can ___ (2) to poor concentration.', question: '选择空格2的正确答案', options: ['lead', 'leads', 'leading', 'led'], correctIndex: 0, explanation: 'can 后接动词原形，lead to 表示「导致」。' },
+      { id: 'm34', title: '完形: 文化', passage: 'Different cultures have different customs. In Japan, people bow when they greet each other. In Western countries, people usually ___ (1) hands. Understanding these differences can help avoid ___ (2).', question: '选择空格2的正确答案', options: ['misunderstand', 'misunderstanding', 'misunderstood', 'misunderstands'], correctIndex: 1, explanation: 'avoid 后接动名词，avoid misunderstanding 表示「避免误解」。' },
+      { id: 'm35', title: '完形: 环境', passage: 'Global warming is one of the biggest challenges facing humanity. If we ___ (1) act now, the consequences will be severe. Many countries have already started ___ (2) measures to reduce carbon emissions.', question: '选择空格1的正确答案', options: ['don\'t', 'didn\'t', 'won\'t', 'haven\'t'], correctIndex: 0, explanation: 'if 条件句中用一般现在时表将来，don\'t act 表示「如果不采取行动」。' },
+      { id: 'm36', title: '完形: 综合', passage: 'The invention of the Internet has fundamentally ___ (1) the way we live and work. It has made information ___ (2) to billions of people worldwide.', question: '选择空格1的正确答案', options: ['change', 'changed', 'changing', 'changes'], correctIndex: 1, explanation: 'has + 过去分词构成现在完成时，change 的过去分词是 changed。' },
+    ],
+    speaking: [
+      { id: 'm37', title: '打招呼', question: 'How do you respond when someone says "Nice to meet you"?', options: ['Goodbye', 'Nice to meet you, too', 'I\'m sorry', 'Thank you'], correctIndex: 1, explanation: '当别人说 "Nice to meet you"（很高兴认识你），你应回答 "Nice to meet you, too"（我也很高兴认识你）。' },
+      { id: 'm38', title: '问路', question: 'Excuse me, ___ is the nearest hospital?', options: ['what', 'where', 'when', 'why'], correctIndex: 1, explanation: '问地点用 where，where is the nearest hospital? = 最近的医院在哪里？' },
+      { id: 'm39', title: '点餐', question: 'In a restaurant, the waiter asks: "What would you like to ___?"', options: ['eat', 'drink', 'order', 'cook'], correctIndex: 2, explanation: '在餐厅点餐时，服务员通常问 "What would you like to order?"（您想点什么？）。' },
+      { id: 'm40', title: '电话用语', question: 'When you answer the phone, you should say:', options: ['Who are you?', 'What do you want?', 'Hello, this is [name] speaking.', 'Speak!'], correctIndex: 2, explanation: '接电话时礼貌的说法是 "Hello, this is [name] speaking."，表示「你好，我是…」。' },
+      { id: 'm41', title: '道歉', question: 'If you accidentally step on someone\'s foot, you should say:', options: ['Excuse me', 'I\'m sorry', 'Thank you', 'Never mind'], correctIndex: 1, explanation: '踩到别人脚是不小心造成的伤害，应该说 "I\'m sorry"（对不起）。Excuse me 用于打扰别人时。' },
+      { id: 'm42', title: '请假', question: 'You are sick and want to ask for a day off. You say:', options: ['I quit!', 'May I have a day off?', 'I don\'t care', 'Leave me alone'], correctIndex: 1, explanation: '请假应该礼貌地问 "May I have a day off?"（我可以请一天假吗？）。' },
+      { id: 'm43', title: '商务对话', question: 'In a job interview, the interviewer asks: "What are your strengths?" You should respond:', options: ['I don\'t have any', 'I\'m good at teamwork and problem-solving', 'That\'s personal', 'I don\'t know'], correctIndex: 1, explanation: '面试中问优点，应该自信地展示自己的技能，如团队合作和解决问题的能力。' },
+      { id: 'm44', title: '投诉', question: 'You received a damaged product. You call customer service and say:', options: ['You are terrible!', 'I\'d like to make a complaint about a damaged item.', 'Give me my money!', 'Whatever'], correctIndex: 1, explanation: '投诉时应该礼貌地说明问题，用 "I\'d like to make a complaint about..." 是得体的表达方式。' },
+      { id: 'm45', title: '演讲开场', question: 'What is a good way to start a presentation?', options: ['Good morning, everyone. Today I\'d like to talk about...', 'Hey guys, let\'s just get this over with.', 'I didn\'t prepare anything.', 'Can someone else do this?'], correctIndex: 0, explanation: '演讲开场应该礼貌问候听众并说明演讲主题，用 "Good morning, everyone. Today I\'d like to talk about..." 是标准开场。' },
+    ],
+    fun: [
+      { id: 'm46', title: '谜语：字母', question: 'What letter is a drink?', options: ['T (tea)', 'C (coffee)', 'W (water)', 'M (milk)'], correctIndex: 0, explanation: '字母 T 的发音与 tea（茶）相同，所以说 "T" is a drink！' },
+      { id: 'm47', title: '常识：颜色', question: 'What color is the British phone booth?', options: ['Blue', 'Green', 'Red', 'Yellow'], correctIndex: 2, explanation: '英国的红色电话亭（Red Phone Booth）是英国的标志性文化符号。' },
+      { id: 'm48', title: '谜语：月份', question: 'Which month has 28 days?', options: ['February', 'January', 'All of them', 'None'], correctIndex: 2, explanation: '所有月份都有28天（甚至更多），这是一个常见的英语脑筋急转弯！' },
+      { id: 'm49', title: '常识：节日', question: 'What holiday is celebrated on December 25th?', options: ['Halloween', 'Thanksgiving', 'Christmas', 'Easter'], correctIndex: 2, explanation: '12月25日是圣诞节（Christmas Day），是西方最重要的节日之一。' },
+      { id: 'm50', title: '谜语：蛋', question: 'What has to be broken before you can use it?', options: ['A window', 'An egg', 'A door', 'A book'], correctIndex: 1, explanation: '鸡蛋（egg）在使用前必须先打破（break），这是一个经典的英语谜语。' },
+      { id: 'm51', title: '常识：地标', question: 'In which city can you find the Statue of Liberty?', options: ['Los Angeles', 'Chicago', 'New York', 'Boston'], correctIndex: 2, explanation: '自由女神像（Statue of Liberty）位于美国纽约（New York）。' },
+      { id: 'm52', title: '文化：文学', question: 'Who wrote "Romeo and Juliet"?', options: ['Charles Dickens', 'William Shakespeare', 'Jane Austen', 'Mark Twain'], correctIndex: 1, explanation: '《罗密欧与朱丽叶》是英国剧作家威廉·莎士比亚（William Shakespeare）的经典作品。' },
+      { id: 'm53', title: '文化：名言', question: '"To be, or not to be" is from which play?', options: ['Macbeth', 'Hamlet', 'King Lear', 'Othello'], correctIndex: 1, explanation: '"To be, or not to be"（生存还是毁灭）是莎士比亚的《哈姆雷特》（Hamlet）中的经典独白。' },
+      { id: 'm54', title: '文化：食物', question: 'What is the traditional British meal "fish and chips" served with?', options: ['Rice', 'Fries (chips)', 'Pasta', 'Bread'], correctIndex: 1, explanation: 'Fish and Chips（炸鱼薯条）是英国传统美食，鱼和薯条（chips=炸薯条）一起搭配食用。' },
+    ],
+  },
+
+  // ─── 高中难度 (hard) ──────────────────────────────
+  hard: {
+    grammar: [
+      { id: 'h1', title: '虚拟语气', question: 'If I ___ you, I would accept the offer.', options: ['am', 'was', 'were', 'be'], correctIndex: 2, explanation: '与现在事实相反的虚拟语气，if 从句中 be 动词一律用 were，不论主语人称。' },
+      { id: 'h2', title: '过去完成时', question: 'By the time the police arrived, the thief ___ (escape).', options: ['escaped', 'had escaped', 'has escaped', 'was escaping'], correctIndex: 1, explanation: 'by the time + 过去时间点，主句表示「过去的过去」，须用过去完成时 had + 过去分词。' },
+      { id: 'h3', title: '非谓语动词', question: '___ (see) from the top of the mountain, the city looks beautiful.', options: ['Seeing', 'Seen', 'To see', 'Having seen'], correctIndex: 1, explanation: 'the city 与 see 是被动关系（城市被看），用过去分词 Seen 作状语。' },
+      { id: 'h4', title: '定语从句', question: 'This is the house ___ I was born.', options: ['which', 'that', 'where', 'when'], correctIndex: 2, explanation: '定语从句中缺少地点状语（in the house），用关系副词 where。' },
+      { id: 'h5', title: '倒装句', question: 'Not until the teacher came in ___ the noise.', options: ['the students stopped', 'did the students stop', 'the students did stop', 'stopped the students'], correctIndex: 1, explanation: 'Not until 置于句首时，主句须部分倒装，助动词 did 提前。' },
+      { id: 'h6', title: '名词性从句', question: '___ surprises me most is that he passed the exam without studying.', options: ['That', 'What', 'Which', 'It'], correctIndex: 1, explanation: 'What 引导主语从句，在从句中作主语，表示「…的事情」。' },
+      { id: 'h7', title: '时态综合', question: 'He ___ (work) in this company since he graduated from college.', options: ['worked', 'has been working', 'works', 'is working'], correctIndex: 1, explanation: 'since + 过去时间点，表示从过去持续到现在的动作，用现在完成进行时。' },
+      { id: 'h8', title: '情态动词+完成时', question: 'You ___ (tell) me earlier. I could have helped you.', options: ['should tell', 'should have told', 'must tell', 'need tell'], correctIndex: 1, explanation: 'should have + 过去分词表示「本应该做而没做」，表达对过去的遗憾。' },
+      { id: 'h9', title: '强调句', question: 'It was in the library ___ I met her for the first time.', options: ['where', 'that', 'which', 'when'], correctIndex: 1, explanation: '强调句型 It is/was... that...，强调地点状语时仍用 that。' },
+    ],
+    vocabulary: [
+      { id: 'h10', title: '高级词汇', question: 'The government has ___ new measures to control pollution.', options: ['implemented', 'made', 'did', 'put'], correctIndex: 0, explanation: 'implement measures 表示「实施措施」，是正式书面用语，比 make/put 更正式。' },
+      { id: 'h11', title: '词义辨析', question: 'The witness\'s testimony was ___ with the evidence found at the scene.', options: ['consistent', 'constant', 'continuous', 'convenient'], correctIndex: 0, explanation: 'consistent with 表示「与…一致」，constant 表示「持续的」，continuous 表示「连续的」。' },
+      { id: 'h12', title: '短语动词', question: 'The meeting has been ___ until next Monday due to the manager\'s illness.', options: ['put off', 'put away', 'put through', 'put down'], correctIndex: 0, explanation: 'put off 表示「推迟」，put away 表示「收起来」，put through 表示「接通电话」，put down 表示「放下/镇压」。' },
+      { id: 'h13', title: '形近词', question: 'The scientist made a significant ___ to the field of genetics.', options: ['contribution', 'distribution', 'attribution', 'retribution'], correctIndex: 0, explanation: 'contribution to 表示「对…的贡献」，distribution 表示「分配」，attribution 表示「归因」，retribution 表示「惩罚」。' },
+      { id: 'h14', title: '熟词僻义', question: 'The company plans to ___ a new product line next quarter.', options: ['launch', 'throw', 'drop', 'push'], correctIndex: 0, explanation: 'launch 除「发射」外还表示「推出（新产品）」，launch a product = 推出产品。' },
+      { id: 'h15', title: '搭配辨析', question: 'The new policy will come into ___ on January 1st.', options: ['effect', 'affect', 'effort', 'affair'], correctIndex: 0, explanation: 'come into effect 是固定搭配，表示「生效」。affect 是动词，effort 表示「努力」，affair 表示「事务」。' },
+      { id: 'h16', title: '学术词汇', question: 'The two theories are not mutually ___ ; they can coexist.', options: ['exclusive', 'inclusive', 'excessive', 'aggressive'], correctIndex: 0, explanation: 'mutually exclusive 表示「互斥的」，inclusive 表示「包容的」，excessive 表示「过度的」。' },
+      { id: 'h17', title: '动词短语', question: 'After years of hard work, her dream finally ___ .', options: ['came true', 'realized', 'achieved', 'completed'], correctIndex: 0, explanation: 'come true 表示梦想「实现」，是不及物用法；realize 是及物动词，需用被动语态 was realized。' },
+      { id: 'h18', title: '综合辨析', question: 'The professor ___ that the experiment be repeated under controlled conditions.', options: ['insisted', 'persisted', 'consisted', 'assisted'], correctIndex: 0, explanation: 'insist that... (should) do 表示「坚持要求…」，从句用虚拟语气。persist in doing 表示「坚持做」。' },
+    ],
+    reading: [
+      { id: 'h19', title: '短文：人工智能', passage: 'Artificial intelligence has made remarkable progress in recent years. From self-driving cars to medical diagnosis, AI systems are increasingly capable of performing tasks that once required human intelligence. However, concerns about job displacement and ethical implications have sparked heated debates among policymakers and the public alike.', question: 'What is one concern about AI mentioned in the passage?', options: ['It is too slow', 'Job displacement', 'It is too expensive', 'It cannot learn'], correctIndex: 1, explanation: '文中提到 "concerns about job displacement and ethical implications"。' },
+      { id: 'h20', title: '短文：气候变化', passage: 'Climate change is arguably the most pressing challenge of our time. Rising global temperatures have led to more frequent extreme weather events, melting ice caps, and rising sea levels. Scientists warn that without immediate and substantial reductions in greenhouse gas emissions, the consequences could be catastrophic for future generations.', question: 'What have rising temperatures NOT caused according to the passage?', options: ['Extreme weather', 'Melting ice caps', 'Rising sea levels', 'More forests'], correctIndex: 3, explanation: '文中列举了 extreme weather events, melting ice caps, rising sea levels，没有提到 more forests。' },
+      { id: 'h21', title: '短文：经济学', passage: 'The concept of supply and demand is fundamental to economics. When demand for a product exceeds its supply, prices tend to rise. Conversely, when supply exceeds demand, prices typically fall. This dynamic relationship serves as the invisible hand that guides market economies, as described by Adam Smith in his seminal work "The Wealth of Nations."', question: 'Who described the market mechanism as an "invisible hand"?', options: ['Karl Marx', 'John Keynes', 'Adam Smith', 'David Ricardo'], correctIndex: 2, explanation: '文中提到 "as described by Adam Smith in his seminal work \'The Wealth of Nations\'."' },
+      { id: 'h22', title: '短文：心理学', passage: 'Cognitive dissonance refers to the mental discomfort experienced when a person holds two or more contradictory beliefs, values, or attitudes simultaneously. To reduce this discomfort, individuals tend to either change their beliefs, acquire new information that supports their existing views, or minimize the importance of the conflicting cognition.', question: 'What is cognitive dissonance?', options: ['A type of memory loss', 'Mental discomfort from contradictory beliefs', 'A learning disorder', 'A form of intelligence'], correctIndex: 1, explanation: '文中定义为 "mental discomfort experienced when a person holds two or more contradictory beliefs"。' },
+      { id: 'h23', title: '短文：文学', passage: 'The Romantic movement, which flourished in Europe from the late 18th to mid-19th century, emphasized emotion, individualism, and the glorification of nature. Romantic poets such as Wordsworth and Keats rejected the rigid rationality of the Enlightenment, instead celebrating the sublime beauty of the natural world and the depth of human emotion.', question: 'What did Romantic poets reject?', options: ['Nature', 'Emotion', 'Enlightenment rationality', 'Poetry itself'], correctIndex: 2, explanation: '文中说 "rejected the rigid rationality of the Enlightenment"。' },
+      { id: 'h24', title: '短文：生物学', passage: 'CRISPR-Cas9 is a revolutionary gene-editing technology that allows scientists to modify DNA sequences with unprecedented precision. Derived from a natural defense mechanism found in bacteria, CRISPR has opened up new possibilities for treating genetic disorders, improving crop resilience, and even potentially eradicating certain diseases.', question: 'Where does CRISPR technology originally come from?', options: ['Plants', 'Animals', 'Bacteria', 'Viruses'], correctIndex: 2, explanation: '文中说 "Derived from a natural defense mechanism found in bacteria"。' },
+      { id: 'h25', title: '短文：哲学', passage: 'Existentialism posits that existence precedes essence—meaning that humans are not born with a predetermined purpose but must create their own meaning through choices and actions. Philosophers like Jean-Paul Sartre argued that this freedom comes with profound responsibility, as each individual\'s choices define not only themselves but also their vision of humanity.', question: 'According to existentialism, what precedes essence?', options: ['Freedom', 'Existence', 'Responsibility', 'Choice'], correctIndex: 1, explanation: '文中第一句说 "existence precedes essence"。' },
+      { id: 'h26', title: '短文：历史', passage: 'The Renaissance, meaning "rebirth," was a cultural movement that spanned roughly from the 14th to the 17th century. Beginning in Italy and spreading across Europe, it marked the transition from the medieval period to modernity. The movement was characterized by a revival of classical learning, groundbreaking developments in art and science, and the rise of humanism.', question: 'Where did the Renaissance begin?', options: ['France', 'England', 'Italy', 'Germany'], correctIndex: 2, explanation: '文中说 "Beginning in Italy and spreading across Europe"。' },
+      { id: 'h27', title: '短文：社会学', passage: 'Social stratification refers to the hierarchical arrangement of individuals in a society based on factors such as wealth, power, and prestige. Sociologists distinguish between open systems, where social mobility is possible through merit and achievement, and closed systems, where social position is largely determined by birth. Most modern societies are theoretically open but exhibit varying degrees of actual mobility.', question: 'What determines social position in a closed system?', options: ['Merit', 'Achievement', 'Birth', 'Education'], correctIndex: 2, explanation: '文中说 "closed systems, where social position is largely determined by birth"。' },
+    ],
+    cloze: [
+      { id: 'h28', title: '完形: 学术', passage: 'The scientific method is a systematic approach to inquiry that ___ (1) observation, hypothesis formation, experimentation, and conclusion. Scientists must remain objective and avoid letting personal biases ___ (2) their results.', question: '选择空格1的正确答案', options: ['involves', 'involve', 'involving', 'involved'], correctIndex: 0, explanation: '主语 the scientific method 是单数，一般现在时第三人称单数用 involves。' },
+      { id: 'h29', title: '完形: 经济', passage: 'Inflation occurs when the general price level of goods and services rises, ___ (1) the purchasing power of money. Central banks typically respond by ___ (2) interest rates to curb excessive inflation.', question: '选择空格2的正确答案', options: ['raise', 'raising', 'raised', 'raises'], correctIndex: 1, explanation: 'by 是介词，后接动名词 raising。by raising interest rates = 通过提高利率。' },
+      { id: 'h30', title: '完形: 文学', passage: 'Metaphor is a figure of speech that makes an implicit comparison between two ___ (1) things. Unlike similes, which use "like" or "as," metaphors directly state that one thing ___ (2) another.', question: '选择空格1的正确答案', options: ['similar', 'unrelated', 'identical', 'familiar'], correctIndex: 1, explanation: '隐喻是在两个无关（unrelated）事物之间进行隐含比较，similar 是明喻的特征。' },
+      { id: 'h31', title: '完形: 心理', passage: 'The placebo effect demonstrates the powerful influence of the mind on the body. Patients who believe they are receiving treatment often show improvement, even when the treatment has no ___ (1) value. This phenomenon highlights the importance of psychological factors in ___ (2) outcomes.', question: '选择空格1的正确答案', options: ['therapeutic', 'theoretical', 'technical', 'terminal'], correctIndex: 0, explanation: 'therapeutic value 表示「治疗价值」，即使没有治疗价值的安慰剂也能产生效果。' },
+      { id: 'h32', title: '完形: 环境', passage: 'Biodiversity refers to the variety of life on Earth at all levels. The ___ (1) rate of species extinction, largely caused by human activities such as deforestation and pollution, has raised alarm among scientists. Conservation efforts are ___ (2) to preserving ecosystems for future generations.', question: '选择空格2的正确答案', options: ['crucial', 'crucially', 'cruciality', 'crucify'], correctIndex: 0, explanation: 'be crucial to 表示「对…至关重要」，crucial 是形容词。' },
+      { id: 'h33', title: '完形: 科技', passage: 'Blockchain technology has the potential to revolutionize industries beyond finance. Its decentralized nature ___ (1) that no single entity controls the data, making it highly resistant to ___ (2).', question: '选择空格2的正确答案', options: ['tamper', 'tampering', 'tampered', 'tampers'], correctIndex: 1, explanation: 'resistant to 后接名词或动名词，resistant to tampering 表示「抵抗篡改」。' },
+      { id: 'h34', title: '完形: 医学', passage: 'Antibiotics have saved countless lives since their discovery, but their overuse has led to the emergence of antibiotic-resistant bacteria. These "superbugs" pose a ___ (1) threat to global health. Medical professionals are urged to ___ (2) antibiotics only when necessary.', question: '选择空格1的正确答案', options: ['significant', 'insignificant', 'significance', 'signify'], correctIndex: 0, explanation: '修饰名词 threat 需要形容词 significant（重大的）。' },
+      { id: 'h35', title: '完形: 政治', passage: 'Democracy is founded on the principle that citizens have the right to participate in decision-making. Free and fair elections are ___ (1) to this process. However, voter apathy and misinformation can ___ (2) the democratic process.', question: '选择空格2的正确答案', options: ['undermine', 'underline', 'undergo', 'undertake'], correctIndex: 0, explanation: 'undermine 表示「削弱、破坏」，选民冷漠和错误信息会削弱民主进程。' },
+      { id: 'h36', title: '完形: 哲学', passage: 'Ethical dilemmas arise when moral principles conflict, forcing individuals to choose between competing values. The trolley problem, a famous thought experiment, ___ (1) this tension by asking whether it is morally acceptable to sacrifice one person to save five. There is no universally ___ (2) answer.', question: '选择空格2的正确答案', options: ['accept', 'accepted', 'accepting', 'acceptable'], correctIndex: 1, explanation: 'universally accepted 表示「普遍接受的」，过去分词作定语修饰 answer。' },
+    ],
+    speaking: [
+      { id: 'h37', title: '学术讨论', question: 'In a seminar, you want to politely disagree with a point. You say:', options: ['You\'re wrong!', 'I see your point, but I tend to think differently because...', 'That\'s stupid.', 'Whatever.'], correctIndex: 1, explanation: '学术讨论中礼貌地表达不同意见应先用 "I see your point" 承认对方观点，再说明自己的看法。' },
+      { id: 'h38', title: '正式演讲', question: 'When giving a formal presentation, what should you do at the beginning?', options: ['Start talking immediately', 'Outline the structure of your talk', 'Apologize for being nervous', 'Tell a joke about the audience'], correctIndex: 1, explanation: '正式演讲开场应先概述演讲结构（outline），让听众了解内容框架。' },
+      { id: 'h39', title: '商务谈判', question: 'In a negotiation, you want to propose a compromise. You say:', options: ['Take it or leave it!', 'What if we meet halfway on this issue?', 'No way!', 'I don\'t care.'], correctIndex: 1, explanation: '"What if we meet halfway?" 是提议折中方案的委婉表达，meet halfway = 各让一步。' },
+      { id: 'h40', title: '面试技巧', question: 'The interviewer asks: "Where do you see yourself in five years?" You answer:', options: ['I don\'t know.', 'I hope to have grown professionally and taken on more responsibilities.', 'On a beach.', 'Somewhere else.'], correctIndex: 1, explanation: '面试中应展示职业规划和上进心，表达希望成长和承担更多责任是得体的回答。' },
+      { id: 'h41', title: '辩论用语', question: 'In a debate, you want to rebut the opponent\'s argument. You say:', options: ['That\'s nonsense!', 'I understand your argument, however, the evidence suggests otherwise...', 'You don\'t know anything.', 'Shut up.'], correctIndex: 1, explanation: '辩论中反驳应先承认对方论点（I understand your argument），再用证据反驳（however...）。' },
+      { id: 'h42', title: '会议主持', question: 'To keep a meeting on track, you say:', options: ['Let\'s talk about random things.', 'I suggest we focus on the main agenda items for now.', 'Who cares about time?', 'Let\'s end this meeting.'], correctIndex: 1, explanation: '会议偏离主题时，主持人应礼貌地引导回到议程：focus on the main agenda items。' },
+      { id: 'h43', title: '道歉信', question: 'In a formal apology email, you should begin with:', options: ['Hey, sorry!', 'I am writing to express my sincere apologies for...', 'Oops!', 'My bad.'], correctIndex: 1, explanation: '正式道歉信开头用 "I am writing to express my sincere apologies for..." 是得体的书面表达。' },
+      { id: 'h44', title: '即兴演讲', question: 'You are asked to give an impromptu speech. The best strategy is:', options: ['Panic and say nothing', 'Use the PREP method: Point, Reason, Example, Point', 'Make up random facts', 'Walk away'], correctIndex: 1, explanation: 'PREP 方法（Point-Reason-Example-Point）是即兴演讲的有效框架：先亮观点，说理由，举例，再重申观点。' },
+      { id: 'h45', title: '跨文化沟通', question: 'When communicating with someone from a different culture, you should:', options: ['Assume they think like you', 'Be aware of cultural differences and adapt your style', 'Insist they follow your customs', 'Avoid all communication'], correctIndex: 1, explanation: '跨文化沟通应意识到文化差异（be aware of cultural differences）并灵活调整沟通方式。' },
+    ],
+    fun: [
+      { id: 'h46', title: '文学：莎士比亚', question: 'How many sonnets did Shakespeare write?', options: ['100', '154', '200', '50'], correctIndex: 1, explanation: '莎士比亚共创作了154首十四行诗（sonnets），是英语文学中的瑰宝。' },
+      { id: 'h47', title: '成语：英语习语', question: 'What does "burn the midnight oil" mean?', options: ['烧油', '熬夜工作/学习', '点火', '晚上开车'], correctIndex: 1, explanation: '"burn the midnight oil" 是英语习语，指「熬夜工作或学习」，源自点油灯工作到深夜的意象。' },
+      { id: 'h48', title: '文化：历史', question: 'The Magna Carta was signed in which year?', options: ['1066', '1215', '1492', '1776'], correctIndex: 1, explanation: '《大宪章》（Magna Carta）于1215年签署，是英国宪政史上的重要文件，限制了王权。' },
+      { id: 'h49', title: '文学：名著', question: 'Who wrote "Pride and Prejudice"?', options: ['Charlotte Brontë', 'Jane Austen', 'Emily Dickinson', 'Virginia Woolf'], correctIndex: 1, explanation: '《傲慢与偏见》（Pride and Prejudice）是简·奥斯汀（Jane Austen）的代表作。' },
+      { id: 'h50', title: '成语：英语习语2', question: 'What does "bite the bullet" mean?', options: ['咬子弹', '勇敢面对困难', '吃东西', '开枪'], correctIndex: 1, explanation: '"bite the bullet" 表示「咬紧牙关、勇敢面对困难」，源自战场上士兵咬子弹忍痛做手术的典故。' },
+      { id: 'h51', title: '文化：诺贝尔奖', question: 'Which country has produced the most Nobel Prize winners in Literature?', options: ['USA', 'UK', 'France', 'Germany'], correctIndex: 2, explanation: '法国（France）是获得诺贝尔文学奖最多的国家，产生了众多文学巨匠。' },
+      { id: 'h52', title: '文学：诗歌', question: 'Who wrote the poem "The Road Not Taken"?', options: ['Walt Whitman', 'Robert Frost', 'Emily Dickinson', 'T.S. Eliot'], correctIndex: 1, explanation: '《未选择的路》（The Road Not Taken）是美国诗人罗伯特·弗罗斯特（Robert Frost）最著名的诗作。' },
+      { id: 'h53', title: '成语：英语习语3', question: 'What does "the ball is in your court" mean?', options: ['球在你院子里', '轮到你做决定了', '你在打网球', '球丢了'], correctIndex: 1, explanation: '"the ball is in your court" 表示「轮到你做决定/采取行动了」，源自网球等球类运动。' },
+      { id: 'h54', title: '文化：语言学', question: 'Approximately how many words does the English language have?', options: ['100,000', '170,000', '500,000', 'Over 1,000,000'], correctIndex: 3, explanation: '英语词汇量超过100万（包括专业术语、方言词汇等），是词汇量最丰富的语言之一。' },
+    ],
+  },
+};
+
+const DIFFICULTIES = [
+  { id: 'primary1', name: '小学启蒙', grade: '1-2年级', color: '#48c78e', desc: '字母、自然拼读、日常单词' },
+  { id: 'primary2', name: '小学进阶', grade: '3-6年级', color: '#38bdf8', desc: '基础语法、简单句型、短篇阅读' },
+  { id: 'grade7', name: '七年级', grade: '初一', color: '#a78bfa', desc: '小学衔接、四大基本时态' },
+  { id: 'grade8', name: '八年级', grade: '初二', color: '#fb923c', desc: '语法爆发期、从句入门、完形' },
+  { id: 'zhongkao', name: '中考冲刺', grade: '初三', color: '#f43f5e', desc: '综合运用、阅读写作、高频词' },
+  { id: 'senior', name: '高中通用', grade: '高一-高三', color: '#ef4444', desc: '高中语法体系、高考题型' },
+];
+const DIFFICULTY_MAP = Object.fromEntries(DIFFICULTIES.map(item => [item.id, item]));
+const LEGACY_SOURCE = {
+  primary1: 'easy', primary2: 'easy', grade7: 'medium',
+  grade8: 'medium', zhongkao: 'hard', senior: 'hard',
+};
+const QUESTION_TYPES = new Set(['choice', 'cloze', 'wordbank', 'grammar', 'listening']);
+const GRADE8_QUESTION_BANKS = {
+  grammar: GRADE8_GRAMMAR_QUESTIONS,
+  vocabulary: GRADE8_VOCABULARY_QUESTIONS,
+  reading: GRADE8_READING_QUESTIONS,
+  cloze: GRADE8_CLOZE_QUESTIONS,
+  speaking: GRADE8_SPEAKING_QUESTIONS,
+  fun: GRADE8_FUN_QUESTIONS,
+};
+const PRIMARY1_QUESTION_BANKS = {
+  grammar: PRIMARY1_GRAMMAR_QUESTIONS,
+  vocabulary: PRIMARY1_VOCABULARY_QUESTIONS,
+  reading: PRIMARY1_READING_QUESTIONS,
+  cloze: PRIMARY1_CLOZE_QUESTIONS,
+  speaking: PRIMARY1_SPEAKING_QUESTIONS,
+  fun: PRIMARY1_FUN_QUESTIONS,
+};
+const PRIMARY2_QUESTION_BANKS = {
+  grammar: PRIMARY2_GRAMMAR_QUESTIONS,
+  vocabulary: PRIMARY2_VOCABULARY_QUESTIONS,
+  reading: PRIMARY2_READING_QUESTIONS,
+  cloze: PRIMARY2_CLOZE_QUESTIONS,
+  speaking: PRIMARY2_SPEAKING_QUESTIONS,
+  fun: PRIMARY2_FUN_QUESTIONS,
+};
+const GRADE7_QUESTION_BANKS = {
+  grammar: GRADE7_GRAMMAR_QUESTIONS,
+  vocabulary: GRADE7_VOCABULARY_QUESTIONS,
+  reading: GRADE7_READING_QUESTIONS,
+  cloze: GRADE7_CLOZE_QUESTIONS,
+  speaking: GRADE7_SPEAKING_QUESTIONS,
+  fun: GRADE7_FUN_QUESTIONS,
+};
+const ZHONGKAO_QUESTION_BANKS = {
+  grammar: ZHONGKAO_GRAMMAR_QUESTIONS,
+  vocabulary: ZHONGKAO_VOCABULARY_QUESTIONS,
+  reading: ZHONGKAO_READING_QUESTIONS,
+  cloze: ZHONGKAO_CLOZE_QUESTIONS,
+  speaking: ZHONGKAO_SPEAKING_QUESTIONS,
+  fun: ZHONGKAO_FUN_QUESTIONS,
+};
+const SENIOR_QUESTION_BANKS = {
+  grammar: SENIOR_GRAMMAR_QUESTIONS,
+  vocabulary: SENIOR_VOCABULARY_QUESTIONS,
+  reading: SENIOR_READING_QUESTIONS,
+  cloze: SENIOR_CLOZE_QUESTIONS,
+  speaking: SENIOR_SPEAKING_QUESTIONS,
+  fun: SENIOR_FUN_QUESTIONS,
+};
+const COMPLETE_QUESTION_BANKS = {
+  primary1: PRIMARY1_QUESTION_BANKS,
+  primary2: PRIMARY2_QUESTION_BANKS,
+  grade7: GRADE7_QUESTION_BANKS,
+  grade8: GRADE8_QUESTION_BANKS,
+  zhongkao: ZHONGKAO_QUESTION_BANKS,
+  senior: SENIOR_QUESTION_BANKS,
+};
+const READING_LEVEL_ONE = {
+  primary1: {
+    title: 'Lucy的一天', passage: 'Lucy is eight years old. She goes to school at 7:30 every morning. Her classroom is big and clean. She likes English best, and she reads with her teacher after class.',
+    questions: [
+      ['How old is Lucy?', ['Seven', 'Eight', 'Nine', 'Ten'], 1, '文中说 Lucy is eight years old。'],
+      ['When does Lucy go to school?', ['At 7:00', 'At 7:30', 'At 8:00', 'At 8:30'], 1, '文中给出的时间是 7:30。'],
+      ['What is her classroom like?', ['Small and old', 'Big and clean', 'Dark and quiet', 'New and small'], 1, '文中说 Her classroom is big and clean。'],
+      ['Which subject does Lucy like best?', ['Math', 'Chinese', 'English', 'Music'], 2, 'Lucy likes English best。'],
+      ['What does Lucy do after class?', ['She runs home', 'She reads with her teacher', 'She plays football', 'She draws pictures'], 1, '短文最后说她课后和老师一起阅读。'],
+    ],
+  },
+  primary2: {
+    title: '周末购物', passage: 'On Saturday morning, Ben goes to the market with his mother. They buy apples, bananas, milk and bread. The fruit costs 18 yuan, and the milk and bread cost 12 yuan. Ben carries the light bag home.',
+    questions: [
+      ['When does Ben go to the market?', ['Friday evening', 'Saturday morning', 'Saturday evening', 'Sunday morning'], 1, '短文首句给出 Saturday morning。'],
+      ['Who goes with Ben?', ['His father', 'His sister', 'His mother', 'His friend'], 2, 'Ben 和妈妈一起去市场。'],
+      ['Which item do they NOT buy?', ['Apples', 'Milk', 'Rice', 'Bread'], 2, '购买清单中没有 rice。'],
+      ['How much do they spend in total?', ['12 yuan', '18 yuan', '30 yuan', '36 yuan'], 2, '18 + 12 = 30 yuan。'],
+      ['What does Ben carry?', ['A light bag', 'A heavy box', 'A basket of flowers', 'A schoolbag'], 0, '短文最后说 Ben carries the light bag。'],
+    ],
+  },
+  grade7: {
+    title: 'Mimi的早晨', passage: 'Tom has a white cat named Mimi. Every morning, Mimi sits by the window and watches birds. At nine o’clock, she eats a little fish. Then she sleeps under the blue sofa until Tom comes home.',
+    questions: [
+      ['What color is Mimi?', ['Black', 'White', 'Brown', 'Gray'], 1, 'Mimi is a white cat。'],
+      ['Where does Mimi sit?', ['By the door', 'By the window', 'On the roof', 'Under the table'], 1, 'Mimi sits by the window。'],
+      ['What does Mimi watch?', ['Cars', 'Children', 'Birds', 'Fish'], 2, '她在窗边看 birds。'],
+      ['When does Mimi eat?', ['At eight', 'At nine', 'At ten', 'At eleven'], 1, '短文写明 at nine o’clock。'],
+      ['Where does Mimi sleep?', ['Under the blue sofa', 'On Tom’s bed', 'In the garden', 'Beside the window'], 0, '她睡在蓝色沙发下面。'],
+    ],
+  },
+  grade8: {
+    title: '健康使用手机', passage: 'Smartphones help students search for information and stay in touch with family. However, long screen time can hurt their eyes and reduce sleep. Doctors suggest taking a short break every thirty minutes and keeping phones away from the bed at night.',
+    questions: [
+      ['What can students search for with smartphones?', ['Information', 'Medicine', 'Furniture', 'Tickets only'], 0, '短文提到 search for information。'],
+      ['What can long screen time hurt?', ['Their ears', 'Their eyes', 'Their hands', 'Their feet'], 1, '长时间看屏幕可能伤害眼睛。'],
+      ['What may screen time reduce?', ['Sleep', 'Homework', 'Exercise equipment', 'Family'], 0, '短文提到 reduce sleep。'],
+      ['How often should students take a break?', ['Every ten minutes', 'Every thirty minutes', 'Every hour', 'Once a day'], 1, '医生建议每三十分钟休息一次。'],
+      ['Where should phones be kept at night?', ['Under the pillow', 'Beside the face', 'Away from the bed', 'In the hand'], 2, '短文建议夜间让手机远离床。'],
+    ],
+  },
+  zhongkao: {
+    title: '丝绸之路', passage: 'The Silk Road was a network of trade routes that began during the Han Dynasty. It connected China with the West for more than 1,500 years. Silk, tea and spices traveled west, while glass, gold and new ideas traveled east. The routes encouraged both trade and cultural exchange.',
+    questions: [
+      ['What was the Silk Road?', ['A single street', 'A network of trade routes', 'A modern railway', 'A sea bridge'], 1, '丝绸之路是贸易路线网络。'],
+      ['When did it begin?', ['The Han Dynasty', 'The Tang Dynasty', 'The Ming Dynasty', 'The Qing Dynasty'], 0, '它始于汉代。'],
+      ['How long did it connect China with the West?', ['About 500 years', 'Exactly 1,000 years', 'More than 1,500 years', 'Less than 100 years'], 2, '短文给出 more than 1,500 years。'],
+      ['Which item traveled west?', ['Glass', 'Gold', 'Silk', 'New ideas only'], 2, 'Silk traveled west。'],
+      ['What did the routes encourage?', ['Only wars', 'Trade and cultural exchange', 'Air travel', 'Local farming only'], 1, '末句概括为贸易与文化交流。'],
+    ],
+  },
+  senior: {
+    title: '人工智能与社会', passage: 'Artificial intelligence can analyze large amounts of data and assist doctors with diagnosis. It also improves transport and education. Yet experts warn that biased data may lead to unfair decisions. They argue that humans must remain responsible for important choices and review AI systems regularly.',
+    questions: [
+      ['What can AI analyze?', ['Only pictures', 'Large amounts of data', 'Human feelings only', 'No information'], 1, '首句提到 analyze large amounts of data。'],
+      ['Who can AI assist with diagnosis?', ['Drivers', 'Teachers', 'Doctors', 'Artists'], 2, 'AI 可以辅助医生诊断。'],
+      ['Which fields are also mentioned?', ['Transport and education', 'Cooking and fashion', 'Music and farming only', 'Sports and tourism'], 0, '短文提到 transport and education。'],
+      ['What may biased data cause?', ['Faster computers', 'Fairer games', 'Unfair decisions', 'Better sleep'], 2, '有偏见的数据可能导致不公平决策。'],
+      ['What must humans do?', ['Avoid all technology', 'Let AI make every choice', 'Remain responsible and review systems', 'Stop collecting data'], 2, '末句强调人类责任与定期审查。'],
+    ],
+  },
+};
+
+function cloneQuestion(question) {
+  return JSON.parse(JSON.stringify(question));
+}
+
+function asChoice(question) {
+  return { ...cloneQuestion(question), type: 'choice' };
+}
+
+function extractSingleBlankText(question, replacement) {
+  const text = question.passage || question.question || '';
+  let replaced = false;
+  return text.replace(/___\s*(?:\(\d+\))?/g, () => {
+    if (!replaced) {
+      replaced = true;
+      return replacement;
+    }
+    return '...';
+  });
+}
+
+function buildClozeQuestion(source, pool, offset) {
+  const selected = Array.from({ length: 3 }, (_, index) => pool[(offset + index) % pool.length]);
+  const sentences = selected.map((item, index) => {
+    return extractSingleBlankText(item, `___ (${index + 1})`);
+  });
+  return {
+    title: source.title,
+    type: 'cloze',
+    passage: sentences.join(' '),
+    blanks: selected.map(item => ({ options: [...item.options], correctIndex: item.correctIndex })),
+    explanation: selected.map((item, index) => `空格${index + 1}：${item.explanation}`).join(' '),
+  };
+}
+
+function buildWordbankQuestion(pool, offset) {
+  const selected = Array.from({ length: 3 }, (_, index) => pool[(offset + index) % pool.length]);
+  const answers = selected.map(item => item.options[item.correctIndex]);
+  return {
+    title: '选词填空',
+    type: 'wordbank',
+    passage: selected.map(item => extractSingleBlankText(item, '____')).join(' '),
+    blanks: answers.map(correctWord => ({ correctWord })),
+    wordBank: [...answers, ...selected.map(item => item.options[(item.correctIndex + 1) % item.options.length])].sort(),
+    explanation: selected.map(item => item.explanation).join(' '),
+  };
+}
+
+function buildGrammarQuestion(pool, offset) {
+  const selected = Array.from({ length: 3 }, (_, index) => pool[(offset + index) % pool.length]);
+  return {
+    title: '语法填空',
+    type: 'grammar',
+    passage: selected.map((item, index) => extractSingleBlankText(item, `___ (${index + 1})`)).join(' '),
+    blanks: selected.map(item => ({ correctAnswer: item.options[item.correctIndex], hint: item.title || '用正确形式填空' })),
+    explanation: selected.map(item => item.explanation).join(' '),
+  };
+}
+
+function buildLevelQuestions(difficultyId, faceId, level) {
+  const completeBank = COMPLETE_QUESTION_BANKS[difficultyId]?.[faceId];
+  if (completeBank) {
+    const levelData = cloneQuestion(completeBank[level - 1]);
+    levelData.questions.forEach(question => { question.placeholder = false; });
+    return levelData;
+  }
+  const sourcePool = LEGACY_QUESTIONS[LEGACY_SOURCE[difficultyId]][faceId];
+  const start = (level - 1) % sourcePool.length;
+  if (faceId === 'reading' && level === 1) {
+    const sample = READING_LEVEL_ONE[difficultyId];
+    const questions = sample.questions.map(([question, options, correctIndex, explanation], qIndex) => ({
+      id: `${difficultyId}_${faceId}_${level}_${qIndex + 1}`,
+      title: sample.title, passage: sample.passage, question, options, correctIndex, explanation,
+      type: 'choice', placeholder: false,
+    }));
+    return { level, passScore: Math.ceil(questions.length * 0.6), questions };
+  }
+  // TODO: 第2-9关当前复用旧题种子，后续按课程标准逐关替换。
+  const questions = Array.from({ length: 5 }, (_, qIndex) => {
+    const source = faceId === 'reading' ? sourcePool[start] : sourcePool[(start + qIndex) % sourcePool.length];
+    let question = asChoice(source);
+    if (faceId === 'cloze') {
+      if (qIndex === 3) question = buildWordbankQuestion(sourcePool, start + qIndex);
+      else if (qIndex === 4) question = buildGrammarQuestion(sourcePool, start + qIndex);
+      else question = buildClozeQuestion(source, sourcePool, start + qIndex);
+    } else if (['speaking', 'fun'].includes(faceId) && ['primary1', 'primary2'].includes(difficultyId) && qIndex % 2 === 1) {
+      question = { ...question, type: 'listening', audioText: source.question, question: '请听录音，选择最合适的答案。' };
+    }
+    return {
+      ...question,
+      id: `${difficultyId}_${faceId}_${level}_${qIndex + 1}`,
+      placeholder: level > 1,
+    };
+  });
+  return { level, passScore: Math.ceil(questions.length * 0.6), questions };
+}
+
+const QUESTIONS = Object.fromEntries(DIFFICULTIES.map(difficulty => [
+  difficulty.id,
+  Object.fromEntries(Object.keys(FACE_TO_QB).map(faceId => {
+    const questionFace = FACE_TO_QB[faceId];
+    return [questionFace, Array.from({ length: 9 }, (_, index) => buildLevelQuestions(difficulty.id, questionFace, index + 1))];
+  })),
+]));
+
+const QUESTION_STATS = Object.fromEntries(DIFFICULTIES.map(difficulty => [
+  difficulty.id,
+  Object.fromEntries(Object.entries(QUESTIONS[difficulty.id]).map(([face, levels]) => {
+    const questions = levels.flatMap(level => level.questions);
+    const placeholders = questions.filter(question => question.placeholder).length;
+    return [face, { levels: levels.length, questions: questions.length, real: questions.length - placeholders, placeholders }];
+  })),
+]));
+console.table(Object.entries(QUESTION_STATS).flatMap(([difficulty, faces]) =>
+  Object.entries(faces).map(([face, stats]) => ({ difficulty, face, ...stats }))
+));
+
+// ============================================================
+// Three.js 初始化
+// ============================================================
+const canvas = document.getElementById('cube-canvas');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(5, 4, 7);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+// 限制像素比，避免高DPI设备过载（移动端≤600px强制1倍）
+renderer.setPixelRatio(window.innerWidth <= 600 ? 1 : Math.min(window.devicePixelRatio, 1.5));
+renderer.shadowMap.enabled = true;
+
+// 灯光
+const ambientLight = new THREE.AmbientLight(0x8aa6b8, 1.8);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 2);
+dirLight.position.set(5, 10, 5);
+scene.add(dirLight);
+const dirLight2 = new THREE.DirectionalLight(0x68aee5, 0.65);
+dirLight2.position.set(-3, -1, -3);
+scene.add(dirLight2);
+
+// 轨道控制器
+const controls = new OrbitControls(camera, renderer.domElement);
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.enablePan = false;
+controls.rotateSpeed = window.innerWidth <= 600 ? 1.25 : 0.9;
+controls.zoomSpeed = 0.85;
+controls.touches.ONE = THREE.TOUCH.ROTATE;
+controls.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
+controls.minDistance = 4;
+controls.maxDistance = 14;
+controls.autoRotate = !prefersReducedMotion.matches;
+controls.autoRotateSpeed = 0.5;
+controls.target.set(0, 0, 0);
+
+prefersReducedMotion.addEventListener('change', (event) => {
+  controls.autoRotate = !event.matches;
+});
+
+// 粒子背景 - 使用 Sprite 纹理（80个，青紫渐变，柔和光晕）
+const particlesCount = 48;
+// 创建光晕纹理（Canvas 绘制径向渐变）
+const glowCanvas = document.createElement('canvas');
+glowCanvas.width = 32; glowCanvas.height = 32;
+const gctx = glowCanvas.getContext('2d');
+const gradient = gctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+gradient.addColorStop(0, 'rgba(255,255,255,0.9)');
+gradient.addColorStop(0.3, 'rgba(205,234,231,0.5)');
+gradient.addColorStop(1, 'rgba(0,0,0,0)');
+gctx.fillStyle = gradient;
+gctx.fillRect(0, 0, 32, 32);
+const glowTexture = new THREE.CanvasTexture(glowCanvas);
+glowTexture.minFilter = THREE.LinearFilter;
+
+const spriteGroup = new THREE.Group();
+const colors = [0x42dfc0, 0xf0c56a, 0x5a9bd8];
+for (let i = 0; i < particlesCount; i++) {
+  const spriteMat = new THREE.SpriteMaterial({
+    map: glowTexture,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    transparent: true,
+    opacity: 0.3 + Math.random() * 0.25,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const sprite = new THREE.Sprite(spriteMat);
+  sprite.position.set(
+    (Math.random() - 0.5) * 16, // ±8 范围
+    (Math.random() - 0.5) * 16,
+    (Math.random() - 0.5) * 16
+  );
+  sprite.scale.setScalar(0.15 + Math.random() * 0.2);
+  spriteGroup.add(sprite);
+}
+scene.add(spriteGroup);
+
+// ============================================================
+// 未显式指定题型的题目按选择题渲染，保留题库自身定义的题型
+// ============================================================
+(function processQuestionTypes() {
+  for (const diff of DIFFICULTIES.map(item => item.id)) {
+    for (const face of Object.keys(QUESTIONS[diff])) {
+      for (const level of QUESTIONS[diff][face]) {
+        for (const question of level.questions) {
+          if (!QUESTION_TYPES.has(question.type)) question.type = 'choice';
+        }
+      }
+    }
+  }
+})();
+
+// ============================================================
+// 当前难度等级
+// ============================================================
+let currentDifficulty = 'grade8';
+
+// ============================================================
+// 创建魔方
+// ============================================================
+const CUBIE_SIZE = 0.95;
+const CUBIE_GAP = 0.05;
+const cubieGroup = new THREE.Group();
+const cubieMap = {}; // key: "x,y,z" → { mesh, materials, pos }
+const cubieMeshes = []; // for raycasting
+
+const DARK_COLOR = 0x1a1a2e;
+
+// 计算边框颜色：取面颜色的 40%-70% 亮度，深色面自动变亮，亮色面加深
+function computeEdgeColor(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  // 感知亮度 (luminance)
+  const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+  let factor;
+  if (lum < 100) {
+    factor = 1.3; // 深色面：变亮 30%
+  } else if (lum > 200) {
+    factor = 0.4; // 亮色面（白/黄）：加深到 40%，确保边框可见
+  } else {
+    factor = 0.7; // 中等亮度：70%
+  }
+  return [
+    Math.min(255, Math.round(r * factor)),
+    Math.min(255, Math.round(g * factor)),
+    Math.min(255, Math.round(b * factor))
+  ];
+}
+
+function createCubie(x, y, z) {
+  // 判断每个面是否暴露
+  const exposed = {
+    front:  z === 1,
+    back:   z === -1,
+    left:   x === -1,
+    right:  x === 1,
+    top:    y === 1,
+    bottom: y === -1,
+  };
+
+  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
+  const faceColors = {
+    right:  exposed.right  ? FACES.right.color  : DARK_COLOR,
+    left:   exposed.left   ? FACES.left.color   : DARK_COLOR,
+    top:    exposed.top    ? FACES.top.color    : DARK_COLOR,
+    bottom: exposed.bottom ? FACES.bottom.color : DARK_COLOR,
+    front:  exposed.front  ? FACES.front.color  : DARK_COLOR,
+    back:   exposed.back   ? FACES.back.color   : DARK_COLOR,
+  };
+
+  const materials = faceOrder.map(f => new THREE.MeshStandardMaterial({
+    color: faceColors[f],
+    roughness: 0.45,
+    metalness: 0.02,
+  }));
+
+  const geo = new THREE.BoxGeometry(CUBIE_SIZE, CUBIE_SIZE, CUBIE_SIZE);
+  const mesh = new THREE.Mesh(geo, materials);
+  mesh.position.set(x * (CUBIE_SIZE + CUBIE_GAP), y * (CUBIE_SIZE + CUBIE_GAP), z * (CUBIE_SIZE + CUBIE_GAP));
+
+  // 边框：颜色根据面颜色动态计算，透明度根据主题
+  const edges = new THREE.EdgesGeometry(geo);
+  const edgeOpacity = getThemeEdgeOpacity();
+  const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: getThemeEdgeColor(), transparent: true, opacity: edgeOpacity }));
+  line.raycast = () => {};
+  mesh.add(line);
+
+  return { mesh, materials, faceOrder, exposed, line };
+}
+
+// 生成所有 cubie（排除中心块）
+for (let x = -1; x <= 1; x++) {
+  for (let y = -1; y <= 1; y++) {
+    for (let z = -1; z <= 1; z++) {
+      if (x === 0 && y === 0 && z === 0) continue;
+      const key = `${x},${y},${z}`;
+      const { mesh, materials, faceOrder, exposed } = createCubie(x, y, z);
+      cubieGroup.add(mesh);
+      cubieMap[key] = { mesh, materials, faceOrder, exposed, x, y, z };
+      cubieMeshes.push(mesh);
+    }
+  }
+}
+scene.add(cubieGroup);
+
+// ============================================================
+// 锁定状态：已移除 🔒 图标，改用颜色明暗区分三态
+//   - locked: 暗色 #1a1a2e（与魔方内部一致）
+//   - unlocked: 低饱和度面色 + 柔和呼吸发光（提示下一关）
+//   - completed: 面颜色 100% 鲜艳 + 发光
+// ============================================================
+
+// ============================================================
+// 动画系统：脉冲 + 完成动画
+// ============================================================
+const activeAnimations = [];
+const nextCellGuides = [];
+
+function getNextCellColor(baseColor) {
+  const color = new THREE.Color(baseColor);
+  const hsl = {};
+  color.getHSL(hsl);
+  color.setHSL(hsl.h, Math.min(hsl.s, 0.38), hsl.l * getThemeUnlockedAlpha());
+  return color;
+}
+
+function refreshNextCellGuides() {
+  nextCellGuides.length = 0;
+  for (const key in cubieMap) {
+    const cubie = cubieMap[key];
+    for (const faceId of Object.keys(FACES)) {
+      if (!cubie.exposed[faceId]) continue;
+      const cell = getFaceCell(cubie.x, cubie.y, cubie.z, ...FACES[faceId].normal);
+      if (!cell || getCellState(faceId, cell.row, cell.col) !== 'unlocked') continue;
+      const material = cubie.materials[cubie.faceOrder.indexOf(faceId)];
+      if (material) {
+        const color = new THREE.Color(FACES[faceId].color);
+        material.color.copy(getNextCellColor(FACES[faceId].color));
+        material.emissive.copy(color);
+        material.emissiveIntensity = 0.16;
+        nextCellGuides.push({ material, color });
+      }
+    }
+  }
+}
+
+function updateNextCellGuidance(now) {
+  const pulse = prefersReducedMotion.matches ? 1 : (Math.sin(now * Math.PI / 1200) + 1) / 2;
+  const intensity = 0.16 + pulse * 0.22;
+  for (const guide of nextCellGuides) {
+    guide.material.emissive.copy(guide.color);
+    guide.material.emissiveIntensity = intensity;
+  }
+}
+
+function addPulseAnimation(mesh) {
+  // 移除同一 mesh 的旧动画
+  for (let i = activeAnimations.length - 1; i >= 0; i--) {
+    if (activeAnimations[i].mesh === mesh && activeAnimations[i].type === 'pulse') {
+      activeAnimations.splice(i, 1);
+    }
+  }
+
+  const anim = {
+    type: 'pulse',
+    mesh,
+    startTime: performance.now(),
+    duration: 300,
+    originalScale: mesh.scale.clone(),
+  };
+  activeAnimations.push(anim);
+}
+
+function addCompletionAnimation(mesh, materials, faceOrder, faceId, baseColor) {
+  // 移除同一 mesh 的旧完成动画
+  for (let i = activeAnimations.length - 1; i >= 0; i--) {
+    if (activeAnimations[i].mesh === mesh && activeAnimations[i].type === 'complete') {
+      activeAnimations.splice(i, 1);
+    }
+  }
+
+  const matIdx = faceOrder.indexOf(faceId === 'front' ? 'front' : faceId === 'back' ? 'back' : faceId === 'left' ? 'left' : faceId === 'right' ? 'right' : faceId === 'top' ? 'top' : 'bottom');
+  if (matIdx === -1) return;
+
+  const anim = {
+    type: 'complete',
+    mesh,
+    startTime: performance.now(),
+    duration: 650,
+    originalScale: mesh.scale.clone(),
+    materials,
+    matIdx,
+    targetColor: new THREE.Color(baseColor),
+    startColor: new THREE.Color(halfBrightnessDynamic(baseColor)),
+  };
+  activeAnimations.push(anim);
+}
+
+function updateAnimations() {
+  const now = performance.now();
+  for (let i = activeAnimations.length - 1; i >= 0; i--) {
+    const anim = activeAnimations[i];
+    const elapsed = now - anim.startTime;
+    const t = Math.min(elapsed / anim.duration, 1);
+
+    if (anim.type === 'pulse') {
+      // 缓出脉冲
+      const scale = 1 + 0.08 * Math.sin(t * Math.PI) * (1 - t);
+      anim.mesh.scale.setScalar(scale);
+      if (t >= 1) {
+        anim.mesh.scale.copy(anim.originalScale);
+        activeAnimations.splice(i, 1);
+      }
+    } else if (anim.type === 'complete') {
+      // 颜色渐变 + 柔和缩放，避免移动整个 cubie 破坏魔方结构
+      const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+      const color = new THREE.Color().lerpColors(anim.startColor, anim.targetColor, ease);
+      anim.materials[anim.matIdx].color.copy(color);
+      anim.materials[anim.matIdx].emissive.copy(color);
+      anim.materials[anim.matIdx].emissiveIntensity = 0.5 * ease;
+      const scale = 1 + Math.sin(t * Math.PI) * 0.07;
+      anim.mesh.scale.copy(anim.originalScale).multiplyScalar(scale);
+
+      if (t >= 1) {
+        anim.mesh.scale.copy(anim.originalScale);
+        anim.materials[anim.matIdx].color.copy(anim.targetColor);
+        anim.materials[anim.matIdx].emissive.copy(anim.targetColor);
+        anim.materials[anim.matIdx].emissiveIntensity = 0.5;
+        activeAnimations.splice(i, 1);
+      }
+    } else if (anim.type === 'shake') {
+      // 摇晃效果
+      const intensity = (1 - t) * 0.08;
+      const shakeX = Math.sin(t * 20) * intensity;
+      const shakeY = Math.cos(t * 17) * intensity;
+      anim.mesh.position.x = anim.originalPos.x + shakeX;
+      anim.mesh.position.y = anim.originalPos.y + shakeY;
+      if (t >= 1) {
+        anim.mesh.position.copy(anim.originalPos);
+        activeAnimations.splice(i, 1);
+      }
+    }
+  }
+}
+
+// 锁定格子摇晃动画
+function shakeLockedCubie(mesh) {
+  for (let i = activeAnimations.length - 1; i >= 0; i--) {
+    if (activeAnimations[i].mesh === mesh && activeAnimations[i].type === 'shake') {
+      activeAnimations.splice(i, 1);
+    }
+  }
+  const anim = {
+    type: 'shake',
+    mesh,
+    startTime: performance.now(),
+    duration: 400,
+    originalPos: mesh.position.clone(),
+  };
+  activeAnimations.push(anim);
+}
+
+// 更新 updateAnimations 添加 shake 类型
+// (在 updateAnimations 函数末尾添加 shake 处理)
+
+// ============================================================
+// 进度管理
+// ============================================================
+const STORAGE_KEY = 'cube_english_progress';
+const AUTO_ADVANCE_KEY = 'cube_english_auto_advance';
+const AUTO_ADVANCE_DELAY = 2000;
+
+function isAutoAdvanceEnabled() {
+  return document.getElementById('auto-advance-input')?.checked ?? true;
+}
+
+function scheduleAutoAdvance(action = advanceLevelQuestion) {
+  if (!isAutoAdvanceEnabled()) return false;
+  window._modalTimer = setTimeout(action, AUTO_ADVANCE_DELAY);
+  return true;
+}
+const LEGACY_DIFFICULTY_MIGRATION = { easy: 'primary2', medium: 'grade8', hard: 'senior' };
+
+function normalizeProgressRecord(value) {
+  if (value === true || value === 'completed') return { completed: true, bestScore: 5, attempts: 1 };
+  if (value && typeof value === 'object') return value;
+  return null;
+}
+
+function migrateLegacyData() {
+  if (localStorage.getItem('cube_english_v3_migrated')) return;
+  const migratedByV2 = localStorage.getItem('cube_english_v2_migrated') === '1';
+  const progress = loadProgress();
+  const migrated = {};
+  for (const [key, value] of Object.entries(progress)) {
+    const parts = key.split('_');
+    const mappedDifficulty = LEGACY_DIFFICULTY_MIGRATION[parts[0]] || parts[0];
+    const record = normalizeProgressRecord(value);
+    if (record) migrated[[mappedDifficulty, ...parts.slice(1)].join('_')] = record;
+  }
+  saveProgress(migrated);
+
+  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
+  wrongQuestions.forEach(item => {
+    item.difficulty = LEGACY_DIFFICULTY_MIGRATION[item.difficulty] || item.difficulty || 'grade8';
+    const face = FACE_TO_QB[item.faceId] || 'grammar';
+    if (item.questionId && /^[emh]\d+$/.test(item.questionId)) {
+      const legacyNumber = Number(item.questionId.slice(1));
+      const level = Number.isFinite(legacyNumber) ? ((legacyNumber - 1) % 9) + 1 : 1;
+      item.questionId = `${item.difficulty}_${face}_${level}_1`;
+    } else if (migratedByV2 && item.questionId?.endsWith('_1_1')) {
+      const sourcePool = LEGACY_QUESTIONS[LEGACY_SOURCE[item.difficulty]]?.[face] || [];
+      const sourceIndex = sourcePool.findIndex(question => (question.question || question.passage) === item.question);
+      if (sourceIndex >= 0) item.questionId = `${item.difficulty}_${face}_${sourceIndex + 1}_1`;
+    }
+  });
+  localStorage.setItem('cube_wrong_questions', JSON.stringify(wrongQuestions));
+  localStorage.setItem('cube_english_v2_migrated', '1');
+  localStorage.setItem('cube_english_v3_migrated', '1');
+}
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+function saveProgress(progress) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
+
+function getCellKey(faceId, row, col) {
+  return `${currentDifficulty}_${faceId}_${row}_${col}`;
+}
+
+function getCellState(faceId, row, col) {
+  const progress = loadProgress();
+  const key = getCellKey(faceId, row, col);
+  if (normalizeProgressRecord(progress[key])?.completed) return 'completed';
+  // 解锁逻辑：每个面的关卡按顺序解锁 (row*3+col 顺序)
+  const order = row * 3 + col;
+  if (order === 0) return 'unlocked';
+  // 检查前一关是否完成
+  const prevRow = Math.floor((order - 1) / 3);
+  const prevCol = (order - 1) % 3;
+  const prevKey = getCellKey(faceId, prevRow, prevCol);
+  return normalizeProgressRecord(progress[prevKey])?.completed ? 'unlocked' : 'locked';
+}
+
+function recordLevelAttempt(faceId, row, col, score, passed) {
+  const progress = loadProgress();
+  const key = getCellKey(faceId, row, col);
+  const previous = normalizeProgressRecord(progress[key]) || { completed: false, bestScore: 0, attempts: 0 };
+  progress[key] = { completed: Boolean(previous.completed || passed), bestScore: Math.max(previous.bestScore || 0, score), attempts: (previous.attempts || 0) + 1 };
+  saveProgress(progress);
+  if (passed) {
+    updateSingleCubieFace(faceId, row, col);
+    refreshNextCellGuides();
+    updateHeaderStats();
+  }
+}
+
+function markCompleted(faceId, row, col, score = 5) {
+  recordLevelAttempt(faceId, row, col, score, true);
+}
+
+// 将 hex 颜色转换为 50% 亮度版本（用于 unlocked 状态）
+function halfBrightness(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return '#' + [r, g, b].map(c => Math.round(c * 0.5).toString(16).padStart(2, '0')).join('');
+}
+
+// 局部更新单个 cubie 的单个面颜色（替代 updateAllCubieColors 全量遍历）
+function updateSingleCubieFace(faceId, row, col) {
+  const face = FACES[faceId];
+  const [nx, ny, nz] = face.normal;
+  for (const key in cubieMap) {
+    const cubie = cubieMap[key];
+    if (!cubie.exposed[faceId]) continue;
+    const cell = getFaceCell(cubie.x, cubie.y, cubie.z, nx, ny, nz);
+    if (cell && cell.row === row && cell.col === col) {
+      const matIdx = cubie.faceOrder.indexOf(faceId);
+      if (matIdx === -1) return;
+      const state = getCellState(faceId, row, col);
+      const color = face.color;
+      if (state === 'completed') {
+        cubie.materials[matIdx].color.set(color);
+        cubie.materials[matIdx].emissive.set(color);
+        cubie.materials[matIdx].emissiveIntensity = 0.5;
+      } else if (state === 'locked') {
+        cubie.materials[matIdx].color.set(DARK_COLOR_DYNAMIC());
+        cubie.materials[matIdx].emissive.set(0x000000);
+        cubie.materials[matIdx].emissiveIntensity = 0;
+      } else {
+        cubie.materials[matIdx].color.copy(getNextCellColor(color));
+        cubie.materials[matIdx].emissive.set(color);
+        cubie.materials[matIdx].emissiveIntensity = 0.16;
+      }
+      return;
+    }
+  }
+}
+
+function getTotalCompleted() {
+  const progress = loadProgress();
+  const difficultyPrefix = `${currentDifficulty}_`;
+  return Object.entries(progress).filter(([key, value]) => key.startsWith(difficultyPrefix) && normalizeProgressRecord(value)?.completed).length;
+}
+
+function getFaceCompleted(faceId) {
+  const progress = loadProgress();
+  let count = 0;
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      if (normalizeProgressRecord(progress[getCellKey(faceId, row, col)])?.completed) count++;
+    }
+  }
+  return count;
+}
+
+// ============================================================
+// 更新 cubie 颜色（根据完成状态）
+// ============================================================
+function updateAllCubieColors() {
+  const progress = loadProgress();
+  for (const key in cubieMap) {
+    const [x, y, z] = key.split(',').map(Number);
+    const { materials, faceOrder, exposed } = cubieMap[key];
+
+    for (const faceId of Object.keys(FACES)) {
+      if (!exposed[faceId]) continue;
+      const cell = getFaceCell(x, y, z, ...FACES[faceId].normal);
+      if (!cell) continue;
+      const state = getCellState(faceId, cell.row, cell.col);
+      const matIdx = faceOrder.indexOf(faceId === 'front' ? 'front' : faceId === 'back' ? 'back' : faceId === 'left' ? 'left' : faceId === 'right' ? 'right' : faceId === 'top' ? 'top' : 'bottom');
+      if (matIdx === -1) continue;
+
+      const baseColor = FACES[faceId].color;
+      if (state === 'completed') {
+        materials[matIdx].color.set(baseColor);
+        materials[matIdx].emissive.set(baseColor);
+        materials[matIdx].emissiveIntensity = 0.5;
+      } else if (state === 'locked') {
+        materials[matIdx].color.set(DARK_COLOR_DYNAMIC());
+        materials[matIdx].emissive.set(0x000000);
+        materials[matIdx].emissiveIntensity = 0;
+      } else {
+        // 下一关：低饱和度底色配合柔和呼吸发光
+        materials[matIdx].color.copy(getNextCellColor(baseColor));
+        materials[matIdx].emissive.set(baseColor);
+        materials[matIdx].emissiveIntensity = 0.16;
+      }
+    }
+  }
+  refreshNextCellGuides();
+}
+
+// 更新所有边框透明度（主题切换时调用）
+function updateAllEdgeOpacity() {
+  const opacity = getThemeEdgeOpacity();
+  for (const key in cubieMap) {
+    const cubie = cubieMap[key];
+    if (cubie.line && cubie.line.material) {
+      cubie.line.material.opacity = opacity;
+      cubie.line.material.color.set(getThemeEdgeColor());
+    }
+  }
+}
+
+// ============================================================
+// 顶部统计
+// ============================================================
+function updateHeaderStats() {
+  const total = getTotalCompleted();
+  document.getElementById('total-completed').textContent = total;
+
+  // 更新悬浮面板
+  const pct = Math.round((total / 54) * 100);
+  document.getElementById('panel-progress-text').textContent = `${total}/54`;
+  document.getElementById('panel-progress-fill').style.width = `${pct}%`;
+  document.getElementById('panel-percent').textContent = `${pct}%`;
+
+  // 更新展开的面进度
+  const faceOrder = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+  const row1 = document.getElementById('panel-body-row1');
+  const row2 = document.getElementById('panel-body-row2');
+  row1.innerHTML = '';
+  row2.innerHTML = '';
+
+  for (let i = 0; i < faceOrder.length; i++) {
+    const face = FACES[faceOrder[i]];
+    const completed = getFaceCompleted(face.id);
+    const item = document.createElement('div');
+    item.className = 'panel-body-item';
+    const resetBtn = `<button class="panel-reset-btn" data-face="${face.id}" title="重置「${face.name}」进度" aria-label="重置${face.name}进度">${iconMarkup('rotate-ccw')}</button>`;
+    item.innerHTML = `<span class="panel-body-dot" style="background:${face.color}"></span>${face.name} ${completed}/9 ${resetBtn}`;
+    item.onclick = (e) => {
+      if (e.target.closest('.panel-reset-btn')) {
+        e.stopPropagation();
+        showResetFaceConfirm(face);
+        return;
+      }
+      e.stopPropagation();
+      faceCameraToFace(face.id);
+    };
+    (i < 3 ? row1 : row2).appendChild(item);
+  }
+  refreshIcons();
+}
+
+let cameraTransitionFrame = null;
+
+function getQuestionFocusDistance() {
+  if (window.innerWidth < 400) return 8.5;
+  if (window.innerWidth < 600) return 7.5;
+  return 6.5;
+}
+
+function findCubieForCell(faceId, cell) {
+  const face = FACES[faceId];
+  for (const key in cubieMap) {
+    const cubie = cubieMap[key];
+    if (!cubie.exposed[faceId]) continue;
+    const mappedCell = getFaceCell(cubie.x, cubie.y, cubie.z, ...face.normal);
+    if (mappedCell && mappedCell.row === cell.row && mappedCell.col === cell.col) return cubie;
+  }
+  return null;
+}
+
+function animateCameraTo(faceId, focusPoint, callback) {
+  const face = FACES[faceId];
+  const normal = new THREE.Vector3(...face.normal);
+  const targetPosition = focusPoint.clone().add(normal.multiplyScalar(getQuestionFocusDistance()));
+  const start = camera.position.clone();
+  const startTarget = controls.target.clone();
+  const startTime = performance.now();
+  const duration = 700;
+
+  if (cameraTransitionFrame !== null) cancelAnimationFrame(cameraTransitionFrame);
+  if (rotateRestoreTimer !== null) {
+    clearTimeout(rotateRestoreTimer);
+    rotateRestoreTimer = null;
+  }
+  controls.autoRotate = false;
+  controls.enabled = false;
+
+  if (prefersReducedMotion.matches) {
+    camera.position.copy(targetPosition);
+    controls.target.copy(focusPoint);
+    controls.update();
+    controls.enabled = true;
+    if (callback) callback();
+    return;
+  }
+
+  function anim(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const ease = t * t * (3 - 2 * t);
+
+    camera.position.lerpVectors(start, targetPosition, ease);
+    controls.target.lerpVectors(startTarget, focusPoint, ease);
+    controls.update();
+
+    if (t < 1) {
+      cameraTransitionFrame = requestAnimationFrame(anim);
+    } else {
+      cameraTransitionFrame = null;
+      controls.enabled = true;
+      if (callback) callback();
+    }
+  }
+  cameraTransitionFrame = requestAnimationFrame(anim);
+}
+
+// 平滑定位到指定面或具体方块
+function faceCameraToFace(faceId, callback) {
+  animateCameraTo(faceId, new THREE.Vector3(0, 0, 0), callback);
+}
+
+function faceCameraToCell(faceId, cell, callback) {
+  const cubie = findCubieForCell(faceId, cell);
+  animateCameraTo(faceId, cubie ? cubie.mesh.position.clone() : new THREE.Vector3(0, 0, 0), callback);
+}
+
+// ============================================================
+// 点击检测 (Raycaster)
+// ============================================================
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let currentQuestion = null;
+let currentFaceId = null;
+let currentCell = null;
+let selectedOption = null;
+let answered = false;
+
+// 指针事件：pointerdown + pointerup 替代 click，解决移动端拖拽误触和 300ms 延迟
+let pointerDownX = 0, pointerDownY = 0;
+let isDragging = false;
+let rotateRestoreTimer = null;
+let cubeFocusTimer = null;
+const activePointers = new Set();
+let hadMultiplePointers = false;
+
+function setCubeFocused(focused, delay = 0) {
+  if (cubeFocusTimer !== null) clearTimeout(cubeFocusTimer);
+  if (focused) {
+    document.body.classList.add('cube-focused');
+    cubeFocusTimer = null;
+    return;
+  }
+  if (delay <= 0) {
+    document.body.classList.remove('cube-focused');
+    cubeFocusTimer = null;
+    return;
+  }
+  cubeFocusTimer = setTimeout(() => {
+    document.body.classList.remove('cube-focused');
+    cubeFocusTimer = null;
+  }, delay);
+}
+
+function hideLockTooltip() {
+  document.getElementById('lock-hover-tooltip').classList.remove('show');
+}
+
+canvas.addEventListener('pointerdown', (e) => {
+  activePointers.add(e.pointerId);
+  if (activePointers.size > 1) hadMultiplePointers = true;
+  if (!e.isPrimary) return;
+  canvas.setPointerCapture(e.pointerId);
+  pointerDownX = e.clientX;
+  pointerDownY = e.clientY;
+  isDragging = false;
+  setCubeFocused(true);
+  hideLockTooltip();
+
+  // 用户开始交互，立即暂停自动旋转
+  controls.autoRotate = false;
+  // 清除之前的恢复计时器，防止频繁拖拽时误恢复
+  if (rotateRestoreTimer !== null) {
+    clearTimeout(rotateRestoreTimer);
+    rotateRestoreTimer = null;
+  }
+});
+
+canvas.addEventListener('pointermove', (e) => {
+  if (!e.isPrimary) return;
+  if (isDragging) return;
+  const dx = e.clientX - pointerDownX;
+  const dy = e.clientY - pointerDownY;
+  if (Math.sqrt(dx * dx + dy * dy) > 10) {
+    isDragging = true;
+    canvas.style.cursor = 'grabbing';
+  }
+});
+
+canvas.addEventListener('pointerup', (e) => {
+  activePointers.delete(e.pointerId);
+  const suppressClick = hadMultiplePointers;
+  if (activePointers.size === 0) hadMultiplePointers = false;
+  if (!e.isPrimary) return;
+  canvas.style.cursor = 'grab';
+  setCubeFocused(false, 800);
+  hideLockTooltip();
+
+  // 清除之前的恢复计时器（防重复）
+  if (rotateRestoreTimer !== null) {
+    clearTimeout(rotateRestoreTimer);
+    rotateRestoreTimer = null;
+  }
+
+  // 延迟 3 秒后恢复自动旋转（平滑过渡）
+  rotateRestoreTimer = setTimeout(() => {
+    controls.autoRotate = !prefersReducedMotion.matches;
+    // 平滑过渡：从 0 逐渐加速到目标速度
+    const targetSpeed = 0.5;
+    const rampDuration = 1000; // 1 秒过渡
+    const startTime = performance.now();
+    const startSpeed = 0;
+
+    function rampUp(now) {
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / rampDuration, 1);
+      // easeOutCubic 缓动
+      const eased = 1 - Math.pow(1 - t, 3);
+      controls.autoRotateSpeed = startSpeed + (targetSpeed - startSpeed) * eased;
+      if (t < 1) {
+        requestAnimationFrame(rampUp);
+      }
+    }
+    requestAnimationFrame(rampUp);
+    rotateRestoreTimer = null;
+  }, 3000);
+
+  if (isDragging || suppressClick) return;
+  if (document.getElementById('modal-overlay').classList.contains('active')) return;
+
+  const dx = e.clientX - pointerDownX;
+  const dy = e.clientY - pointerDownY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+
+  // 移动超过 10px 视为拖拽，不触发点击
+  if (dist > 10) return;
+
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(cubieMeshes);
+
+  if (intersects.length > 0) {
+    const intersect = intersects[0];
+    let hitObj = intersect.object;
+    // 如果射线命中的是子对象（如边框），向上查找父级 Mesh
+    if (!(hitObj instanceof THREE.Mesh)) {
+      hitObj = hitObj.parent;
+    }
+
+    let cubieData = null;
+    for (const key in cubieMap) {
+      if (cubieMap[key].mesh === hitObj) {
+        cubieData = cubieMap[key];
+        break;
+      }
+    }
+    if (!cubieData) return;
+
+    const normal = intersect.face.normal.clone();
+    normal.transformDirection(hitObj.matrixWorld);
+    normal.x = Math.round(normal.x);
+    normal.y = Math.round(normal.y);
+    normal.z = Math.round(normal.z);
+
+    const faceId = getFaceFromNormal(normal.x, normal.y, normal.z);
+    if (!faceId || !cubieData.exposed[faceId]) return;
+
+    const cell = getFaceCell(cubieData.x, cubieData.y, cubieData.z, normal.x, normal.y, normal.z);
+    if (!cell) return;
+
+    const state = getCellState(faceId, cell.row, cell.col);
+
+    if (state === 'locked') {
+      // 锁定格子摇晃动画
+      shakeLockedCubie(cubieData.mesh);
+      showLockedModal(faceId, cell);
+      return;
+    }
+
+    faceCameraToCell(faceId, cell, () => {
+      addPulseAnimation(cubieData.mesh);
+      openQuestionModal(faceId, cell);
+    });
+  }
+});
+
+canvas.addEventListener('pointercancel', (e) => {
+  activePointers.delete(e.pointerId);
+  if (activePointers.size === 0) hadMultiplePointers = false;
+  if (!e.isPrimary) return;
+  isDragging = false;
+  canvas.style.cursor = 'grab';
+  hideLockTooltip();
+  setCubeFocused(false, 200);
+});
+canvas.addEventListener('mouseleave', hideLockTooltip);
+
+// 鼠标悬停时改变光标，锁定格子显示 tooltip
+canvas.addEventListener('mousemove', (event) => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(cubieMeshes);
+
+  const tooltip = document.getElementById('lock-hover-tooltip');
+
+  if (intersects.length > 0) {
+    const intersect = intersects[0];
+    let hitObj = intersect.object;
+    if (!(hitObj instanceof THREE.Mesh)) hitObj = hitObj.parent;
+
+    let cubieData = null;
+    for (const key in cubieMap) {
+      if (cubieMap[key].mesh === hitObj) { cubieData = cubieMap[key]; break; }
+    }
+
+    if (cubieData) {
+      const face = intersect.face;
+      const normal = face.normal.clone();
+      normal.transformDirection(hitObj.matrixWorld);
+      const nx = Math.round(normal.x), ny = Math.round(normal.y), nz = Math.round(normal.z);
+      const faceId = getFaceFromNormal(nx, ny, nz);
+      if (faceId) {
+        const cell = getFaceCell(cubieData.x, cubieData.y, cubieData.z, nx, ny, nz);
+        if (cell) {
+          const state = getCellState(faceId, cell.row, cell.col);
+          if (state === 'locked') {
+            canvas.style.cursor = 'not-allowed';
+            tooltip.style.left = (event.clientX + 16) + 'px';
+            tooltip.style.top = (event.clientY - 30) + 'px';
+            tooltip.classList.add('show');
+            return;
+          }
+        }
+      }
+    }
+    canvas.style.cursor = 'pointer';
+  } else {
+    canvas.style.cursor = 'grab';
+  }
+  tooltip.classList.remove('show');
+});
+
+// 浮动按钮：打开第一个未完成的关卡
+window.startFirstQuestion = function() {
+  // 按面顺序查找第一个未完成的关卡（使用面 ID）
+  const faceOrder = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+  for (const faceId of faceOrder) {
+    for (let order = 0; order < 9; order++) {
+      const row = Math.floor(order / 3);
+      const col = order % 3;
+      const state = getCellState(faceId, row, col);
+      if (state === 'unlocked') {
+        faceCameraToCell(faceId, { row, col }, () => {
+          openQuestionModal(faceId, { row, col });
+        });
+        return;
+      }
+    }
+  }
+  // 全部完成
+  alert(`恭喜！你已经完成了${DIFFICULTY_MAP[currentDifficulty].name}的所有54个关卡！`);
+};
+
+// ============================================================
+// 答题弹窗 - 多题型支持
+// ============================================================
+let clozeAnswers = {}; // { blankId: selectedIndex }
+let wordbankAnswers = {}; // { blankId: word }
+let grammarAnswers = {}; // { blankId: answer }
+let currentClozeBlank = 1; // 当前激活的完形填空空格
+let currentWordbankBlank = 1; // 当前激活的选词填空空格
+
+const TYPE_LABELS = { choice: '选择题', cloze: '完形填空', wordbank: '选词填空', grammar: '语法填空', listening: '听力题' };
+const TYPE_CLASSES = { choice: 'type-choice', cloze: 'type-cloze', wordbank: 'type-wordbank', grammar: 'type-grammar', listening: 'type-listening' };
+let levelSession = null;
+
+function openQuestionModal(faceId, cell) {
+  closeModal();
+  hideLockTooltip();
+
+  const isFaceKey = FACES[faceId] !== undefined;
+  const qbId = isFaceKey ? FACE_TO_QB[faceId] : faceId;
+  const faceKey = isFaceKey ? faceId : QB_TO_FACE[faceId];
+  const face = FACES[faceKey];
+  currentFaceId = faceKey;
+  currentCell = cell;
+  const levelIndex = cell.row * 3 + cell.col;
+  const level = QUESTIONS[currentDifficulty][qbId][levelIndex];
+  levelSession = { faceId: faceKey, cell: { ...cell }, level, questionIndex: 0, score: 0, results: [], settled: false, isDaily: dailyQuestionIndex >= 0 };
+
+  // 设置面标签
+  const badge = document.getElementById('modal-face-badge');
+  badge.textContent = face.name;
+  badge.style.background = face.color + '33';
+  badge.style.color = getFaceUiColor(faceKey);
+  document.getElementById('modal-level').textContent = DIFFICULTY_MAP[currentDifficulty].name;
+  document.getElementById('locked-tip').style.display = 'none';
+  document.getElementById('level-question-progress').style.display = 'flex';
+  document.getElementById('modal-overlay').classList.add('active');
+  renderCurrentLevelQuestion();
+}
+
+function resetQuestionState() {
+  selectedOption = null;
+  answered = false;
+  clozeAnswers = {};
+  wordbankAnswers = {};
+  grammarAnswers = {};
+  currentClozeBlank = 1;
+  currentWordbankBlank = 1;
+}
+
+function renderCurrentLevelQuestion() {
+  if (!levelSession) return;
+  resetQuestionState();
+  document.getElementById('question-actions').style.display = 'grid';
+  const { level, questionIndex, faceId } = levelSession;
+  const q = level.questions[questionIndex];
+  currentQuestion = q;
+  const qType = q.type || 'choice';
+  const typeBadge = `<span class="question-type-badge ${TYPE_CLASSES[qType]}">${TYPE_LABELS[qType]}</span>`;
+  document.getElementById('modal-title').innerHTML = `第${level.level}关 · ${FACES[faceId].name} ${typeBadge}`;
+  document.getElementById('level-question-count').textContent = `${questionIndex + 1}/${level.questions.length}`;
+  document.getElementById('level-question-fill').style.width = `${((questionIndex + 1) / level.questions.length) * 100}%`;
+
+  document.getElementById('feedback-area').classList.remove('show');
+  const submitButton = document.getElementById('btn-submit');
+  submitButton.className = 'btn btn-primary';
+  submitButton.textContent = '提交答案';
+  submitButton.style.display = 'block';
+  submitButton.disabled = true;
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('modal-passage').style.display = 'none';
+  document.getElementById('modal-question').textContent = '';
+  document.getElementById('options-list').innerHTML = '';
+
+  switch (qType) {
+    case 'cloze': renderClozeQuestion(q); break;
+    case 'wordbank': renderWordbankQuestion(q); break;
+    case 'grammar': renderGrammarQuestion(q); break;
+    case 'listening': renderListeningQuestion(q); break;
+    default: renderChoiceQuestion(q); break;
+  }
+}
+
+function showLockedModal(faceId, cell) {
+  hideLockTooltip();
+  currentFaceId = faceId;
+  currentCell = cell;
+  const face = FACES[faceId];
+  const badge = document.getElementById('modal-face-badge');
+  badge.textContent = `${face.name}`;
+  badge.style.background = face.color + '33';
+  badge.style.color = getFaceUiColor(faceId);
+
+  const level = cell.row * 3 + cell.col + 1;
+  const prevLevel = level - 1;
+
+  document.getElementById('modal-level').textContent = '';
+  document.getElementById('modal-title').textContent = `第${level}关`;
+  document.getElementById('modal-passage').style.display = 'none';
+  document.getElementById('modal-question').textContent = '';
+  document.getElementById('options-list').innerHTML = '';
+  document.getElementById('feedback-area').classList.remove('show');
+  document.getElementById('btn-submit').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('question-actions').style.display = 'none';
+
+  document.getElementById('locked-tip-msg').innerHTML = `${iconMarkup('lock-keyhole')}<br>这关还没解锁<br>完成「<b style="color:${getFaceUiColor(faceId)}">${face.name}·第${prevLevel}关</b>」即可解锁`;
+  document.getElementById('locked-tip').style.display = 'block';
+
+  document.getElementById('modal-overlay').classList.add('active');
+  refreshIcons();
+}
+
+// ---- 选择题渲染 ----
+function renderChoiceQuestion(q) {
+  if (q.passage) {
+    const passageEl = document.getElementById('modal-passage');
+    passageEl.style.display = 'block';
+    passageEl.textContent = q.passage;
+  }
+  document.getElementById('modal-question').textContent = q.question || '';
+  const optionsList = document.getElementById('options-list');
+  const letters = ['A', 'B', 'C', 'D'];
+  (q.options || []).forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}.</span> ${opt}`;
+    btn.onclick = () => selectChoiceOption(i, btn);
+    optionsList.appendChild(btn);
+  });
+}
+
+function renderListeningQuestion(q) {
+  renderChoiceQuestion(q);
+  const listenButton = document.createElement('button');
+  listenButton.className = 'btn listen-btn';
+  const synthesis = window.speechSynthesis;
+  listenButton.textContent = synthesis ? '播放听力' : '当前浏览器不支持语音播放';
+  listenButton.disabled = !synthesis;
+  listenButton.onclick = synthesis ? () => {
+    synthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(q.audioText || q.question || '');
+    utterance.lang = 'en-US';
+    utterance.rate = 0.88;
+    synthesis.speak(utterance);
+  } : null;
+  document.getElementById('options-list').prepend(listenButton);
+}
+
+function selectChoiceOption(index, btn) {
+  if (answered) return;
+  selectedOption = index;
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('btn-submit').disabled = false;
+}
+
+// ---- 完形填空渲染 ----
+function renderClozeQuestion(q) {
+  const optionsList = document.getElementById('options-list');
+  // 显示短文
+  let passageHtml = q.passage;
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const placeholder = clozeAnswers[num] !== undefined ? (q.blanks[i].options[clozeAnswers[num]] || '___') : '___';
+    passageHtml = passageHtml.replace(`___ (${num})`, `<span class="cloze-blank" data-blank="${num}" id="cloze-blank-${num}">${placeholder}</span>`);
+  });
+  document.getElementById('modal-question').innerHTML = `<div class="cloze-passage">${passageHtml}</div>`;
+
+  // 显示每个空格选项
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const group = document.createElement('div');
+    group.className = 'cloze-options-group';
+    group.id = `cloze-options-${num}`;
+    group.innerHTML = `<div class="cloze-options-label">空格 ${num}：</div><div class="cloze-options-row"></div>`;
+    const row = group.querySelector('.cloze-options-row');
+    blank.options.forEach((opt, j) => {
+      const btn = document.createElement('button');
+      btn.className = 'cloze-option';
+      if (clozeAnswers[num] === j) btn.classList.add('selected-opt');
+      btn.textContent = opt;
+      btn.onclick = () => selectClozeOption(num, j, blank.options[j]);
+      row.appendChild(btn);
+    });
+    optionsList.appendChild(group);
+  });
+
+  // 点击空格切换
+  document.querySelectorAll('.cloze-blank').forEach(el => {
+    el.addEventListener('click', () => {
+      currentClozeBlank = parseInt(el.dataset.blank);
+      updateClozeBlankHighlight();
+    });
+  });
+  if (q.blanks && q.blanks.length > 0) currentClozeBlank = 1;
+  updateClozeBlankHighlight();
+  updateSubmitButtonState();
+}
+
+function selectClozeOption(blankId, index, text) {
+  if (answered) return;
+  clozeAnswers[blankId] = index;
+  const blankEl = document.getElementById(`cloze-blank-${blankId}`);
+  if (blankEl) { blankEl.textContent = text; blankEl.classList.add('filled'); }
+  // 更新选项高亮
+  const group = document.getElementById(`cloze-options-${blankId}`);
+  if (group) {
+    group.querySelectorAll('.cloze-option').forEach((b, i) => {
+      b.classList.toggle('selected-opt', i === index);
+    });
+  }
+  updateSubmitButtonState();
+}
+
+function updateClozeBlankHighlight() {
+  document.querySelectorAll('.cloze-blank').forEach(el => {
+    el.classList.toggle('current', parseInt(el.dataset.blank) === currentClozeBlank);
+  });
+}
+
+// ---- 选词填空渲染 ----
+function renderWordbankQuestion(q) {
+  // 显示短文
+  let passageHtml = q.passage;
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const word = wordbankAnswers[num] || '____';
+    passageHtml = passageHtml.replace('____', `<span class="wordbank-blank" data-blank="${num}" id="wb-blank-${num}">${word}</span>`);
+  });
+  document.getElementById('modal-question').innerHTML = `<div class="wordbank-passage">${passageHtml}</div>`;
+
+  // 词库
+  const optionsList = document.getElementById('options-list');
+  const tagsDiv = document.createElement('div');
+  tagsDiv.className = 'wordbank-tags';
+  tagsDiv.id = 'wordbank-tags';
+  (q.wordBank || []).forEach(word => {
+    const tag = document.createElement('span');
+    tag.className = 'wordbank-tag';
+    tag.textContent = word;
+    tag.onclick = () => fillWordbankBlank(word, tag);
+    if (Object.values(wordbankAnswers).includes(word)) tag.classList.add('used');
+    tagsDiv.appendChild(tag);
+  });
+  optionsList.appendChild(tagsDiv);
+
+  // 点击空格切换
+  document.querySelectorAll('.wordbank-blank').forEach(el => {
+    el.addEventListener('click', () => {
+      currentWordbankBlank = parseInt(el.dataset.blank);
+      updateWordbankBlankHighlight();
+    });
+  });
+  if (q.blanks && q.blanks.length > 0) currentWordbankBlank = 1;
+  updateWordbankBlankHighlight();
+  updateSubmitButtonState();
+}
+
+function fillWordbankBlank(word, tag) {
+  if (answered) return;
+  // 如果当前空格已有词，先释放旧词
+  const oldWord = wordbankAnswers[currentWordbankBlank];
+  if (oldWord) {
+    document.querySelectorAll('.wordbank-tag').forEach(t => {
+      if (t.textContent === oldWord) t.classList.remove('used');
+    });
+  }
+  wordbankAnswers[currentWordbankBlank] = word;
+  const blankEl = document.getElementById(`wb-blank-${currentWordbankBlank}`);
+  if (blankEl) { blankEl.textContent = word; blankEl.classList.add('filled'); }
+  tag.classList.add('used');
+  // 跳转到下一个空格
+  const q = currentQuestion;
+  const nextBlank = currentWordbankBlank + 1;
+  if (q.blanks && nextBlank <= q.blanks.length) {
+    currentWordbankBlank = nextBlank;
+    updateWordbankBlankHighlight();
+  }
+  updateSubmitButtonState();
+}
+
+function updateWordbankBlankHighlight() {
+  document.querySelectorAll('.wordbank-blank').forEach(el => {
+    el.classList.toggle('current', parseInt(el.dataset.blank) === currentWordbankBlank);
+  });
+}
+
+// ---- 语法填空渲染 ----
+function renderGrammarQuestion(q) {
+  let passageHtml = q.passage;
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const hint = blank.hint || '';
+    passageHtml = passageHtml.replace(
+      `___ (${num})`,
+      `<input class="grammar-input" id="grammar-input-${num}" data-blank="${num}" placeholder="空格${num}" value="${grammarAnswers[num] || ''}"><span class="grammar-hint">${hint}</span>`
+    );
+  });
+  document.getElementById('modal-question').innerHTML = `<div class="grammar-passage">${passageHtml}</div>`;
+  document.getElementById('options-list').innerHTML = '';
+
+  // 绑定输入事件
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const input = document.getElementById(`grammar-input-${num}`);
+    if (input) {
+      input.addEventListener('input', () => {
+        grammarAnswers[num] = input.value.trim();
+        updateSubmitButtonState();
+      });
+    }
+  });
+  updateSubmitButtonState();
+}
+
+// ---- 提交按钮状态更新 ----
+function updateSubmitButtonState() {
+  const q = currentQuestion;
+  if (!q) return;
+  const qType = q.type || 'choice';
+  let allFilled = false;
+  switch (qType) {
+    case 'cloze':
+      allFilled = (q.blanks || []).every((_, i) => clozeAnswers[i + 1] !== undefined);
+      break;
+    case 'wordbank':
+      allFilled = (q.blanks || []).every((_, i) => wordbankAnswers[i + 1] !== undefined);
+      break;
+    case 'grammar':
+      allFilled = (q.blanks || []).every((_, i) => (grammarAnswers[i + 1] || '').trim() !== '');
+      break;
+    default:
+      allFilled = selectedOption !== null;
+  }
+  document.getElementById('btn-submit').disabled = !allFilled;
+}
+
+// ---- 提交答案 ----
+function submitAnswer() {
+  if (levelSession?.settled) {
+    restartCurrentLevel();
+    return;
+  }
+  if (!currentQuestion || answered) return;
+  const q = currentQuestion;
+  const qType = q.type || 'choice';
+
+  // 检查是否全部填写
+  let allFilled = false;
+  if (qType === 'choice' || qType === 'listening') allFilled = selectedOption !== null;
+  else if (qType === 'cloze') allFilled = (q.blanks || []).every((_, i) => clozeAnswers[i + 1] !== undefined);
+  else if (qType === 'wordbank') allFilled = (q.blanks || []).every((_, i) => wordbankAnswers[i + 1] !== undefined);
+  else if (qType === 'grammar') allFilled = (q.blanks || []).every((_, i) => (grammarAnswers[i + 1] || '').trim() !== '');
+  if (!allFilled) return;
+
+  answered = true;
+  const feedbackArea = document.getElementById('feedback-area');
+  const feedbackMsg = document.getElementById('feedback-message');
+  const feedbackExp = document.getElementById('feedback-explanation');
+  feedbackArea.classList.add('show');
+
+  let isCorrect = false;
+
+  switch (qType) {
+    case 'choice':
+    case 'listening':
+      isCorrect = submitChoiceAnswer(q, feedbackMsg, feedbackExp);
+      break;
+    case 'cloze':
+      isCorrect = submitClozeAnswer(q, feedbackMsg, feedbackExp);
+      break;
+    case 'wordbank':
+      isCorrect = submitWordbankAnswer(q, feedbackMsg, feedbackExp);
+      break;
+    case 'grammar':
+      isCorrect = submitGrammarAnswer(q, feedbackMsg, feedbackExp);
+      break;
+  }
+
+  if (!levelSession) return;
+  levelSession.results.push({ questionId: q.id, correct: isCorrect });
+  if (isCorrect) {
+    levelSession.score++;
+    removeFromWrongBook();
+  } else {
+    addWrongQuestion(q, qType);
+  }
+  if (!scheduleAutoAdvance()) {
+    const nextButton = document.getElementById('btn-next');
+    nextButton.textContent = levelSession.questionIndex + 1 < levelSession.level.questions.length ? '下一题' : '查看结果';
+    nextButton.style.display = 'block';
+  }
+  lastAnswerCorrect = isCorrect;
+  refreshIcons();
+
+  // 记录答题日志
+  logAnswer(isCorrect);
+
+  document.getElementById('btn-submit').style.display = 'none';
+}
+
+function submitChoiceAnswer(q, feedbackMsg, feedbackExp) {
+  const isCorrect = selectedOption === q.correctIndex;
+  const optionBtns = document.querySelectorAll('.option-btn');
+  optionBtns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correctIndex) btn.classList.add('correct');
+    if (i === selectedOption && !isCorrect) btn.classList.add('wrong');
+  });
+  if (isCorrect) {
+    feedbackMsg.innerHTML = `<div class="feedback-correct">${iconMarkup('circle-check')}<span>回答正确！</span></div>`;
+  } else {
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">${iconMarkup('circle-x')}<span>回答错误</span></div>`;
+  }
+  feedbackExp.textContent = q.explanation || '';
+  return isCorrect;
+}
+
+function submitClozeAnswer(q, feedbackMsg, feedbackExp) {
+  let allCorrect = true;
+  const results = [];
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const userIdx = clozeAnswers[num];
+    const isCorrect = userIdx === blank.correctIndex;
+    if (!isCorrect) allCorrect = false;
+    results.push({ num, isCorrect, userAnswer: blank.options[userIdx] || '未作答', correctAnswer: blank.options[blank.correctIndex] });
+    // 更新空格样式
+    const blankEl = document.getElementById(`cloze-blank-${num}`);
+    if (blankEl) blankEl.classList.add(isCorrect ? 'correct-blank' : 'wrong-blank');
+    // 更新选项高亮
+    const group = document.getElementById(`cloze-options-${num}`);
+    if (group) {
+      group.querySelectorAll('.cloze-option').forEach((btn, j) => {
+        btn.disabled = true;
+        if (j === blank.correctIndex) btn.classList.add('correct-opt');
+        if (j === userIdx && !isCorrect) btn.classList.add('wrong-opt');
+      });
+    }
+  });
+  if (allCorrect) {
+    feedbackMsg.innerHTML = `<div class="feedback-correct">${iconMarkup('circle-check')}<span>全部正确！</span></div>`;
+  } else {
+    const details = results.map(r => `空格${r.num}：${r.userAnswer} → ${r.correctAnswer}（${r.isCorrect ? '正确' : '错误'}）`).join('<br>');
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">${iconMarkup('circle-x')}<span>有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</span></div>`;
+    feedbackExp.innerHTML = details;
+    return false;
+  }
+  feedbackExp.textContent = q.explanation || '';
+  return true;
+}
+
+function submitWordbankAnswer(q, feedbackMsg, feedbackExp) {
+  let allCorrect = true;
+  const results = [];
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const userAnswer = wordbankAnswers[num] || '';
+    const isCorrect = userAnswer.toLowerCase().trim() === blank.correctWord.toLowerCase().trim();
+    if (!isCorrect) allCorrect = false;
+    results.push({ num, isCorrect, userAnswer, correctAnswer: blank.correctWord });
+    const blankEl = document.getElementById(`wb-blank-${num}`);
+    if (blankEl) blankEl.classList.add(isCorrect ? 'correct-blank' : 'wrong-blank');
+  });
+  if (allCorrect) {
+    feedbackMsg.innerHTML = `<div class="feedback-correct">${iconMarkup('circle-check')}<span>全部正确！</span></div>`;
+  } else {
+    const details = results.map(r => `空格${r.num}：${r.userAnswer || '未填'} → ${r.correctAnswer}（${r.isCorrect ? '正确' : '错误'}）`).join('<br>');
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">${iconMarkup('circle-x')}<span>有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</span></div>`;
+    feedbackExp.innerHTML = details;
+    return false;
+  }
+  feedbackExp.textContent = q.explanation || '';
+  return true;
+}
+
+function submitGrammarAnswer(q, feedbackMsg, feedbackExp) {
+  let allCorrect = true;
+  const results = [];
+  (q.blanks || []).forEach((blank, i) => {
+    const num = i + 1;
+    const userAnswer = grammarAnswers[num] || '';
+    const isCorrect = userAnswer.toLowerCase().trim() === blank.correctAnswer.toLowerCase().trim();
+    if (!isCorrect) allCorrect = false;
+    results.push({ num, isCorrect, userAnswer, correctAnswer: blank.correctAnswer });
+    const input = document.getElementById(`grammar-input-${num}`);
+    if (input) { input.classList.add(isCorrect ? 'correct-input' : 'wrong-input'); input.disabled = true; }
+  });
+  if (allCorrect) {
+    feedbackMsg.innerHTML = `<div class="feedback-correct">${iconMarkup('circle-check')}<span>全部正确！</span></div>`;
+  } else {
+    const details = results.map(r => `空格${r.num}：${r.userAnswer || '未填'} → ${r.correctAnswer}（${r.isCorrect ? '正确' : '错误'}）`).join('<br>');
+    feedbackMsg.innerHTML = `<div class="feedback-wrong">${iconMarkup('circle-x')}<span>有 ${results.filter(r => !r.isCorrect).length} 个空格回答错误</span></div>`;
+    feedbackExp.innerHTML = details;
+    return false;
+  }
+  feedbackExp.textContent = q.explanation || '';
+  return true;
+}
+
+let lastAnswerCorrect = false;
+
+function nextQuestion() {
+  if (!levelSession) {
+    closeModal();
+    return;
+  }
+  if (levelSession.settled) {
+    handleLevelResultAction();
+    return;
+  }
+  if (answered) advanceLevelQuestion();
+}
+
+function advanceLevelQuestion() {
+  if (!levelSession || levelSession.settled) return;
+  if (window._modalTimer) {
+    clearTimeout(window._modalTimer);
+    window._modalTimer = null;
+  }
+  if (levelSession.questionIndex + 1 < levelSession.level.questions.length) {
+    levelSession.questionIndex++;
+    renderCurrentLevelQuestion();
+    return;
+  }
+  showLevelResult();
+}
+
+function showLevelResult() {
+  if (!levelSession) return;
+  levelSession.settled = true;
+  const { level, score } = levelSession;
+  const passed = score >= level.passScore;
+  levelSession.passed = passed;
+  if (levelSession.isDaily) {
+    if (passed) checkDailyComplete();
+  } else {
+    recordLevelAttempt(levelSession.faceId, levelSession.cell.row, levelSession.cell.col, score, passed);
+  }
+  if (passed && !levelSession.isDaily) {
+    removeFromWrongBook();
+  }
+  const accuracy = Math.round((score / level.questions.length) * 100);
+  document.getElementById('modal-title').textContent = `第${level.level}关 · 结算`;
+  document.getElementById('level-question-count').textContent = `${score}/${level.questions.length}`;
+  document.getElementById('level-question-fill').style.width = `${accuracy}%`;
+  document.getElementById('modal-passage').style.display = 'none';
+  document.getElementById('modal-question').innerHTML = `<div class="level-result"><div class="level-result-status">${passed ? '挑战成功' : '还差一点'}</div><div class="level-result-score">${score}/${level.questions.length}</div><div style="color:var(--text-secondary)">正确率 ${accuracy}% · 通关线 ${level.passScore}/${level.questions.length}</div></div>`;
+  document.getElementById('options-list').innerHTML = '';
+  document.getElementById('feedback-area').classList.remove('show');
+  const submitButton = document.getElementById('btn-submit');
+  submitButton.textContent = passed ? '重新挑战' : '重新挑战';
+  submitButton.className = 'btn btn-secondary';
+  submitButton.disabled = false;
+  submitButton.style.display = 'block';
+  const nextButton = document.getElementById('btn-next');
+  nextButton.textContent = passed ? (levelSession.isDaily ? '完成挑战' : '继续下一关') : '关闭';
+  nextButton.style.display = 'block';
+  if (passed && !levelSession.isDaily && scheduleAutoAdvance(handleLevelResultAction)) {
+    nextButton.style.display = 'none';
+  }
+}
+
+function restartCurrentLevel() {
+  if (!levelSession) return;
+  if (window._modalTimer) {
+    clearTimeout(window._modalTimer);
+    window._modalTimer = null;
+  }
+  const { faceId, cell } = levelSession;
+  openQuestionModal(faceId, cell);
+}
+
+function handleLevelResultAction() {
+  if (!levelSession) return;
+  if (!levelSession.passed || levelSession.isDaily) {
+    closeModal();
+    return;
+  }
+
+  const completedFaceId = levelSession.faceId;
+  const completedCell = { ...levelSession.cell };
+  closeModal();
+  triggerCompletionAnimation(completedFaceId, completedCell.row, completedCell.col);
+  setTimeout(() => advanceToNextQuestion(completedFaceId, completedCell), 650);
+}
+
+function advanceToNextQuestion(completedFaceId, completedCell) {
+  const nextOrder = completedCell.row * 3 + completedCell.col + 1;
+  if (nextOrder < 9) {
+    const nextCell = { row: Math.floor(nextOrder / 3), col: nextOrder % 3 };
+    if (getCellState(completedFaceId, nextCell.row, nextCell.col) === 'unlocked') {
+      focusAndOpenQuestion(completedFaceId, nextCell);
+      return;
+    }
+  }
+  checkCompletion();
+}
+
+function focusAndOpenQuestion(faceId, cell) {
+  faceCameraToCell(faceId, cell, () => {
+    const cubie = findCubieForCell(faceId, cell);
+    if (cubie) addPulseAnimation(cubie.mesh);
+    openQuestionModal(faceId, cell);
+  });
+}
+
+function closeModal() {
+  // 清除定时器
+  if (window._modalTimer) {
+    clearTimeout(window._modalTimer);
+    window._modalTimer = null;
+  }
+  // 清空选项列表，释放 DOM 引用
+  const optionsList = document.getElementById('options-list');
+  if (optionsList) optionsList.innerHTML = '';
+  // 清除文段
+  document.getElementById('modal-passage').style.display = 'none';
+  document.getElementById('modal-passage').textContent = '';
+  document.getElementById('modal-question').innerHTML = '';
+  document.getElementById('locked-tip').style.display = 'none';
+  hideLockTooltip();
+  setCubeFocused(false);
+  // 重置状态
+  currentQuestion = null;
+  levelSession = null;
+  selectedOption = null;
+  answered = false;
+  clozeAnswers = {};
+  wordbankAnswers = {};
+  grammarAnswers = {};
+  // 隐藏弹窗
+  document.getElementById('modal-overlay').classList.remove('active');
+  const feedbackArea = document.getElementById('feedback-area');
+  feedbackArea.classList.remove('show');
+  // 清除倒计时提示
+  const countdown = feedbackArea.querySelector('.countdown-hint');
+  if (countdown) countdown.remove();
+}
+
+// 点击遮罩关闭
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// 遮罩内点击不冒泡
+document.getElementById('modal-box').addEventListener('click', (e) => {
+  e.stopPropagation();
+});
+
+// ============================================================
+// 完成动画：找到对应 cubie 并播放点亮动画
+// ============================================================
+function triggerCompletionAnimation(faceId, row, col) {
+  const face = FACES[faceId];
+  const [nx, ny, nz] = face.normal;
+  for (const key in cubieMap) {
+    const cubie = cubieMap[key];
+    if (!cubie.exposed[faceId]) continue;
+    const cell = getFaceCell(cubie.x, cubie.y, cubie.z, nx, ny, nz);
+    if (cell && cell.row === row && cell.col === col) {
+      const { mesh, materials, faceOrder } = cubie;
+      addCompletionAnimation(mesh, materials, faceOrder, faceId, face.color);
+      break;
+    }
+  }
+}
+
+// ============================================================
+// 重置进度功能
+// ============================================================
+function resetFaceProgress(faceId) {
+  const progress = loadProgress();
+  // 清除该面所有关卡的完成记录（当前难度）
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      delete progress[getCellKey(faceId, row, col)];
+    }
+  }
+  saveProgress(progress);
+  // 如果勾选了清空答题日志
+  if (document.getElementById('confirm-checkbox-input').checked) {
+    localStorage.removeItem('cube_answer_logs');
+  }
+  updateAllCubieColors();
+  updateHeaderStats();
+}
+
+function resetAllDifficulties() {
+  const progress = loadProgress();
+  // 清除所有难度（easy/medium/hard）的所有记录
+  for (const key in progress) {
+    delete progress[key];
+  }
+  saveProgress(progress);
+  // 如果勾选了清空答题日志
+  if (document.getElementById('confirm-checkbox-input').checked) {
+    localStorage.removeItem('cube_answer_logs');
+  }
+  updateAllCubieColors();
+  updateHeaderStats();
+}
+
+function resetAllProgress() {
+  const progress = loadProgress();
+  // 清除所有当前难度的完成记录
+  for (const key in progress) {
+    if (key.startsWith(currentDifficulty + '_')) {
+      delete progress[key];
+    }
+  }
+  saveProgress(progress);
+  // 如果勾选了清空答题日志
+  if (document.getElementById('confirm-checkbox-input').checked) {
+    localStorage.removeItem('cube_answer_logs');
+  }
+  updateAllCubieColors();
+  updateHeaderStats();
+}
+
+// 确认对话框系统
+let confirmCallback = null;
+
+function showConfirmDialog(title, message, onConfirm, showCheckbox = false, checkboxLabel = '') {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-message').textContent = message;
+  const cbDiv = document.getElementById('confirm-checkbox');
+  if (showCheckbox) {
+    cbDiv.style.display = 'block';
+    document.getElementById('confirm-checkbox-label').textContent = checkboxLabel;
+    document.getElementById('confirm-checkbox-input').checked = true;
+  } else {
+    cbDiv.style.display = 'none';
+  }
+  // 确保使用默认按钮布局
+  document.getElementById('confirm-buttons-multi').style.display = 'none';
+  document.querySelector('#confirm-overlay .confirm-buttons:not(#confirm-buttons-multi)').style.display = 'flex';
+  document.getElementById('confirm-overlay').classList.add('active');
+  confirmCallback = onConfirm;
+}
+
+function hideConfirmDialog() {
+  document.getElementById('confirm-overlay').classList.remove('active');
+  confirmCallback = null;
+  // 恢复默认按钮布局
+  document.getElementById('confirm-buttons-multi').style.display = 'none';
+  document.querySelector('#confirm-overlay .confirm-buttons:not(#confirm-buttons-multi)').style.display = 'flex';
+}
+
+document.getElementById('confirm-cancel').addEventListener('click', hideConfirmDialog);
+document.getElementById('confirm-overlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) hideConfirmDialog();
+});
+document.getElementById('confirm-ok').addEventListener('click', () => {
+  if (confirmCallback) confirmCallback();
+  hideConfirmDialog();
+});
+
+// 多按钮确认对话框事件
+document.getElementById('confirm-multi-cancel').addEventListener('click', hideConfirmDialog);
+document.getElementById('confirm-multi-current').addEventListener('click', () => {
+  resetAllProgress();
+  hideConfirmDialog();
+});
+document.getElementById('confirm-multi-all').addEventListener('click', () => {
+  resetAllDifficulties();
+  hideConfirmDialog();
+});
+
+function showResetFaceConfirm(face) {
+  showConfirmDialog(
+    '重置面进度',
+    `确定要重置「${face.name}」的进度吗？\n此操作不可撤销。`,
+    () => resetFaceProgress(face.id),
+    true,
+    '同时清空答题日志'
+  );
+}
+
+// 重置全部进度 - 显示三选项对话框
+function showResetAllDialog() {
+  document.getElementById('confirm-title').textContent = '重置进度';
+  document.getElementById('confirm-message').textContent = `请选择要重置的范围：\n\n• 当前难度：仅清除「${DIFFICULTY_MAP[currentDifficulty].name}」的54关记录\n• 所有难度：清除六档难度的全部记录\n\n此操作不可撤销。`;
+
+  // 切换到多按钮布局
+  document.querySelector('#confirm-overlay .confirm-buttons:not(#confirm-buttons-multi)').style.display = 'none';
+  document.getElementById('confirm-buttons-multi').style.display = 'flex';
+
+  // 显示答题日志复选框
+  const cbDiv = document.getElementById('confirm-checkbox');
+  cbDiv.style.display = 'block';
+  document.getElementById('confirm-checkbox-label').textContent = '同时清空答题日志';
+  document.getElementById('confirm-checkbox-input').checked = true;
+
+  document.getElementById('confirm-overlay').classList.add('active');
+}
+
+// 重置全部进度按钮
+document.getElementById('panel-reset-all').addEventListener('click', (e) => {
+  e.stopPropagation();
+  showResetAllDialog();
+});
+
+// ============================================================
+// 动画循环
+// ============================================================
+let animationFrameId = null;
+
+function animate() {
+  animationFrameId = requestAnimationFrame(animate);
+  controls.update();
+  updateAnimations();
+  updateNextCellGuidance(performance.now());
+  spriteGroup.rotation.y += 0.0003;
+  renderer.render(scene, camera);
+}
+
+// 页面不可见时暂停渲染，节省资源
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    // 页面隐藏：取消动画循环，暂停自动旋转
+    if (animationFrameId !== null) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+    controls.autoRotate = false;
+    console.log('页面不可见，暂停渲染');
+  } else {
+    // 页面可见：恢复动画循环和自动旋转
+    controls.autoRotate = !prefersReducedMotion.matches;
+    if (animationFrameId === null) animate();
+    console.log('页面可见，恢复渲染');
+  }
+});
+animate();
+
+// ============================================================
+// 窗口大小调整 + 魔方动态适配
+// ============================================================
+function adjustCubeSize() {
+  const width = window.innerWidth;
+  let distance = 9;
+  if (width < 400) distance = 11.4;
+  else if (width < 600) distance = 10.8;
+  else if (width < 768) distance = 10;
+  controls.rotateSpeed = width <= 600 ? 1.25 : 0.9;
+  camera.position.normalize().multiplyScalar(distance);
+  controls.update();
+}
+
+adjustCubeSize();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  // 动态调整像素比
+  renderer.setPixelRatio(window.innerWidth <= 600 ? 1 : Math.min(window.devicePixelRatio, 1.5));
+  adjustCubeSize();
+});
+
+// 屏幕旋转后重新适配
+window.addEventListener('orientationchange', () => {
+  setTimeout(adjustCubeSize, 300);
+});
+
+// ============================================================
+// 键盘快捷键
+// ============================================================
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && document.getElementById('modal-overlay').classList.contains('active') && !answered) {
+    submitAnswer();
+  }
+});
+
+// ============================================================
+// 按钮事件绑定（ES module 中 onclick 属性无法访问模块函数）
+// ============================================================
+document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+document.getElementById('btn-submit').addEventListener('click', submitAnswer);
+document.getElementById('btn-next').addEventListener('click', nextQuestion);
+document.getElementById('locked-tip').addEventListener('click', closeModal);
+const autoAdvanceInput = document.getElementById('auto-advance-input');
+autoAdvanceInput.checked = localStorage.getItem(AUTO_ADVANCE_KEY) !== '0';
+autoAdvanceInput.addEventListener('change', () => {
+  localStorage.setItem(AUTO_ADVANCE_KEY, autoAdvanceInput.checked ? '1' : '0');
+  if (window._modalTimer) {
+    clearTimeout(window._modalTimer);
+    window._modalTimer = null;
+  }
+  if (!levelSession || !answered) return;
+  const nextButton = document.getElementById('btn-next');
+  if (levelSession.settled) {
+    const canAutoContinue = levelSession.passed && !levelSession.isDaily;
+    nextButton.style.display = autoAdvanceInput.checked && canAutoContinue ? 'none' : 'block';
+    if (autoAdvanceInput.checked && canAutoContinue) scheduleAutoAdvance(handleLevelResultAction);
+    return;
+  }
+  nextButton.textContent = levelSession.questionIndex + 1 < levelSession.level.questions.length ? '下一题' : '查看结果';
+  nextButton.style.display = autoAdvanceInput.checked ? 'none' : 'block';
+  if (autoAdvanceInput.checked) scheduleAutoAdvance();
+});
+
+// ============================================================
+// 错题本
+// ============================================================
+function addWrongQuestion(q, qType) {
+  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
+  const qId = q.id || `${currentDifficulty}_${currentFaceId}_${currentCell.row}_${currentCell.col}`;
+  if (wrongQuestions.find(wq => wq.questionId === qId)) return;
+  wrongQuestions.push({
+    questionId: qId, faceId: currentFaceId, difficulty: currentDifficulty,
+    userAnswer: ['choice', 'listening'].includes(qType) ? (q.options ? q.options[selectedOption] : '') : JSON.stringify(clozeAnswers || wordbankAnswers || grammarAnswers),
+    correctAnswer: ['choice', 'listening'].includes(qType) ? (q.options ? q.options[q.correctIndex] : '') : ((q.blanks || []).map(b => b.correctIndex !== undefined ? b.options[b.correctIndex] : (b.correctWord || b.correctAnswer || '')).join(', ')),
+    explanation: q.explanation || '', question: q.question || q.passage || '', type: qType, timestamp: Date.now()
+  });
+  localStorage.setItem('cube_wrong_questions', JSON.stringify(wrongQuestions));
+}
+
+function showWrongBook() {
+  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
+  const content = document.getElementById('panel-content');
+  setPanelTitle('book-x', '错题本');
+  if (wrongQuestions.length === 0) {
+    content.innerHTML = `<div style="text-align:center;color:var(--text-secondary);padding:30px">${iconMarkup('circle-check')}<div style="margin-top:8px">暂无错题，继续加油！</div></div>`;
+  } else {
+    let html = wrongQuestions.map((wq, i) => {
+      const face = FACES[wq.faceId] || { name: wq.faceId, color: '#888' };
+      return `<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.06)">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+          <span style="background:${face.color}33;color:${face.color};padding:2px 8px;border-radius:6px;font-size:0.7rem">${face.name}</span>
+          <span style="font-size:0.7rem;color:#888">${DIFFICULTY_MAP[wq.difficulty]?.name || wq.difficulty}</span>
+          <span style="font-size:0.7rem;color:#888">${TYPE_LABELS[wq.type] || wq.type}</span>
+        </div>
+        <div style="font-size:0.85rem;color:var(--text-primary);margin-bottom:6px">${wq.question}</div>
+        <div style="font-size:0.8rem;color:#e74c3c">你的答案：${wq.userAnswer}</div>
+        <div style="font-size:0.8rem;color:#27ae60">正确答案：${wq.correctAnswer}</div>
+        ${wq.explanation ? `<div style="font-size:0.75rem;color:#888;margin-top:4px">${wq.explanation}</div>` : ''}
+        <button class="confirm-btn" style="margin-top:8px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--modal-border);padding:4px 12px;font-size:0.75rem;width:auto" onclick="retryWrongQuestion('${wq.questionId}')">${iconMarkup('rotate-ccw')}重新挑战</button>
+      </div>`;
+    }).join('');
+    html += `<button class="panel-reset-all" onclick="clearWrongBook()" style="margin-top:8px">${iconMarkup('trash-2')}清空所有错题</button>`;
+    content.innerHTML = html;
+  }
+  refreshIcons();
+  openPanelModal();
+}
+
+let retryQuestionData = null;
+
+window.retryWrongQuestion = function(questionId) {
+  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
+  const wq = wrongQuestions.find(w => w.questionId === questionId);
+  if (!wq) return;
+  retryQuestionData = wq;
+  if (wq.difficulty && wq.difficulty !== currentDifficulty) {
+    applyDifficulty(wq.difficulty);
+  }
+  faceCameraToFace(wq.faceId, () => {
+    const levels = QUESTIONS[currentDifficulty][FACE_TO_QB[wq.faceId]];
+    for (let index = 0; index < levels.length; index++) {
+      if (levels[index].questions.some(question => question.id === questionId)) {
+        openQuestionModal(wq.faceId, { row: Math.floor(index / 3), col: index % 3 });
+        return;
+      }
+    }
+    const fallbackLevel = Number(questionId.match(/_(\d+)_\d+$/)?.[1]);
+    if (fallbackLevel >= 1 && fallbackLevel <= 9) {
+      const index = fallbackLevel - 1;
+      openQuestionModal(wq.faceId, { row: Math.floor(index / 3), col: index % 3 });
+    }
+  });
+  closePanelModal();
+};
+
+function clearWrongBook() {
+  showConfirmDialog('清空错题本', '确定要清空所有错题吗？此操作不可撤销。', () => {
+    localStorage.setItem('cube_wrong_questions', '[]');
+    showWrongBook();
+  });
+}
+
+function removeFromWrongBook(questionId = currentQuestion?.id) {
+  if (!questionId && !retryQuestionData) return;
+  const wrongQuestions = JSON.parse(localStorage.getItem('cube_wrong_questions') || '[]');
+  const idsToRemove = new Set([questionId, retryQuestionData?.questionId].filter(Boolean));
+  const filtered = wrongQuestions.filter(w => !idsToRemove.has(w.questionId));
+  localStorage.setItem('cube_wrong_questions', JSON.stringify(filtered));
+  if (retryQuestionData && idsToRemove.has(retryQuestionData.questionId)) retryQuestionData = null;
+}
+
+// ============================================================
+// 数据统计看板
+// ============================================================
+function showStats() {
+  const stats = calculateStats();
+  const content = document.getElementById('panel-content');
+  setPanelTitle('chart-bar', '数据统计');
+  let html = `<div style="display:grid;gap:8px">
+    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
+      <div style="font-size:0.8rem;color:var(--text-secondary)">总完成度</div><div style="font-size:1.2rem;font-weight:700;color:var(--accent)">${stats.totalCompleted}/54</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
+      <div style="font-size:0.8rem;color:var(--text-secondary)">真实正确率</div><div style="font-size:1.2rem;font-weight:700;color:var(--accent)">${stats.realAccuracy}%</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:0.8rem;color:var(--text-secondary)">总答题次数</div><div style="font-size:1.1rem;font-weight:700;color:var(--text-title)">${stats.totalAnswers}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:0.8rem;color:var(--text-secondary)">正确次数</div><div style="font-size:1.1rem;font-weight:700;color:var(--success)">${stats.correctAnswers}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:0.8rem;color:var(--text-secondary)">错误次数</div><div style="font-size:1.1rem;font-weight:700;color:var(--danger)">${stats.incorrectAnswers}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:0.8rem;color:var(--text-secondary)">总体正确率</div><div style="font-size:1.1rem;font-weight:700;color:var(--accent)">${stats.accuracy}%</div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px">
+      <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:8px">各面完成率</div>
+      ${stats.faces.map(f => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:0.8rem;min-width:80px">${f.name}</span>
+        <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:100%;border-radius:3px;background:${f.color};width:${f.percent}%"></div></div>
+        <span style="font-size:0.75rem;color:var(--text-secondary);min-width:40px;text-align:right">${f.completed}/9</span>
+      </div>`).join('')}
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px">
+      <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:8px">各难度完成情况</div>
+      ${DIFFICULTIES.map(difficulty => { const c = stats.difficultyStats[difficulty.id] || 0; return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:0.8rem;min-width:72px">${difficulty.name}</span>
+        <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:100%;border-radius:3px;background:${difficulty.color};width:${(c/54*100).toFixed(0)}%"></div></div>
+        <span style="font-size:0.75rem;color:var(--text-secondary);min-width:40px;text-align:right">${c}/54</span>
+      </div>`;}).join('')}
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
+      <div style="font-size:0.8rem;color:var(--text-secondary)">学习时长</div><div style="font-size:1rem;font-weight:700;color:var(--reward)">${stats.studyTime}</div>
+    </div>
+  </div>`;
+  content.innerHTML = html;
+  refreshIcons();
+  openPanelModal();
+}
+
+// ============================================================
+// 答题日志存储
+// ============================================================
+function logAnswer(isCorrect) {
+  const logs = JSON.parse(localStorage.getItem('cube_answer_logs') || '[]');
+  logs.push({
+    difficulty: currentDifficulty,
+    faceId: currentFaceId,
+    level: currentCell.row * 3 + currentCell.col + 1,
+    questionId: currentQuestion.id || `${currentFaceId}_${currentCell.row}_${currentCell.col}`,
+    correct: isCorrect,
+    timestamp: Date.now()
+  });
+  localStorage.setItem('cube_answer_logs', JSON.stringify(logs));
+}
+
+function calculateStats() {
+  const progress = loadProgress();
+  let totalCompleted = 0;
+  const faceStats = {};
+  const difficultyStats = Object.fromEntries(DIFFICULTIES.map(difficulty => [difficulty.id, 0]));
+  for (const key in progress) {
+    if (!normalizeProgressRecord(progress[key])?.completed) continue;
+    const parts = key.split('_');
+    const diff = parts[0], faceId = parts[1];
+    if (difficultyStats[diff] !== undefined) difficultyStats[diff]++;
+    if (diff !== currentDifficulty) continue;
+    totalCompleted++;
+    if (!faceStats[faceId]) faceStats[faceId] = { completed: 0 };
+    faceStats[faceId].completed++;
+  }
+  const faces = Object.keys(FACES).map(faceId => {
+    const face = FACES[faceId];
+    const s = faceStats[faceId] || { completed: 0 };
+    return { name: face.name, color: face.color, completed: s.completed, percent: Math.round((s.completed / 9) * 100) };
+  });
+  const firstOpen = localStorage.getItem('cube_first_open');
+  const now = Date.now();
+  if (!firstOpen) localStorage.setItem('cube_first_open', now);
+  const elapsed = now - parseInt(firstOpen || now);
+  const hours = Math.floor(elapsed / 3600000), minutes = Math.floor((elapsed % 3600000) / 60000);
+  const studyTime = hours > 0 ? `${hours}小时${minutes}分钟` : `${minutes}分钟`;
+
+  // 从答题日志计算真实正确率
+  const answerLogs = JSON.parse(localStorage.getItem('cube_answer_logs') || '[]');
+  const totalAnswers = answerLogs.length;
+  const correctAnswers = answerLogs.filter(log => log.correct).length;
+  const incorrectAnswers = totalAnswers - correctAnswers;
+  const realAccuracy = totalAnswers > 0 ? Math.round((correctAnswers / totalAnswers) * 100) : 0;
+
+  return { totalCompleted, accuracy: realAccuracy, faces, difficultyStats, studyTime, totalAnswers, correctAnswers, incorrectAnswers, realAccuracy };
+}
+
+// ============================================================
+// 面板弹窗
+// ============================================================
+function openPanelModal() { document.getElementById('panel-overlay').classList.add('active'); }
+function closePanelModal() { document.getElementById('panel-overlay').classList.remove('active'); }
+document.getElementById('btn-panel-close').addEventListener('click', closePanelModal);
+document.getElementById('panel-overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closePanelModal(); });
+
+// ============================================================
+// 每日挑战
+// ============================================================
+function getLocalDateStr(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getTodayStr() { return getLocalDateStr(); }
+
+function showDailyChallenge() {
+  const today = getTodayStr();
+  let daily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+  if (daily.date === today && !daily.difficulty && Array.isArray(daily.questions)) {
+    daily.difficulty = daily.questions[0]?.difficulty || currentDifficulty;
+    localStorage.setItem('cube_daily_challenge', JSON.stringify(daily));
+  }
+  if (daily.date && (daily.completed === true || Array.isArray(daily.completed) && daily.completed.length > 0)) {
+    const history = JSON.parse(localStorage.getItem('cube_daily_history') || '{}');
+    history[daily.date] = true;
+    localStorage.setItem('cube_daily_history', JSON.stringify(history));
+  }
+  // 如果日期不同或难度不同，重新生成
+  if (daily.version !== 2 || daily.date !== today || daily.difficulty !== currentDifficulty) {
+    daily = generateDailyChallenge();
+    localStorage.setItem('cube_daily_challenge', JSON.stringify(daily));
+  }
+  const content = document.getElementById('panel-content');
+  setPanelTitle('calendar-check-2', `今日挑战 · ${DIFFICULTY_MAP[currentDifficulty].name}`);
+  const completed = daily.completed === true;
+  const streak = getDailyStreak();
+  let html = `<div style="text-align:center;margin-bottom:12px">
+    <div style="font-size:0.85rem;color:var(--text-secondary)">${today}</div>
+    <div style="font-size:1.2rem;font-weight:700;color:var(--accent)">${completed ? '今日已完成' : `随机关卡 · ${daily.questions?.length || 5}题`}</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:5px;color:${streak >= 7 ? 'var(--reward)' : 'var(--text-secondary)'};font-size:0.8rem;margin-top:4px">${iconMarkup('flame')}连续 ${streak} 天${streak >= 7 ? ' · 成就达成' : ''}</div>
+    <button class="confirm-btn" style="margin-top:8px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--modal-border);padding:4px 12px;font-size:0.75rem;width:auto" onclick="regenerateDailyChallenge()">${iconMarkup('refresh-cw')}换一批</button>
+  </div>`;
+  (daily.questions || []).forEach((q, i) => {
+    html += `<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px;margin-bottom:8px;border:1px solid rgba(255,255,255,0.06)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="display:inline-flex;color:${completed ? 'var(--success)' : 'var(--text-muted)'}">${iconMarkup(completed ? 'circle-check' : 'circle')}</span><span style="font-size:0.8rem;color:var(--accent)">第${i+1}题</span><span style="font-size:0.7rem;color:var(--text-muted)">${TYPE_LABELS[q.type] || '选择题'}</span></div>
+      <div style="font-size:0.8rem;color:var(--text-primary)">${q.question || q.passage || ''}</div>`;
+    html += `</div>`;
+  });
+  if (!completed) html += `<button class="btn btn-primary" onclick="startDailyQuestion()">${iconMarkup('play')}开始今日挑战</button>`;
+  content.innerHTML = html;
+  refreshIcons();
+  openPanelModal();
+}
+
+function generateDailyChallenge() {
+  const candidates = Object.entries(QUESTIONS[currentDifficulty]).flatMap(([face, levels]) =>
+    levels.map((level, cellIndex) => ({ faceId: QB_TO_FACE[face], cellIndex, level }))
+  );
+  const selected = candidates[Math.floor(Math.random() * candidates.length)];
+  return { version: 2, date: getTodayStr(), difficulty: currentDifficulty, completed: false, faceId: selected.faceId, cellIndex: selected.cellIndex, questions: selected.level.questions, correctCount: 0 };
+}
+
+// 换一批：重新生成每日挑战
+window.regenerateDailyChallenge = function() {
+  const daily = generateDailyChallenge();
+  localStorage.setItem('cube_daily_challenge', JSON.stringify(daily));
+  showDailyChallenge();
+};
+
+let dailyQuestionIndex = -1;
+
+window.startDailyQuestion = function() {
+  dailyQuestionIndex = 0;
+  const daily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+  if (!daily.questions?.length) return;
+  closePanelModal();
+  faceCameraToFace(daily.faceId, () => { openQuestionModal(daily.faceId, { row: Math.floor(daily.cellIndex / 3), col: daily.cellIndex % 3 }); });
+};
+
+function getDailyStreak() {
+  let streak = 0;
+  const today = new Date();
+  const history = JSON.parse(localStorage.getItem('cube_daily_history') || '{}');
+  const currentDaily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+  if (currentDaily.date && currentDaily.completed === true) {
+    history[currentDaily.date] = true;
+    localStorage.setItem('cube_daily_history', JSON.stringify(history));
+  }
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const dateStr = getLocalDateStr(d);
+    if (history[dateStr]) streak++;
+    else if (i > 0) break;
+  }
+  return streak;
+}
+
+function checkDailyComplete() {
+  if (dailyQuestionIndex < 0) return;
+  const daily = JSON.parse(localStorage.getItem('cube_daily_challenge') || '{}');
+  if (daily.completed !== true) {
+    daily.completed = true;
+    daily.correctCount = levelSession?.score || 0;
+    localStorage.setItem('cube_daily_challenge', JSON.stringify(daily));
+    const history = JSON.parse(localStorage.getItem('cube_daily_history') || '{}');
+    history[daily.date || getTodayStr()] = true;
+    localStorage.setItem('cube_daily_history', JSON.stringify(history));
+  }
+  dailyQuestionIndex = -1;
+}
+
+// ============================================================
+// 通关庆祝
+// ============================================================
+function checkCompletion() {
+  if (getTotalCompleted() === 54) setTimeout(showCompletionCelebration, 500);
+}
+
+function showCompletionCelebration() {
+  createConfetti();
+  const faceOrder = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+  let faceIdx = 0;
+  function rotateNext() {
+    if (faceIdx >= faceOrder.length) { showCertificate(); return; }
+    faceCameraToFace(faceOrder[faceIdx], () => { faceIdx++; setTimeout(rotateNext, 1000); });
+  }
+  rotateNext();
+}
+
+function createConfetti() {
+  const colors = ['#ff6b6b','#feca57','#48dbfb','#4a9eff','#a29bfe','#fdcb6e','#4ae6c9'];
+  for (let i = 0; i < 60; i++) {
+    const confetti = document.createElement('div');
+    confetti.style.cssText = `position:fixed;top:-20px;left:${Math.random()*100}%;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>0.5?'50%':'2px'};z-index:9999;pointer-events:none;animation:confettiFall ${2+Math.random()*3}s ease-in forwards;animation-delay:${Math.random()*2}s`;
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 5000);
+  }
+  if (!document.getElementById('confetti-style')) {
+    const style = document.createElement('style');
+    style.id = 'confetti-style';
+    style.textContent = `@keyframes confettiFall { to { top:110vh; transform:rotate(720deg); opacity:0; } }`;
+    document.head.appendChild(style);
+  }
+}
+
+function showCertificate() {
+  const stats = calculateStats();
+  document.getElementById('cert-time').textContent = new Date().toLocaleString('zh-CN');
+  document.getElementById('cert-accuracy').textContent = stats.accuracy + '%';
+  document.getElementById('cert-faces').innerHTML = stats.faces.map(f => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:0.8rem;min-width:80px">${f.name}</span><div style="flex:1;height:4px;background:var(--progress-bg);border-radius:2px"><div style="height:100%;border-radius:2px;background:${f.color};width:${f.percent}%"></div></div><span style="font-size:0.7rem;color:var(--text-secondary)">${f.percent}%</span></div>`).join('');
+  document.getElementById('cert-overlay').classList.add('active');
+}
+document.getElementById('btn-cert-close').addEventListener('click', () => { document.getElementById('cert-overlay').classList.remove('active'); });
+document.getElementById('cert-overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) document.getElementById('cert-overlay').classList.remove('active'); });
+document.getElementById('btn-cert-share').addEventListener('click', shareApp);
+
+// ============================================================
+// 分享功能
+// ============================================================
+function shareApp() {
+  const shareData = { title: '🧩 魔方英语 - 边玩边学语法', text: '🎮 魔方闯关学英语！6个知识面，54个关卡，快来挑战吧！', url: window.location.href };
+  if (navigator.share) {
+    navigator.share(shareData).then(() => {
+      localStorage.setItem('cube_share_count', (parseInt(localStorage.getItem('cube_share_count') || '0') + 1));
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(window.location.href).then(() => { alert('链接已复制到剪贴板！'); }).catch(() => { prompt('复制以下链接分享：', window.location.href); });
+  }
+}
+
+// 按钮事件
+document.getElementById('btn-wrong-book').addEventListener('click', showWrongBook);
+document.getElementById('btn-stats').addEventListener('click', showStats);
+document.getElementById('btn-daily').addEventListener('click', showDailyChallenge);
+document.getElementById('btn-share').addEventListener('click', shareApp);
+
+// ============================================================
+// 难度选择与首次分级
+// ============================================================
+function applyDifficulty(difficultyId) {
+  currentDifficulty = difficultyId;
+  localStorage.setItem('cube_english_difficulty', difficultyId);
+  updateAllCubieColors();
+  updateHeaderStats();
+  updateDifficultyBadge();
+  renderDifficultyMenu();
+  renderer.render(scene, camera);
+}
+
+function selectDifficulty(difficultyId, skipConfirm = false) {
+  if (!DIFFICULTY_MAP[difficultyId] || difficultyId === currentDifficulty) return;
+  const change = () => applyDifficulty(difficultyId);
+  if (skipConfirm || window.confirm(`切换到「${DIFFICULTY_MAP[difficultyId].name}」？\n各难度进度会独立保存。`)) change();
+}
+
+function renderDifficultyMenu() {
+  const menu = document.getElementById('difficulty-menu');
+  menu.innerHTML = DIFFICULTIES.map(item => `<button class="difficulty-card ${item.id === currentDifficulty ? 'active' : ''}" data-difficulty="${item.id}" style="--difficulty-color:${item.color}" role="menuitem"><span class="difficulty-card-color"></span><span><strong>${item.name}</strong><small>${item.desc}</small></span><span class="difficulty-card-grade">${item.grade}</span></button>`).join('');
+  menu.querySelectorAll('.difficulty-card').forEach(card => card.addEventListener('click', () => {
+    selectDifficulty(card.dataset.difficulty);
+    closeDifficultyMenu();
+  }));
+}
+
+function closeDifficultyMenu() {
+  document.getElementById('difficulty-menu').classList.remove('open');
+  document.getElementById('difficulty-trigger').setAttribute('aria-expanded', 'false');
+}
+
+document.getElementById('difficulty-trigger').addEventListener('click', event => {
+  event.stopPropagation();
+  const menu = document.getElementById('difficulty-menu');
+  const open = menu.classList.toggle('open');
+  event.currentTarget.setAttribute('aria-expanded', String(open));
+});
+document.addEventListener('click', event => {
+  if (!event.target.closest('#difficulty-selector')) closeDifficultyMenu();
+});
+
+function updateDifficultyBadge() {
+  const difficulty = DIFFICULTY_MAP[currentDifficulty];
+  document.getElementById('header-diff-badge').textContent = difficulty.name;
+  document.getElementById('difficulty-trigger-label').textContent = difficulty.name;
+  document.documentElement.style.setProperty('--difficulty-color', difficulty.color);
+}
+
+function showDifficultyOnboarding() {
+  setPanelTitle('graduation-cap', '请选择你的年级');
+  const content = document.getElementById('panel-content');
+  content.innerHTML = `<div style="display:grid;gap:6px">${DIFFICULTIES.map(item => `<button class="difficulty-card" data-onboarding-difficulty="${item.id}" style="--difficulty-color:${item.color}"><span class="difficulty-card-color"></span><span><strong>${item.name}</strong><small>${item.desc}</small></span><span class="difficulty-card-grade">${item.grade}</span></button>`).join('')}</div><button class="btn btn-primary" id="btn-placement-test" style="margin-top:12px">测一测 · 5题水平测试</button>`;
+  content.querySelectorAll('[data-onboarding-difficulty]').forEach(card => card.addEventListener('click', () => {
+    selectDifficulty(card.dataset.onboardingDifficulty, true);
+    localStorage.setItem('cube_english_onboarded', '1');
+    closePanelModal();
+  }));
+  document.getElementById('btn-placement-test').addEventListener('click', startPlacementTest);
+  refreshIcons();
+  openPanelModal();
+}
+
+let placementState = null;
+function startPlacementTest() {
+  placementState = { index: 0, score: 0, questions: QUESTIONS.grade8.grammar[0].questions };
+  renderPlacementQuestion();
+}
+
+function renderPlacementQuestion() {
+  const content = document.getElementById('panel-content');
+  const { index, questions } = placementState;
+  if (index >= questions.length) {
+    const recommendedIndex = Math.min(5, placementState.score);
+    const recommendation = DIFFICULTIES[recommendedIndex];
+    content.innerHTML = `<div style="text-align:center;padding:16px 0"><div style="font-size:0.8rem;color:var(--text-secondary)">测试得分 ${placementState.score}/5</div><div style="font-size:1.3rem;font-weight:700;color:${recommendation.color};margin:8px 0">推荐：${recommendation.name}</div><div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px">${recommendation.grade} · ${recommendation.desc}</div><button class="btn btn-primary" id="accept-placement">开始学习</button></div>`;
+    document.getElementById('accept-placement').addEventListener('click', () => {
+      selectDifficulty(recommendation.id, true);
+      localStorage.setItem('cube_english_onboarded', '1');
+      closePanelModal();
+    });
+    return;
+  }
+  const question = questions[index];
+  content.innerHTML = `<div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:8px">${index + 1}/5</div><div style="font-size:1rem;font-weight:650;color:var(--text-title);margin-bottom:12px">${question.question}</div><div id="placement-options" style="display:grid;gap:8px">${question.options.map((option, optionIndex) => `<button class="option-btn" data-option="${optionIndex}"><span class="option-letter">${String.fromCharCode(65 + optionIndex)}.</span>${option}</button>`).join('')}</div>`;
+  content.querySelectorAll('[data-option]').forEach(button => button.addEventListener('click', () => {
+    if (Number(button.dataset.option) === question.correctIndex) placementState.score++;
+    placementState.index++;
+    renderPlacementQuestion();
+  }));
+}
+
+migrateLegacyData();
+const savedDifficulty = localStorage.getItem('cube_english_difficulty');
+currentDifficulty = DIFFICULTY_MAP[savedDifficulty] ? savedDifficulty : (LEGACY_DIFFICULTY_MIGRATION[savedDifficulty] || 'grade8');
+renderDifficultyMenu();
+
+// ============================================================
+// 悬浮进度面板折叠/展开
+// ============================================================
+const panel = document.getElementById('progress-panel');
+const panelToggle = document.getElementById('panel-toggle');
+const panelHeader = document.getElementById('panel-header');
+const panelBody = document.getElementById('panel-body');
+
+function togglePanel() {
+  const isOpen = panelBody.classList.contains('open');
+  if (isOpen) {
+    panelBody.classList.remove('open');
+    panelToggle.classList.remove('open');
+    setIconButton(panelToggle, 'chevron-right', '展开进度详情');
+  } else {
+    panelBody.classList.add('open');
+    panelToggle.classList.add('open');
+    setIconButton(panelToggle, 'chevron-down', '收起进度详情');
+  }
+  localStorage.setItem('cube_english_panel_expanded', !isOpen);
+}
+
+panelHeader.addEventListener('click', togglePanel);
+panelToggle.addEventListener('click', (e) => { e.stopPropagation(); togglePanel(); });
+
+// 加载面板折叠偏好
+const panelExpanded = localStorage.getItem('cube_english_panel_expanded');
+if (panelExpanded === 'true') {
+  panelBody.classList.add('open');
+  panelToggle.classList.add('open');
+  setIconButton(panelToggle, 'chevron-down', '收起进度详情');
+}
+
+// ============================================================
+// 亮色/暗色主题切换
+// ============================================================
+const themeToggle = document.getElementById('theme-toggle');
+const THEME_KEY = 'cube_english_theme';
+
+function getThemeLockColor() {
+  // 读取当前主题的锁定颜色，用于 Three.js 魔方渲染
+  const style = getComputedStyle(document.documentElement);
+  return style.getPropertyValue('--lock-color').trim() || '#1a1a2e';
+}
+
+function getThemeUnlockedAlpha() {
+  const style = getComputedStyle(document.documentElement);
+  return parseFloat(style.getPropertyValue('--lock-unlocked-alpha').trim()) || 0.5;
+}
+
+function getThemeCubieInner() {
+  const style = getComputedStyle(document.documentElement);
+  return style.getPropertyValue('--cubie-inner').trim() || '#1a1a2e';
+}
+
+function getThemeEdgeOpacity() {
+  // 暗色主题：0.25，亮色主题：0.15
+  const theme = document.documentElement.dataset.theme || 'dark';
+  return theme === 'light' ? 0.15 : 0.25;
+}
+
+function getThemeEdgeColor() {
+  const style = getComputedStyle(document.documentElement);
+  return style.getPropertyValue('--cubie-edge').trim() || '#566879';
+}
+
+function getFaceUiColor(faceId) {
+  if (faceId === 'top') return document.documentElement.dataset.theme === 'light' ? '#52646d' : '#f4f1e8';
+  if (faceId === 'bottom') return document.documentElement.dataset.theme === 'light' ? '#8a5c08' : FACES[faceId].color;
+  return FACES[faceId].color;
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  document.querySelector('meta[name="theme-color"]').content = theme === 'light' ? '#eef3f4' : '#0d151f';
+  setIconButton(themeToggle, theme === 'light' ? 'moon' : 'sun', theme === 'light' ? '切换为暗色主题' : '切换为亮色主题');
+  localStorage.setItem(THEME_KEY, theme);
+  // 更新魔方颜色（锁定/解锁状态的颜色随主题变化）
+  updateAllCubieColors();
+  // 更新边框透明度
+  updateAllEdgeOpacity();
+}
+
+function toggleTheme() {
+  const current = document.documentElement.dataset.theme || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+}
+
+themeToggle.addEventListener('click', toggleTheme);
+
+// 页面加载时恢复主题偏好
+const savedTheme = localStorage.getItem(THEME_KEY);
+if (savedTheme) {
+  applyTheme(savedTheme);
+} else {
+  // 默认暗色主题
+  setIconButton(themeToggle, 'sun', '切换为亮色主题');
+}
+
+// 更新 DARK_COLOR 为动态值（从 CSS 变量读取）
+// 注意：必须用 function 声明（会被提升），不能用 const 箭头函数（有 TDZ 问题）
+function DARK_COLOR_DYNAMIC() {
+  const c = getThemeLockColor();
+  return parseInt(c.replace('#', ''), 16);
+}
+
+// 更新 halfBrightness 函数以支持可变 alpha
+function halfBrightnessDynamic(hex) {
+  const alpha = getThemeUnlockedAlpha();
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return '#' + [r, g, b].map(c => Math.round(c * alpha).toString(16).padStart(2, '0')).join('');
+}
+
+// ============================================================
+// 初始化
+// ============================================================
+updateAllCubieColors();
+updateHeaderStats();
+updateDifficultyBadge();
+refreshIcons();
+if (!localStorage.getItem('cube_english_onboarded')) showDifficultyOnboarding();
+
+console.log('🧩 魔方英语已就绪！');
+console.log('  - 6个面，54个关卡 × 6个难度等级');
+console.log('  - 拖拽旋转魔方');
+console.log('  - 点击彩色格子开始答题');
+console.log('  - 六档难度可选：小学启蒙至高中通用');
+console.log('  - 完成进度自动保存（每个难度独立记录）');
+</script>
 </body>
 </html>
